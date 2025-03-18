@@ -2,10 +2,19 @@
 
 ## Introduktion och Bakgrund
 
-- **Projektets syfte och mål:** Utveckla ett system för att övervaka och hantera
+- **Projektets syfte och mål med en vision över den allmäna strukturen:**
+  Utveckla ett system för att övervaka och hantera
   översvämningsrisker i en kommun genom användning av IoT-sensorer och en
   digital plattform. Systemet ska ge realtidsinformation om vattennivåer,
-  optimera resursallokering och möjliggöra snabb respons.
+  optimera resursallokering och möjliggöra snabb respons. Projektet kommer använda sig
+  av en trycksensor i vatten/sjö för att mäta trycket och därigenom räkna fram djupet/nivån.
+  Vi kommer även ha en sensor som mäter höjden på vattnet med hjälp av ultraljud för att ha
+  nån form av backup om den ena sensorn skulle gå sönder. Vi tänkte även mäta temperatur
+  och jordfuktighet för att man lättare ska kunna räkna ut om risken för översvämming är stor.
+  Vi vill sedan skicka den insamlade datan till en databas.
+
+  Datan som samlas in via sensorerna kommer samlas i en PostgreSQL databas där det kommer sedan föras vidare till olika jämförelseoperatorer i backend. Express kommer användas mellan databasen till backend och frontend applikationen. Där det kan hämtas uppdateringar genom express.js Som sedan kan ge fullskaliga rapporter som speglas i applikationen och kunna uppdatera användaren, antingen i realtid eller med ett visst antal "rapporter" under ett visst tidsspan
+
 - **Problem som lösningen ska adressera:**
   - Brist på realtidsinformation om vattenflöden.
   - Ineffektiv resursallokering vid översvämningar.
@@ -21,28 +30,31 @@
 
 - **Frontend:** React (webbapplikation), React Native (mobilapp)
 - **Backend:** Node.js med Express.js PostgreSQL
-- **IoT:** LoRaWAN-sensorer för vattennivåmätning, MQTT för dataöverföring
+- **IoT:** LoRa kompatibla utvecklingskort som använder sensorer för vattennivåmätning,
+  jordfuktighetsmätning och temperatur. -MQTT för dataöverföring
 - **Systemarkitektur:**
 
   ```
-  [IoT Sensors] --(LoRaWAN/MQTT)--> [Backend API (Node.js/Express.js)]
+  [IoT Sensors] --(LoRa/MQTT)--> [Backend API (Node.js/Express.js)]
       |                                   ^
       v                                   |
   [Database (PostgreSQL)] <-------------> [Frontend (React/React Native)]
   ```
 
-  [Frontend]
-  ˄
-  |
-  ˅
-  [Backend]
-  ˄
-  |  
-   ˅
-  [Databas]
-  ˄
-  |
-  [Sensorer]
+```
+ [Frontend]
+     ˄
+     |
+     ˅
+ [Backend]
+     ˄
+     |
+     ˅
+ [Databas]
+     ˄
+     |
+ [Sensorer]
+```
 
 - **Databas:** PostgreSQL (Relationsdatabas för dataintegritet och komplexa frågor)
 
@@ -58,7 +70,7 @@
 
   - Frontend Team: Frontendutvecklare - Federica, Sandra
 
-  - Backend Team: Fullstackutvecklare - Albin, Sami, Anton, Abbas?
+  - Backend Team: Fullstackutvecklare - Albin, Sami, Zana
 
   - IoT Team: Systemutvecklare - Anna, Marco, Victor, Love, Evie
 
@@ -137,11 +149,14 @@
   Alla ändringar i koden ska granskas av minst en annan
   teammedlem innan de integreras i huvudgrenen (pull requests).
 
-              Master
-                |
-             developgren
-                |
+                Master
+                  |
+               developgren
+                  |
 
+  ***
+
+  | | |
   Systemgren backendgren frontendgren
 
 ## Tidsplan och Milstolpar
@@ -238,9 +253,9 @@
 
 ## Slutlig checklista för projektplanen
 
-- [] Dokumenterad som PROJEKTPLAN.md i Git-repot.
+- [ ] Dokumenterad som PROJEKTPLAN.md i Git-repot.
 
-- [] Innehåller alla ovanstående punkter.
+- [ ] Innehåller alla ovanstående punkter.
 
 - [ ] Projektplanen skickad till utbildare senast den 21/3 klockan 15.00.
 
@@ -248,5 +263,12 @@
 
 ## Vad kommer behöva köpas in?
 
-1.
-2.
+1. Vattentryckssensor, Pris 229kr Länk: https://amzn.eu/d/aZBImTk
+2. Transistorer, Pris 117kr Länk: https://amzn.eu/d/8aY95bV
+3. Regulatorblock, Pris 83kr Länk: https://amzn.eu/d/83tTiUT
+4. Batteri x2, Pris 184kr Länk: https://amzn.eu/d/cvTPiAc
+5. Mikrokontroller x2, Pris 262kr Länk: https://amzn.eu/d/dmU1WWF
+6. Solcellspanel, Pris 252kr Länk: https://amzn.eu/d/ipTiQ3W
+   Total kostnad: ca 1600kr
+
+- Nuvarande budget lämnar en buffert på 400kr som lämnades avsiktligt för att ha råd för inköp som kan behövas senare. Som tillexempel nånting att hålla komponenterna i, sensorer eller dylikt som saknas för att slutföra projektet.
