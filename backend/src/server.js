@@ -51,4 +51,4 @@ app.listen(PORT, () => {
 //---------------------------------------------------
 //Other routes :
 //*http://localhost:5000/admin/adminAuth/authenticated/issueUpkeep
-//*http://localhost:5000/admin/adminAuth/authenticated/monitoring/infrastructureIssues
+//*http://localhost:5000/admin/adminAuth/authenticated/infrastructureIssues
