@@ -3,7 +3,8 @@ import express from "express";
 
 // Import nested modules
 import authMonitoringtRouter from "./adminMonitoring.js";
-import authInfrastructureRouter from "./adminMonitoring.js";
+import authInfrastructureRouter from "./adminInfrastructure.js";
+
 import authIssueUpkeepRouter from "./adminIssueUpkeep.js";
 
 const adminAuthRouter = express.Router(); // Define adminAuthRouter first!

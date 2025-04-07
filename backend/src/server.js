@@ -10,10 +10,11 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use("/user", userRouter);
-app.use("/admin", adminRouter);
 app.use(cors());
 app.use(express.json());
+
+app.use("/user", userRouter);
+app.use("/admin", adminRouter);
 
 // Routing
 const PORT = process.env.PORT || 5050;
