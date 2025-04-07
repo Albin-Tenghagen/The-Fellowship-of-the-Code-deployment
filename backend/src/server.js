@@ -13,10 +13,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Middlewere for routing
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 
-// Routing
+// Local server adress
 const PORT = process.env.PORT || 5050;
 
 app.get("/", (req, res) => {
