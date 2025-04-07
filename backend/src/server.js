@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Middlewere for routing
+// Middleware for routing
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 
