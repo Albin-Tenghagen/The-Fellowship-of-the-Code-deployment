@@ -1,28 +1,30 @@
 export const lightTheme = {
-    primary:'#fac7bc',
+    primary:'#869CB5',
     secondary:'#264247',
-    accent:'#5elele',
+    accent:'#D47F25',
+    accentHover:'#B16414',
 
-    background:'f7dcd5',
-    card: '#f7c3b7',
-    headerBackground: '#f8c0b3',
+    background:'#BBCCE0',
+    card: '#33587F',
+    headerBackground: '#BBCCE0',
     tabBackground: '#f8c0b3',
 
-    textPrimary: '#fad9d1',
+    textPrimary: '#312E2A',
     textSecondary: '#264247',
 };
 
 export const darkTheme = {
-    primary:'#264247',
+    primary:'#687A8F',
     secondary:'#ecaea1',
-    accent:'#f3532b',
+    accent:'#D47F25',
+    accentHover:'#B16414',
 
-    background:'#355b63',
-    card: '#355b63',
+    background:'#909EAE',
+    card: '#152638',
     headerBackground: '#264247',
     tabBackground: '#264247',
 
-    textPrimary: '#264247',
+    textPrimary: '#FFF7EC',
     textSecondary: '#fad9d1',
 
 }
