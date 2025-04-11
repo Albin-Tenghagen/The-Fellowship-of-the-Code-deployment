@@ -1,3 +1,6 @@
+//TODO This file needs to be converted to TypeScript before useTips starts working.
+//TODO Maybe all the files need to be altered for any of it to work
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -12,6 +15,8 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+//TODO logging middleware
 
 // Middleware for routing
 app.use("/user", userRouter);
