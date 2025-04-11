@@ -1,5 +1,5 @@
-Dagens progress 4/4-25
-Branch FJSX-develop created
+1. Dagens progress 4/4-25
+   Branch FJSX-develop created
 
 # Endpoints/modules for the REST-API
 
@@ -65,3 +65,19 @@ Branch FJSX-develop created
 ## Vi vet ej hur det byggs upp så vi lägger fokus på api:et idag tills vi kan med mer säkerhet planera databasen och dess struktur
 
 ## /Database
+
+---
+
+2. 11/4-25
+
+## Agenda för dagen
+
+### !!OBS!! DOKUMENTATION ÄR EN VIKTIG OCH KONTINUERLIG UPPGIFT !!OBS!!
+
+1. Prata om TS VS JS
+
+2. Introducera mer middleware( Winston, morgan etc.)?
+
+3. Enkla CRUd-Operation (GET, POST, PUT, DELETE)
+
+4. Manipulera mockad JSON data
