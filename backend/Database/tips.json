@@ -14,18 +14,17 @@
     "user": "SuperDuperUser"
   },
   {
+    "id": 1003,
+    "timestamp": "13:45 10/4-25",
+    "location": "Mätare 2, (Kordinator)",
+    "description": "Det är BAOTAMÖCKE van ei åen!",
+    "user": "SuperProducer"
+  },
+  {
     "id": 1004,
     "timestamp": "09:15 5/3-25",
     "location": "Mätare 1, (Kordinator)",
     "description": "Det är mycke van ei SJÖEN!",
     "user": "SuperHumanUser"
-  },
-  {
-    "id": 1005,
-    "timestamp": "1200-talet",
-    "location": "Norra Makedonien",
-    "description": "TSUNAMI!!!!",
-    "user": "GothCHicksLover69",
-    "name": "hejsan"
   }
 ]

@@ -65,28 +65,42 @@ userTipsRouter.post("/postTip", async (req, res) => {
   }
 });
 //PUT
-// userTipsRouter.put("/putTip", async (req, res) => {
-//   const id = Number(req.params.id);
-//   const filePath = path.resolve("Database/tips.json");
+userTipsRouter.put("/putTip/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const filePath = path.resolve("Database/tips.json");
 
-//   try {
-//     const jsonData = await readFile(filePath, "utf-8");
-//     const tips = JSON.parse(jsonData);
+  const { timestamp, location, description, user } = req.body;
 
-//     const index = tips.findIndex((tip) => tip.id === id);
-//     if (index === -1) {
-//       return res.status(404).json({ message: "Tip not found..." });
-//     }
+  try {
+    const jsonData = await readFile(filePath, "utf-8");
+    const tips = JSON.parse(jsonData);
 
-//     if (!tips) {
-//       return res
-//         .status(404)
-//         .json({
-//           message: "The server could not find the tips, please try again later",
-//         });
-//     }
-//   } catch (error) {}
-// });
+    const index = tips.findIndex((tip) => tip.id === id);
+    if (index === -1) {
+      return res.status(404).json({ message: "Tip not found..." });
+    }
+
+    if (!tips) {
+      return res.status(404).json({
+        message: "The server could not find the tips, please try again later",
+      });
+    }
+
+    tips[index].timestamp = timestamp;
+    tips[index].location = location;
+    tips[index].description = description;
+    tips[index].user = user;
+
+    fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
+
+    return res.status(200).json({ message: "Tip edited!", tips: tips });
+  } catch (error) {
+    console.error("Server error!");
+    return res
+      .status(500)
+      .json({ message: "There was a major internet breakdown, sorry..." });
+  }
+});
 //DELETE
 userTipsRouter.delete("/deleteTip/:id", async (req, res) => {
   const id = Number(req.params.id);
