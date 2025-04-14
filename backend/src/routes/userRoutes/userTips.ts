@@ -1,15 +1,21 @@
 console.log("tips router running....");
-import express, { Request, Response } from 'express';
+import express, {
+  Request,
+  Response,
+  RequestHandler,
+  NextFunction,
+  Router,
+} from "express";
 import fs from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { userTipObject, TipBody } from "../../types/types";
+import { userTipObject, TipBody, TipRequest } from "../../types/types";
 
-const userTipsRouter = express.Router();
+const userTipsRouter: Router = express.Router();
 
 //GET
-userTipsRouter.get("/", async (req: , res) => {
+userTipsRouter.get("/", async (req: TipRequest, res: Response) => {
   const filePath = path.resolve("Database/tips.json");
 
   try {
@@ -33,45 +39,42 @@ userTipsRouter.get("/", async (req: , res) => {
 });
 
 //POST
-userTipsRouter.post(
-  "/postTip",
-  async (req: Request<{}, {}, TipBody>, res: Response) => {
-    const filePath = path.resolve("Database/tips.json");
+userTipsRouter.post("/postTip", async (req: TipRequest, res: Response) => {
+  const filePath = path.resolve("Database/tips.json");
 
-    const { timestamp, location, description, user } = req.body;
+  const { timestamp, location, description, user } = req.body;
 
-    try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const tips = JSON.parse(jsonData);
+  try {
+    const jsonData = await readFile(filePath, "utf-8");
+    const tips = JSON.parse(jsonData);
 
-      if (!timestamp || !location || !description || !user) {
-        return res.status(400).json({ Error: "All values are required" });
-      }
-
-      const newTip = {
-        id: tips.length + 1001,
-        timestamp,
-        location,
-        description,
-        user,
-      };
-      console.log(newTip);
-      tips.push(newTip);
-
-      fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
-      return res
-        .status(201)
-        .json({ message: "Tips added", tips: tips, newtip: newTip });
-    } catch (error) {
-      console.error("Server error ");
-      return res
-        .status(500)
-        .json({ message: "There was a major internet breakdown, sorry..." });
+    if (!timestamp || !location || !description || !user) {
+      return res.status(400).json({ Error: "All values are required" });
     }
+
+    const newTip = {
+      id: tips.length + 1001,
+      timestamp,
+      location,
+      description,
+      user,
+    };
+    console.log(newTip);
+    tips.push(newTip);
+
+    fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
+    return res
+      .status(201)
+      .json({ message: "Tips added", tips: tips, newtip: newTip });
+  } catch (error) {
+    console.error("Server error ");
+    return res
+      .status(500)
+      .json({ message: "There was a major internet breakdown, sorry..." });
   }
-);
+});
 //PUT
-userTipsRouter.put("/putTip/:id", async (req, res) => {
+userTipsRouter.put("/putTip/:id", async (req: TipRequest, res) => {
   const id = Number(req.params.id);
   const filePath = path.resolve("Database/tips.json");
 
