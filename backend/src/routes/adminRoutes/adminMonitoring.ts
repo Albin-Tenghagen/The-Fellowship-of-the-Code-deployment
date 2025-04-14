@@ -1,7 +1,7 @@
 console.log(" Monitoring router running....");
 import express from "express";
 
-import authHistoricalMonitoringRouter from "./adminHistoricalMonitoring";
+import authHistoricalMonitoringRouter from "./adminHistoricalMonitoring.js";
 const authMonitoringRouter = express.Router();
 authMonitoringRouter.use(
   "/historicalMonitoring",

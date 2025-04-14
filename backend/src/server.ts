@@ -6,8 +6,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 //module
-import userRouter from "./routes/userRoutes/user";
-import adminRouter from "./routes/adminRoutes/admin";
+import userRouter from "./routes/userRoutes/user.js";
+import adminRouter from "./routes/adminRoutes/admin.js";
 dotenv.config();
 
 const app = express();

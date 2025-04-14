@@ -2,10 +2,10 @@ console.log("adminAuth router running....");
 import express from "express";
 
 // Import nested modules
-import authMonitoringtRouter from "./adminMonitoring";
-import authInfrastructureRouter from "./adminInfrastructure";
+import authMonitoringtRouter from "./adminMonitoring.js";
+import authInfrastructureRouter from "./adminInfrastructure.js";
 
-import authIssueUpkeepRouter from "./adminIssueUpkeep";
+import authIssueUpkeepRouter from "./adminIssueUpkeep.js";
 
 const adminAuthRouter = express.Router(); // Define adminAuthRouter first!
 

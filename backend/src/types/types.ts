@@ -8,6 +8,7 @@ export interface userTipObject {
 }
 
 export interface TipBody {
+  id: number;
   timestamp: string;
   location: string;
   description: string;

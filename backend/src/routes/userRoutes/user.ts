@@ -2,10 +2,10 @@ console.log("user router running....");
 import express from "express";
 import { Router } from "express";
 // Import nested modules
-import userTipsRouter from "./userTips";
-import userRisksRouter from "./userRisks";
-import userNotificationsRouter from "./userNotifications";
-import userSafetyRouter from "./userSafety";
+import userTipsRouter from "./userTips.js";
+import userRisksRouter from "./userRisks.js";
+import userNotificationsRouter from "./userNotifications.js";
+import userSafetyRouter from "./userSafety.js";
 
 const userRouter: Router = express.Router(); // Define userRouter first!
 console.log(typeof userRouter);

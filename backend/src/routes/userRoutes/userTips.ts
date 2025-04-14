@@ -4,15 +4,9 @@ import fs from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { userTipObject, TipBody } from "../../types/types";
+import { userTipObject, TipBody } from "../../types/types.js";
 
 const userTipsRouter: Router = express.Router();
-
-// interface TipRequest extends Request {
-//   params: {
-//     id: string;
-//   };
-// }
 
 interface TipRequest extends Request<{ id: string }, any, TipBody> {}
 
@@ -101,7 +95,7 @@ userTipsRouter.put(
       const jsonData = await readFile(filePath, "utf-8");
       const tips = JSON.parse(jsonData);
 
-      const index = tips.findIndex((tip) => tip.id === id);
+      const index = tips.findIndex((tip: TipBody) => tip.id === id);
       if (index === -1) {
         res.status(404).json({ message: "Tip not found..." });
         return;
@@ -143,7 +137,7 @@ userTipsRouter.delete(
       const jsonData = await readFile(filePath, "utf-8");
       const tips = JSON.parse(jsonData);
 
-      const index = tips.findIndex((tip) => tip.id === id);
+      const index = tips.findIndex((tip: TipBody) => tip.id === id);
       if (index === -1) {
         res.status(404).json({ message: "Tip not found..." });
         return;
