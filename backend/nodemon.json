@@ -1,8 +1,6 @@
 {
-  "exec": "ts-node --esm src/server.ts",
-  "ext": "ts,js,json",
-  "execMap": {
-    "ts": "ts-node --esm"
-  },
-  "watch": ["src"]
+  "watch": ["src"],
+  "ext": "ts,json",
+  "ignore": ["node_modules"],
+  "exec": "node --loader ts-node/esm src/server.ts"
 }
