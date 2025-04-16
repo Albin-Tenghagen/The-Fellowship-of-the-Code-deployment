@@ -21,7 +21,7 @@ const FontComponent = () => {
       <Text numberOfLines={5}>{bodyText}</Text>
       </Text>
     </SafeAreaView>
-   </SafeAreaProvider>>
+   </SafeAreaProvider>
   );
 };
 
