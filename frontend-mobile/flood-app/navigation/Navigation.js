@@ -2,7 +2,7 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../screens/HomeScreen';
-import { MaterialCommunityIcons} from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
 import LoginScreen from '../screens/LoginScreen';
 import UserScreen from '../screens/UserScreen';
@@ -31,7 +31,7 @@ const Navigation = () => {
               component={LoginScreen}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="login" color={color} size={size}/>
+                    <MaterialCommunityIcons name="login" />
                 )
             }}
 
@@ -41,7 +41,7 @@ const Navigation = () => {
               component={UserScreen}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="user" color={color} size={size}/>
+                    <AntDesign name="user" color={color} size={size}/>
                 )
             }}
 
