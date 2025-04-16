@@ -25,3 +25,4 @@
 - Improved UI responsiveness for different device sizes
 - Added offline data caching for areas of interest
 - Created documentation for API integration
+- Create a basic map structure
