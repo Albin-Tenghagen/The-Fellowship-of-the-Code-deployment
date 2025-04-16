@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-    StyleSheet,
-    View,
-    Modal,
-    Pressable,
-    ScrollView,
-    Text,
-    KeyboardAvoidingView,
-    Platform,
-    Keyboard
-} from 'react-native';
+import { StyleSheet, View, Modal, Pressable, ScrollView, Text, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
 
@@ -26,12 +16,11 @@ const CustomModal = ({ visible = false, onClose, title = "Modal Title", children
                 }}
             >
                 <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                     style={styles.modalContainerWrapper}
                 >
                     <Pressable
                         style={[styles.modalContainer, { backgroundColor: theme.background }]}
-                        onPress={(e) => e.stopPropagation()} // Prevents clicks inside modal from closing it
+                        onPress={(e) => e.stopPropagation()} 
                     >
                         <View style={styles.handleBar} />
 
