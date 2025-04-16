@@ -18,11 +18,7 @@
 
 ### 2025/04/16
 
-- Implemented map integration with flood data API
-- Added real-time water level indicators on the map
-- Created alert notification system for flood warnings
-- Built user location tracking with permission handling
-- Improved UI responsiveness for different device sizes
-- Added offline data caching for areas of interest
-- Created documentation for API integration
+- Create card, modal, text and button components
+- Checked font alternatives
 - Create a basic map structure
+- Plannering of project.
