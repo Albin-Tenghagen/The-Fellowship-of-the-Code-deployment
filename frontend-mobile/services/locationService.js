@@ -1,0 +1,1 @@
+// Gets user coordinates

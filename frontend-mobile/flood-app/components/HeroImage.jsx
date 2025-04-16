@@ -5,7 +5,7 @@ const HeroImage = () => {
   return (
     <View style={styles.container}>
         <Image
-         source={require("../assets/hero1.jpg")}
+         source={require("../assets/images/hero1.jpg")}
             style={styles.image}
             resizeMode="cover"/>
     </View>

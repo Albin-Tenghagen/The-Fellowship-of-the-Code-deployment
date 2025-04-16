@@ -1,0 +1,1 @@
+// Converts risk to icon/color
