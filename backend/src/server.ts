@@ -5,13 +5,35 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 //module
-import userRouter from "./routes/userRoutes/user.js";
-import adminRouter from "./routes/adminRoutes/admin.js";
+import userRouter from "./routes/userRoutes/user.ts";
+import adminRouter from "./routes/adminRoutes/admin.ts";
+
 dotenv.config();
 
 const app = express();
 
+//-------------------
+//Swagger inställning för att att generera en api dokumentation
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Albins Restful API",
+      description: "API-dokumentation med swagger",
+      version: "1.0.0",
+    },
+  },
+  //stjärna för alla filer i routes.
+  apis: ["./dist/routes/adminRoutes/*.js", "./dist/routes/userRoutes/*.js"],
+};
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+//-----------------------------
 // Middleware
 app.use(cors());
 app.use(express.json());

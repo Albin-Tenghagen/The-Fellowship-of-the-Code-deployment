@@ -4,13 +4,43 @@ import fs from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { userTipObject, TipBody } from "../../types/types.js";
+import { userTipObject, TipBody } from "../../types/types.ts";
 
 const userTipsRouter: Router = express.Router();
 
 interface TipRequest extends Request<{ id: string }, any, TipBody> {}
 
-//GET
+/**
+ * @swagger
+ * /user/tips:
+ *   get:
+ *     tags:
+ *       - tips
+ *     summary: Fetches all tips submitted
+ *     description: Returns an array of tips submitted by the users
+ *     responses:
+ *       200:
+ *         description: Here are the currently available tips
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The tip's unique ID
+ *                   timestamp:
+ *                     type: string
+ *                     description: The time and date when the tip was registered
+ *                   location:
+ *                     type: string
+ *                     description: Where the tip originates from
+ *                   description:
+ *                     type: string
+ *                     description: Description of the current alert/tip
+ */
 userTipsRouter.get(
   "/",
   async (_req: TipRequest, res: Response): Promise<void> => {
@@ -41,7 +71,57 @@ userTipsRouter.get(
   }
 );
 
-//POST
+/**
+ * @swagger
+ * /user/tips/postTip:
+ *   post:
+ *     tags:
+ *       - tips
+ *     summary: Creates a tip
+ *     description: Creates a tip and adds it to the tips array
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: The tip's unique ID
+ *               timestamp:
+ *                 type: string
+ *                 description: The time and date when the tip was registered
+ *               location:
+ *                 type: string
+ *                 description: Where the tip originates from
+ *               description:
+ *                 type: string
+ *                 description: Description of the current alert/tip
+ *     responses:
+ *       201:
+ *         description: Tip created!
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Confirmation message
+ *                 tip:
+ *                   type: object
+ *                   description: The created tip
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     timestamp:
+ *                       type: string
+ *                     location:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ */
 userTipsRouter.post(
   "/postTip",
   async (req: TipRequest, res: Response): Promise<void> => {
@@ -83,6 +163,66 @@ userTipsRouter.post(
   }
 );
 //PUT
+/**
+ * @swagger
+ * /user/tips/putTip/{id}:
+ *   put:
+ *     tags:
+ *       - tips
+ *     summary: Edits a tip
+ *     description: Updates an existing tip by its ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the tip to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               timestamp:
+ *                 type: string
+ *                 description: The time and date when the tip was registered
+ *               location:
+ *                 type: string
+ *                 description: Where the tip originates from
+ *               description:
+ *                 type: string
+ *                 description: Description of the current alert/tip
+ *               user:
+ *                 type: string
+ *                 description: The user who submitted the tip
+ *     responses:
+ *       200:
+ *         description: Tip updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 tips:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       timestamp:
+ *                         type: string
+ *                       location:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       user:
+ *                         type: string
+ */
 userTipsRouter.put(
   "/putTip/:id",
   async (req: TipRequest, res: Response): Promise<void> => {
