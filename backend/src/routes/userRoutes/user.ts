@@ -16,7 +16,7 @@ userRouter.use("/risks", userRisksRouter);
 userRouter.use("/notifications", userNotificationsRouter);
 userRouter.use("/safety", userSafetyRouter);
 
-userRouter.get("/", (req, res) => {
+userRouter.get("/", (_req, res) => {
   res.status(200).json({ message: "Welcome to the user Endpoint." });
   return;
 });

@@ -7,7 +7,7 @@ const adminRouter = express.Router();
 // Nested modules (without "/user" prefix since it's handled in server.ts)
 adminRouter.use("/adminAuth", adminAuthRouter);
 
-adminRouter.get("/", (req, res) => {
+adminRouter.get("/", (_req, res) => {
   res.status(200).json({ message: "Welcome to the admin Endpoint." });
 });
 

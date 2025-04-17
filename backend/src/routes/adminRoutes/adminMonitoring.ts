@@ -8,9 +8,13 @@ authMonitoringRouter.use(
   authHistoricalMonitoringRouter
 );
 
-authMonitoringRouter.get("/", (req, res) => {
+authMonitoringRouter.get("/", (_req, res) => {
   res.status(200).json({ message: "Welcome to the adminMonitoring Endpoint." });
 });
+
+//GET to monitor currnet data
+
+//GET for specific mätnings station maybe based on id?
 
 export default authMonitoringRouter;
 

@@ -17,8 +17,10 @@ adminAuthRouter.use(
 );
 adminAuthRouter.use("/authenticated/issueUpkeep", authIssueUpkeepRouter);
 
-adminAuthRouter.get("/", (req, res) => {
+adminAuthRouter.get("/", (_req, res) => {
   res.status(200).json({ message: "Welcome to the adminAuth Endpoint." });
 });
+
+//POST for login with email and password?
 
 export default adminAuthRouter;
