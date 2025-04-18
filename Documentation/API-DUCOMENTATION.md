@@ -9,30 +9,30 @@ Strukturen för API:ets olika endpoints och routing är nu färdiga i sin grundf
 
 ## User route :
 
-- http://localhost:5000/user/
+- http://localhost:5000/users/
   //---------------------------------------------------
   User routes :
-- http://localhost:5000/user/tips
-- http://localhost:5000/user/risks
-- http://localhost:5000/user/notifications
-- http://localhost:5000/user/safety
+- http://localhost:5000/users/tips
+- http://localhost:5000/users/risks
+- http://localhost:5000/users/notifications
+- http://localhost:5000/users/safety
   //---------------------------------------------------
 
 ## Admin route :
 
-- localhost:5000/admin/
-- localhost:5000/admin/adminAuth/
+- localhost:5000/admins/
+- localhost:5000/admins/
   //---------------------------------------------------
 
 ### Monitoring routes :
 
-- ://localhost:5000/admin/adminAuth/authenticated/monitoring/
-- http://localhost:5000/admin/adminAuth/authenticated/monitoring/historicalMonitoring
+- ://localhost:5000/admins/authenticated/monitoring/
+- http://localhost:5000/admins/authenticated/monitoring/historicalMonitoring
   //---------------------------------------------------
 
 ### Other routes :
 
-- http://localhost:5000/admin/adminAuth/authenticated/issueUpkeep
-- http://localhost:5000/admin/adminAuth/authenticated/infrastructureIssues
+- http://localhost:5000/admins/authenticated/issueUpkeep
+- http://localhost:5000/admins/authenticated/infrastructureIssues
 
 Detta är URL:erna för dem olika endpointerna. Dem kommer tillhandahålla olika handlingar och information som användare och arbetare kan komma åt. Urls har namngets på så vis att dem ska vara hyfsate självförklarande
