@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1001,
+    "timestamp": "18/4-25",
+    "location": "Nordvästra Eslöv",
+    "description": "Mätstation vid västra Asmundtorp har mätt ett förhöjt vattenstånd med ${waterlevel}",
+    "proactiveActions": {
+      "basementProtection": "Boende i Asmundtorp bör hålla uppsikt. så vatten ej tränger in i källare. Vattennivån är aningen riskfylld",
+      "trenchDigging": "Ej nödvändigt i nuläget",
+      "electricHazards": "Kolla trädgården efter elektriska saker "
+    }
+  },
+  {
+    "id": 1002,
+    "timestamp": "11/4-25",
+    "location": "Haparanda",
+    "description": "Mätstation vid östra Asmundtorp har mätt ett förhöjt vattenstånd med ${waterlevel}",
+    "proactiveActions": {
+      "basementProtection": "Boende i Asmundtorp bör hålla uppsikt. så vatten ej tränger in i källare. Vattennivån är aningen riskfylld",
+      "trenchDigging": "Ej nödvändigt i nuläget",
+      "electricHazards": "Kolla trädgården efter elektriska saker "
+    }
+  },
+  {
+    "id": 1003,
+    "timestamp": "2025-04-18 11:59:11.488 ",
+    "location": "SydÖstra eslöv",
+    "description": "vatten upp till knäna inte bra alls",
+    "proactiveActions": {
+      "basementProtection": "Är en bra idé, Lägg påsar med sand vid glippor och dylikt"
+    }
+  }
+]

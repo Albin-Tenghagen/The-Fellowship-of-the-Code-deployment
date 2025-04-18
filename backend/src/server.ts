@@ -9,7 +9,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 //module
 import userRouter from "./routes/userRoutes/user.ts";
-import adminRouter from "./routes/adminRoutes/admin.ts";
+import adminRouter from "./routes/adminRoutes/adminAuth.ts";
 
 dotenv.config();
 
@@ -41,9 +41,8 @@ app.use(express.json());
 //TODO logging middleware
 
 // Middleware for routing
-app.use("/user", userRouter);
-app.use("/admin", adminRouter);
-
+app.use("/users", userRouter);
+app.use("/admins", adminRouter);
 // Local server adress
 const PORT = process.env.PORT || 5050;
 
