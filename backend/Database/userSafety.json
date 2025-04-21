@@ -23,11 +23,20 @@
   },
   {
     "id": 1003,
-    "timestamp": "2025-04-18 11:59:11.488 ",
+    "timestamp": "2025-04-21 08:40:23.682",
     "location": "SydÖstra eslöv",
     "description": "vatten upp till knäna inte bra alls",
     "proactiveActions": {
       "basementProtection": "Är en bra idé, Lägg påsar med sand vid glippor och dylikt"
+    }
+  },
+  {
+    "id": 1004,
+    "timestamp": "2025-04-21 10:44:49 undefined",
+    "location": "SydÖstra eslöv",
+    "description": "vatten upp till knäna inte bra alls",
+    "proactiveActions": {
+      "basementProtection": "kattsand är absorberande"
     }
   }
 ]

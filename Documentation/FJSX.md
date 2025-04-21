@@ -203,7 +203,7 @@ Database structure
 We don’t yet know how it will be built, so we are focusing on the API today until we can more confidently plan the database and its structure.
 /Database
 
-    11/4-25
+2.  11/4-25
 
 Agenda for the day
 !!NOTE!! DOCUMENTATION IS AN IMPORTANT AND ONGOING TASK !!NOTE!!
@@ -239,3 +239,25 @@ What has been accomplished
     TypeScript has been initiated in the project with a tsconfig.json file
 
     Middleware has been added !!NOTE ONLY AS ROUTING MIDDLEWARE
+
+3. 17/4-25
+
+What has been accomplished
+
+    Started working on swagger documentation, but its doesnt seem to work, we get the error message: No operations
+
+4. 18/4-25
+
+What has been accomplished
+
+    Worked on CRUD-operations for the admin routes, finished almost all of them, will continue on monday
+
+5. 21/4-25
+
+What has been accomplished
+
+    finished the CRUD-operations in their current form They are in need of revisiting when the database is in place
+
+    Started working on collective ts typing (instead of having 4231435 different type interfaces), but we have no clue how to do i proparly yet
+
+    Swagger have we worked with a bit, but it is not cooperating. Considering just starting with yaml right away instead

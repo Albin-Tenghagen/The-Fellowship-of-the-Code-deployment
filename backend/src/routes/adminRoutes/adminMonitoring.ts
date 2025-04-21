@@ -3,7 +3,10 @@ import express, { Request, Response, Router } from "express";
 import { readFile } from "fs/promises";
 import path from "path";
 
-import authHistoricalMonitoringRouter from "./adminHistoricalMonitoring.js";
+import { StationRequest } from "types/types.ts";
+import { MonitoringEntry } from "types/types.ts";
+
+import authHistoricalMonitoringRouter from "./adminHistoricalMonitoring.ts";
 const authMonitoringRouter = express.Router();
 authMonitoringRouter.use(
   "/historicalMonitoring",
@@ -13,23 +16,12 @@ authMonitoringRouter.use(
 //GET to monitor currnet data
 authMonitoringRouter.get(
   "/",
-  async (_req: Request, res: Response): Promise<void> => {
+  async (_req: StationRequest, res: Response): Promise<void> => {
     const filePath = path.resolve("Database/monitoring.json");
-    const id = _req.params.id;
-    const sortByDate = _req.params.timestamp;
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
-      const recentData = JSON.parse(jsonData);
-
-      if (sortByDate) {
-        //TODO if to allow timestamp params for the mätnings station
-        //TODO sort and filtering madafaka(not proffesional)
-      }
-
-      if (id) {
-        //TODO if to allow id params of the "mätnings station"
-      }
+      const recentData: MonitoringEntry[] = JSON.parse(jsonData);
 
       if (!recentData) {
         res.status(404).json({
@@ -39,9 +31,21 @@ authMonitoringRouter.get(
         return;
       }
 
+      const twoWeeksAgo: number = Date.now() - 14 * 24 * 60 * 60 * 1000;
+
+      let filteredData: MonitoringEntry[] = recentData.filter((entry) => {
+        const entryTime = new Date(entry.timestamp).getTime();
+        return entryTime >= twoWeeksAgo;
+      });
+
+      filteredData.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+
       res.status(200).json({
-        message: "This is the recent data",
-        recentData: recentData,
+        message: "This is the recent data from the last 2 weeks",
+        data: filteredData,
       });
       return;
     } catch (error) {

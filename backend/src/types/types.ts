@@ -22,7 +22,8 @@ export interface TipRequest extends Request<{}, any, TipBody> {}
 //*_____________________________________________________________
 
 //* User Safety
-export interface usersSafetyInfo extends Request<{}, any, userSafetyBody> {}
+export interface usersSafetyInfo
+  extends Request<{ id: string }, any, userSafetyBody> {}
 
 export interface userSafetyBody {
   id: number;
@@ -47,7 +48,6 @@ export interface userNotifications extends Request<{}, any, any> {}
 //*_____________________________________________________________
 
 //* admin auth
-export interface adminLogin extends Request<{}, any, loginData> {}
 export interface loginData {
   id: number;
   name: string;
@@ -55,12 +55,14 @@ export interface loginData {
   password: string;
 }
 
+export interface adminLogin extends Request<{}, any, loginData> {}
+
 //*_____________________________________________________________
 
 //* admin monitoring
 
-export interface stationBody {
-  id: number;
+export interface MonitoringEntry {
+  id: string;
   timestamp: string;
   airPressure: number;
   soilMoisture: number;
@@ -70,7 +72,7 @@ export interface stationBody {
   ultraSoundLevel: number;
 }
 
-export type StationRequest = Request<{}, {}, stationBody>;
+export type StationRequest = Request<{}, {}, {}>;
 
 //*_____________________________________________________________
 
@@ -91,3 +93,38 @@ export interface infrastructureBody {
 
 export type infrastructureRequest = Request<{}, {}, infrastructureBody>;
 //*____________________________________________________________
+
+//! new interface currently being created. NOT TO BE USED
+// export interface publicInfo {
+//   id: number;
+//   timestamp: string;
+//   updatedTimeStamp?: string;
+//   location: string;
+//   description: string;
+
+//   publicReport?: {
+//     // Public monitoring
+//     monitoringlevels: number
+//     timeStamp: number
+//     riskAssesment: number
+//   }
+
+//   infrastructure?: {
+//     id: number;
+//     // When infra problem has been noted
+//     timestamp: string;
+//     // What type of problem. flooded road for example
+//     problem: string;
+//     // Where the problem originates from
+//     location?: string
+//   }
+
+//   vigilance?: {
+//     //tells the user if they should think about taking proactive or reactive actions to protect property
+//     floodProtecting: boolean
+//     // Tells the user if they should keep track in case there is alot happening basically
+//     trackKeeping: boolean
+//     timeStamp: number
+//   },
+// }
+//!_____________________________________________________________
