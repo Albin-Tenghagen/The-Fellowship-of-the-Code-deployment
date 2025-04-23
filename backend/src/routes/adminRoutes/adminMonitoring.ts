@@ -49,7 +49,7 @@ authMonitoringRouter.get(
       });
       return;
     } catch (error) {
-      console.error("Server error");
+      console.error("Server error", error);
       res.status(500).json({ message: "SERVER monitoring ERROR" });
     }
   }

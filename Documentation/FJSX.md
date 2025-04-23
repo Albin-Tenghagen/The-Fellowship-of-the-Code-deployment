@@ -68,61 +68,6 @@
 
 ---
 
-2. **11/4-25**
-
-## Agenda för dagen
-
-### !!OBS!! DOKUMENTATION ÄR EN VIKTIG OCH KONTINUERLIG UPPGIFT !!OBS!!
-
-1. Prata om TS VS JS
-
-- TS Är bra för att typa data
-
-- TS it is!!
-
-2. Introducera mer middleware( Winston, morgan etc.)?
-
-3. Enkla CRUd-Operation (GET, POST, PUT, DELETE)
-
-4. Manipulera mockad JSON data
-
-Dagen börjar med
-
-- Enkel crud för user/tips with JS, Then converting all files to Typescript and figuring it out
-- JSON Data to be manipulated during CRUD
-
-- OBS!! DOCUMENTAION
-
-- Functional middleware
-
-## Vad som har åstakommits
-
-1. CRUD-operationer för userTips endpoint är färdig med mockdata så att vi kan simulera en databas
-
-2. Vi har använt oss av JSON-data för att simulera data som passeras
-
-3. TypeScript har initierats in i projektet med en tsconfig.json fil
-
-- Skapade mappen dist/ i samma nivå som source. Här får vi the compiled js file.
-- i tsconfig.json filen så la vi in outDir": "./dist"
-- ändrade "target": "ES2020" från es2016
-- ändrade "moduleResolution": "node", från node10.
-
-4. Middleware har lagts !!OBS BARA SOM ROUTING MIDDLEWARE
-
-## Vad som komma skall
-
-1. Typescript Conversion
-
-2. expandering av CRUD behöver fixas,
-
-   - Vad för data ska skickas och dess typer behöver diskuteras med frontend
-   - Vad för handlingar som varje endpoint behöver
-
-3. Middleware för logging & felhantering & input validering behöver göras. För att "modulera" koden.
-
----
-
 # English ↓
 
     Progress of the day 4/4-25
@@ -261,3 +206,14 @@ What has been accomplished
     Started working on collective ts typing (instead of having 4231435 different type interfaces), but we have no clue how to do i proparly yet
 
     Swagger have we worked with a bit, but it is not cooperating. Considering just starting with yaml right away instead
+
+6. 23/4-25
+
+What has been accomplished
+
+    Got swagger to work with a yaml-file. There is now swagger documentation for each CRUD-operatio on each endpoint.
+
+    For the Frontend team to use it. They need to run the server and visit http://localhost:5000/api-docs/#/
+    And a "Typical" API documentation will be seen. and therefore guide them.
+    furthest down on that page there is also "types" typed up for the data that is being sent and recieved. So they now how the data is structured.
+    It needs a code-review before merging to develop. The code review shall dony by next meeting(25/4-25)

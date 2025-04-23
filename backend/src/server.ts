@@ -1,11 +1,10 @@
-//TODO This file needs to be converted to TypeScript before useTips starts working.
-//TODO Maybe all the files need to be altered for any of it to work
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
 import swaggerJsDoc from "swagger-jsdoc";
+import YAML from "yamljs";
+import path from "path";
 import swaggerUi from "swagger-ui-express";
 //module
 import userRouter from "./routes/userRoutes/user.ts";
@@ -21,15 +20,22 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Albins Restful API",
+      title: "The Fellowship of the Codes Restful API",
       description: "API-dokumentation med swagger",
       version: "1.0.0",
     },
+    servers: [
+      {
+        url: "http://localhost:5000",
+        description: "local dev server",
+      },
+    ],
   },
   //stjärna för alla filer i routes.
   apis: ["./dist/routes/adminRoutes/*.js", "./dist/routes/userRoutes/*.js"],
 };
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerDocs = YAML.load(path.resolve("./src/swagger/swagger.yaml"));
+console.log(JSON.stringify(swaggerDocs, null, 2));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

@@ -62,7 +62,7 @@ adminRouter.post(
         res.status(401).json({ message: "Invalid credentials" });
       }
     } catch (error) {
-      console.error("Server error");
+      console.error("Server error", error);
       res.status(500).json({ message: "SERVER SERVER ERROR" });
       return;
     }
