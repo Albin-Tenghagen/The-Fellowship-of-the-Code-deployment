@@ -13,30 +13,5 @@
     "id": 1003,
     "timestamp": "20/04-25",
     "problem": "Malmö kanal översvämmad, aborre på gator..."
-  },
-  {
-    "id": 1004,
-    "timestamp": " Date.now()",
-    "problem": "vatten upp till knäna"
-  },
-  {
-    "id": 1005,
-    "timestamp": "2025-04-25 12:23:19 undefined",
-    "problem": "E4:an i norra eslöv är översvämmad. välj annan väg "
-  },
-  {
-    "id": 1006,
-    "timestamp": "2025-04-25 12:27:13 undefined",
-    "problem": "E4:AN i norra eslöv är översvämmad. välj annan väg "
-  },
-  {
-    "id": 1007,
-    "timestamp": "2025-04-2512:29:10",
-    "problem": "E4:AN i norra eslöv är översvämmad. välj annan väg "
-  },
-  {
-    "id": 1008,
-    "timestamp": "2025-04-25 12:30:34",
-    "problem": "E4:AN i norra eslöv är översvämmad. välj annan väg "
   }
 ]
