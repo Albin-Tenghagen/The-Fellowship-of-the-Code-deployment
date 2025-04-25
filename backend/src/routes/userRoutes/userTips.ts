@@ -5,6 +5,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 
 import { userTipObject, TipBody } from "../../types/types.ts";
+import { validateUserTips } from "../../validators/tipsValidation.ts";
 
 const userTipsRouter: Router = express.Router();
 
@@ -63,8 +64,18 @@ userTipsRouter.post(
         description,
         user,
       };
-      console.log(newTip);
-      tips.push(newTip);
+      try {
+        const validatedTip = await validateUserTips(newTip);
+        console.log("validatedTip : ", validatedTip);
+        tips.push(validatedTip);
+      } catch (error) {
+        console.error("Error: ", error);
+        res.status(400).json({
+          message: "Validation failed",
+          details: error,
+        });
+        return;
+      }
 
       fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
       res
@@ -106,11 +117,23 @@ userTipsRouter.put(
         });
         return;
       }
-
       tips[index].timestamp = timestamp;
       tips[index].location = location;
       tips[index].description = description;
       tips[index].user = user;
+
+      try {
+        const validatedTip = await validateUserTips(tips[index]);
+        console.log("validatedTip : ", validatedTip);
+        tips.push(validatedTip);
+      } catch (error) {
+        console.error("Error: ", error);
+        res.status(400).json({
+          message: "Validation failed",
+          details: error,
+        });
+        return;
+      }
 
       fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
 

@@ -4,6 +4,7 @@ import { readFile, writeFile } from "fs/promises";
 import path from "path";
 import fs from "fs";
 import { usersSafetyInfo, userSafetyBody } from "types/types";
+import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
 
 const authIssueUpkeepRouter = express.Router();
 
@@ -57,7 +58,16 @@ authIssueUpkeepRouter.post(
         ...newSafetyBody,
       };
 
-      issues.push(publicIssue);
+      try {
+        const validatedIssueUpkeep = await validateIssueUpkeep(publicIssue);
+        issues.push(validatedIssueUpkeep);
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(400).json({
+          message: "Validation failed",
+          details: error,
+        });
+      }
 
       await writeFile(filePath, JSON.stringify(issues, null, 2));
 

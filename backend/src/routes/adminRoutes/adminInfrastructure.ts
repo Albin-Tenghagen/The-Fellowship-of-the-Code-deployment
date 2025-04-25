@@ -1,10 +1,11 @@
 console.log("Infrastructure router running....");
 import express, { Request, Response, Router } from "express";
 import fs from "fs";
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 import path from "path";
 import { infrastructureRequest } from "types/types";
-
+import { validateInfrastructureIssue } from "../../validators/infrastructureValidation.ts";
+import { timestampCreation } from "../../middleware/timestampCreation.ts";
 const authInfrastructureRouter = express.Router();
 
 //GET get the current infrastructure issues or warnings
@@ -46,12 +47,12 @@ authInfrastructureRouter.post(
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const filePath = path.resolve("Database/infrastructure.json");
 
-    const { timestamp, problem } = req.body;
+    const { problem } = req.body;
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
       const infrastructureData = JSON.parse(jsonData);
-
+      const timestamp = timestampCreation();
       if (!timestamp || !problem) {
         res.status(400).json({
           message: "All values are required",
@@ -65,9 +66,23 @@ authInfrastructureRouter.post(
         problem,
       };
       console.log(newInfrastructureData);
-      infrastructureData.push(newInfrastructureData);
-
-      fs.writeFileSync(
+      try {
+        const validatedInfrastructureIssue = await validateInfrastructureIssue(
+          newInfrastructureData
+        );
+        infrastructureData.push(validatedInfrastructureIssue);
+        console.log(
+          "validated infrastructure issues",
+          validateInfrastructureIssue
+        );
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(400).json({
+          message: "Validation failed",
+          details: error,
+        });
+      }
+      await writeFile(
         filePath,
         JSON.stringify(infrastructureData, null, 2),
         "utf-8"
@@ -85,4 +100,7 @@ authInfrastructureRouter.post(
   }
 );
 
+//PUT
+
+//DELETE
 export default authInfrastructureRouter;
