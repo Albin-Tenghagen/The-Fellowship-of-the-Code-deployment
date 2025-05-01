@@ -70,3 +70,5 @@ export const useAppData = () => {
   }
   return context;
 };
+
+// consider adding refetchData function to allow manual data refresh
