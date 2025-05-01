@@ -27,9 +27,12 @@
 
 #### Data with Context and Fetch
 
-Using **React Context** to load and share data from the backend with all components.
+Using **React Context**, we created `DataContext` and `UserDataContext` to load and share data from the backend with all components.
 
-#### Why fetch is used in the context
+- `DataContext` handles general/static data: `tips`, `infrastructure`, `monitoring`, `admin`
+- `UserDataContext` handles user-related data: `userNotifications`, `userRisks`, `userSafety`
+
+### Why fetch is used in the context
 
 Instead of calling `fetch()` in every component, we do it once inside the context. This makes it easier to:
 
@@ -41,4 +44,3 @@ We fetch data from our local backend at `http://localhost:5000`, like:
 
 ```js
 fetch("http://localhost:5000/api/tips");
-
