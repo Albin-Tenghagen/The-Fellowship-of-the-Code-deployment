@@ -1,6 +1,7 @@
 import { StyleSheet, View, Image, Text } from 'react-native';
 import React from 'react';
 import { useTheme } from '../themes/ThemeContext';
+import { useAppData } from "../context/DataContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const CustomCard = ({
@@ -12,6 +13,7 @@ const CustomCard = ({
 }) => {
 
     const { theme } = useTheme();
+    const { tipsData, infrastructureData, loading, error } = useAppData();
 
     return (
         <View
@@ -42,6 +44,17 @@ const CustomCard = ({
             <Text style={[styles.text, { color: theme.textColor }]}>
                 {title}
             </Text>
+           
+            {loading ? (
+                <Text style={{ color: theme.textColor }}>Loading...</Text>
+            ) : error ? (
+                <Text style={{ color: 'red' }}>{error}</Text>
+            ) : (
+                <Text style={{ fontSize: 12, color: theme.textColor }}>
+                    {tipsData.length} tips trovati
+                </Text>
+            )}
+
         </View>
     );
 };
