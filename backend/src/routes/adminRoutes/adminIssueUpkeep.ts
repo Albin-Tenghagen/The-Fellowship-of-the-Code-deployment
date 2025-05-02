@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import { usersSafetyInfo, userSafetyBody } from "types/types";
 import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
+import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
 const authIssueUpkeepRouter = express.Router();
 
@@ -27,34 +28,22 @@ authIssueUpkeepRouter.post(
     const newSafetyBody = {
       location: req.body.location,
       description: req.body.description,
-      proactiveActions: {
-        basementProtection: req.body.proactiveActions?.basementProtection,
-        trenchDigging: req.body.proactiveActions?.trenchDigging,
-        electricHazards: req.body.proactiveActions?.electricHazards,
-      },
+      proactiveActions: req.body.proactiveActions
     };
+
+    if(typeof req.body.proactiveActions !== "boolean") {
+      res.status(400).send({error : "ProactiveActions must be a boolean"}) 
+      return
+    }
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
       const issues = JSON.parse(jsonData);
 
-      const swedenTime = new Intl.DateTimeFormat("sv-SE", {
-        timeZone: "Europe/Stockholm",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }).format(new Date());
-
-      // Format it like "YYYY-MM-DD HH:mm:ss"
-      const [datePart, timePart] = swedenTime.split(", ");
-      const formatedDate = `${datePart} ${timePart}`;
-
+    
       const publicIssue: userSafetyBody = {
         id: issues.length + 1001,
-        timestamp: formatedDate,
+        timestamp: timestampCreation(),
         ...newSafetyBody,
       };
 
@@ -85,7 +74,7 @@ authIssueUpkeepRouter.put(
   async (req: usersSafetyInfo, res: Response): Promise<void> => {
     const id = Number(req.params.id);
     const filePath = path.resolve("Database/userSafety.json");
-    const { timestamp, location, description, proactiveActions } = req.body;
+    const { location, description, proactiveActions } = req.body;
 
     try {
       const jsonData = await readFile(filePath, "utf-8");

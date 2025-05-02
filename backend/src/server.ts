@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import swaggerJsDoc from "swagger-jsdoc";
 import YAML from "yamljs";
 import path from "path";
 import swaggerUi from "swagger-ui-express";

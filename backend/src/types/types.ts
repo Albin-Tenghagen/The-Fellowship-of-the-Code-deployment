@@ -30,17 +30,20 @@ export interface userSafetyBody {
   timestamp: string;
   location: string;
   description: string;
-  proactiveActions: {
-    basementProtection?: boolean;
-    trenchDigging?: boolean;
-    electricHazards?: string;
-  };
+  proactiveActions: boolean;
 }
 
 //*_____________________________________________________________
 
 //* User Risks
 export interface userRisksInfo extends Request<{}, any, any> {}
+export interface riskAssesment {
+  id: number,
+  timestamp: string,
+  warning: string,
+  waterlevel: number,
+  riskAssesment: string
+}
 //*_____________________________________________________________
 
 //* User notification
@@ -89,9 +92,10 @@ export interface infrastructureBody {
   id: number;
   timestamp: string;
   problem: string;
+  location: string;
 }
 
-export type infrastructureRequest = Request<{}, {}, infrastructureBody>;
+export type infrastructureRequest = Request<{id: string}, {}, infrastructureBody>;
 //*____________________________________________________________
 
 //! new interface currently being created. NOT TO BE USED

@@ -1,6 +1,6 @@
-# English ↓
 
-    Progress of the day 4/4-25
+
+1.    Progress of the day 4/4-25
     Branch FJSX-develop created
 
 Endpoints/modules for the REST-API
@@ -116,20 +116,17 @@ What has been accomplished
     Middleware has been added !!NOTE ONLY AS ROUTING MIDDLEWARE
 
 3. 17/4-25
-
-What has been accomplished
+   What has been accomplished
 
     Started working on swagger documentation, but its doesnt seem to work, we get the error message: No operations
 
 4. 18/4-25
-
-What has been accomplished
+   What has been accomplished
 
     Worked on CRUD-operations for the admin routes, finished almost all of them, will continue on monday
 
 5. 21/4-25
-
-What has been accomplished
+   What has been accomplished
 
     finished the CRUD-operations in their current form They are in need of revisiting when the database is in place
 
@@ -138,8 +135,7 @@ What has been accomplished
     Swagger have we worked with a bit, but it is not cooperating. Considering just starting with yaml right away instead
 
 6. 23/4-25
-
-What has been accomplished
+   What has been accomplished
 
     Got swagger to work with a yaml-file. There is now swagger documentation for each CRUD-operatio on each endpoint.
 
@@ -156,3 +152,17 @@ What has been accomplished
    Joi-validation for a big part of the data being worked with has been implemented
 
    Middleware function for timestamp creation is put in place. But needs to be implemented throughout the whole project
+
+8. 02/05-25 
+   What has been accomplished
+   
+   Put and delete implemented in infrastructure issues.
+
+   swagger documentation is updated with new types and routes. some have also been updated to 
+    
+   A diagram for how the database is gonna be structured
+   Link to diagram: https://drive.google.com/file/d/16A-hVIY7EcBifMhhOyvWhP4TI4wbav9T/view?usp=sharing
+
+   Applied the timestapmCreation middleware all over di place.
+   
+   Joi Validation has been updated to accommodate the change of different types.

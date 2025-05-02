@@ -6,6 +6,8 @@ import path from "path";
 
 import { userTipObject, TipBody } from "../../types/types.ts";
 import { validateUserTips } from "../../validators/tipsValidation.ts";
+import { timestampCreation } from "../../middleware/timestampCreation.ts";
+
 
 const userTipsRouter: Router = express.Router();
 
@@ -46,20 +48,20 @@ userTipsRouter.post(
   async (req: TipRequest, res: Response): Promise<void> => {
     const filePath = path.resolve("Database/tips.json");
 
-    const { timestamp, location, description, user } = req.body;
+    const { location, description, user } = req.body;
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
       const tips = JSON.parse(jsonData);
 
-      if (!timestamp || !location || !description || !user) {
+      if ( !location || !description || !user) {
         res.status(400).json({ Error: "All values are required" });
         return;
       }
 
       const newTip = {
         id: tips.length + 1001,
-        timestamp,
+        timestamp: timestampCreation(),
         location,
         description,
         user,
@@ -99,7 +101,7 @@ userTipsRouter.put(
     const id = Number(req.params.id);
     const filePath = path.resolve("Database/tips.json");
 
-    const { timestamp, location, description, user } = req.body;
+    const { location, description, } = req.body;
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
@@ -117,10 +119,8 @@ userTipsRouter.put(
         });
         return;
       }
-      tips[index].timestamp = timestamp;
       tips[index].location = location;
       tips[index].description = description;
-      tips[index].user = user;
 
       try {
         const validatedTip = await validateUserTips(tips[index]);
