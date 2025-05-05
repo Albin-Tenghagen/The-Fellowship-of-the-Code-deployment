@@ -31,7 +31,7 @@ const Navigation = () => {
               component={LoginScreen}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="login" />
+                    <AntDesign name="login" color={color} size={size}/>
                 )
             }}
 
