@@ -16,17 +16,7 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text>Test</Text>
-          <Pressable onPress={toggleTheme}>
-            <MaterialCommunityIcons
-              name={isDark ? "white-balance-sunny" : "weather-night"}
-              color={theme.accent}
-              size={24}
-            />
-          </Pressable>
-        </View>
-
+  
         <HeroImage />
 
         <View>
