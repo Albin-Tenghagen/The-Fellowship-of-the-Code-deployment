@@ -9,12 +9,35 @@ import { useAppData } from '../context/DataContext';
 import CustomCard from '../components/CustomCard';
 
 const HomeScreen = () => {
-  const { theme, isDark, toggleTheme } = useTheme();
+  const { theme } = useTheme();
+  const { tipsData, loading, error } = useAppData();
+
+  const renderTipContent = (tips, loading, error, theme) => {
+    if (loading) {
+      return <Text style={{ color: theme.textColor }}>Fetching tips...</Text>;
+    }
+
+    if (error) {
+      return <Text style={{ color: 'red' }}>Error: {error}</Text>;
+    }
+
+    if (tips && tips.length > 0) {
+      // Show a random tip instead of always the first one // JUST FOR TESTING !!!!! 
+      const randomIndex = Math.floor(Math.random() * tips.length);
+      const tip = tips[randomIndex];
+
+      return (
+        <Text style={[styles.text, { color: theme.textColor }]}>
+          {tip.title || tip.body || "Tip content not available"}
+        </Text>
+      );
+    }
+
+    return <Text style={[styles.text, { color: theme.textColor }]}>No tips available</Text>;
+  };
 
   // const openModal = () => setModalVisible(true);
   // const closeModal = () => setModalVisible(false);
-
-  const { tipsData, loading, error } = useAppData();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -27,26 +50,32 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.cardContainer}>
-          <TipsCard title="Tips"
-            width="80%"
+          <TipsCard
+            title="Custom Tip Display"
+            width="70%"
             height={150}
             tips={tipsData}
             loading={loading}
             error={error}
-            icon="lightbulb-on-outline" />
+            icon="information-outline"
+            renderContent={renderTipContent}
+          />
         </View>
-{/* 
-        <View>
-          <CustomCard
-          title='Hej prov!'>
-          </CustomCard>
-        </View> */}
 
-        {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
-          <Button title="Open Modal" onPress={openModal} />
-        </View> */}
+        <View style={styles.cardContainer}>
+          <TipsCard
+            title="Custom Tip Display"
+            width="70%"
+            height={150}
+            tips={tipsData}
+            loading={loading}
+            error={error}
+            icon="information-outline"
+            renderContent={renderTipContent}
+          />
+        </View>
+
       </ScrollView>
-
 
     </View>
   );
@@ -74,5 +103,12 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
-  }
+  },
+  text: {
+    fontSize: 14,
+    textAlignVertical: 'center',
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 5,
+},
 })
