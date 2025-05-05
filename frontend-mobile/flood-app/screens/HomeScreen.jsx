@@ -3,20 +3,22 @@ import { ScrollView, Pressable, StyleSheet, Text, View, Button } from 'react-nat
 import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import CustomCard from '../components/CustomCard';
-import CustomModal from '../components/CustomModal';
+import TipsCard from '../components/TipsCard';
+// import CustomModal from '../components/CustomModal';
+import { useAppData } from '../context/DataContext';
 
 const HomeScreen = () => {
   const { theme, isDark, toggleTheme } = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
 
-  const openModal = () => setModalVisible(true);
-  const closeModal = () => setModalVisible(false);
+  // const openModal = () => setModalVisible(true);
+  // const closeModal = () => setModalVisible(false);
+
+  const { tipsData, loading, error } = useAppData();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-  
+
         <HeroImage />
 
         <View>
@@ -24,19 +26,21 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.cardContainer}>
-          <CustomCard title="1" width="60%" height={100} />
+          <TipsCard title="Tips"
+            width="80%"
+            height={150}
+            tips={tipsData}
+            loading={loading}
+            error={error}
+            icon="lightbulb-on-outline" />
         </View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
+        {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
           <Button title="Open Modal" onPress={openModal} />
-        </View>
+        </View> */}
       </ScrollView>
 
-      <CustomModal visible={modalVisible} onClose={closeModal} title="Hello from Modal">
-        <View>
-          <Button title="Close" onPress={closeModal} />
-        </View>
-      </CustomModal>
+
     </View>
   );
 };
@@ -48,7 +52,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
-    paddingBottom: 40, 
+    paddingBottom: 40,
   },
   header: {
     flexDirection: "row",
