@@ -51,12 +51,16 @@ const TipsCard = ({
             ) : error ? (
                 <Text style={{ color: 'red' }}>{error}</Text>
             ) : (
-                tipsData.length > 0 && tipsData.map((tip, index) => (
-                    <View key={index} style={{ marginVertical: 4, alignItems: 'center' }}>
-                        <Text style={{ fontWeight: 'bold', color: theme.textColor }}>{tip.title}</Text>
-                        <Text style={{ fontSize: 12, color: theme.textColor }}>{tip.category}</Text>
+                tipsData.length > 0 && (
+                    <View style={{ marginVertical: 4, alignItems: 'center' }}>
+                      <Text style={{ fontWeight: 'bold', color: theme.textColor }}>
+                        {tipsData[0].title}
+                      </Text>
+                      <Text style={{ fontSize: 12, color: theme.textColor }}>
+                        {tipsData[0].category}
+                      </Text>
                     </View>
-                ))
+                  )
             )}
 
 

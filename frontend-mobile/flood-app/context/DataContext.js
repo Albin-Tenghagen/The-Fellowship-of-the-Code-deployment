@@ -17,7 +17,7 @@ export const DataProvider = ({ children }) => {
       try {
         setLoading(true);
 
-        const response = await fetch("/data/tips.json");
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
 
         // const [tipsRes, infraRes, monitoringRes, adminRes] = await Promise.all([
         //   fetch("http://localhost:5000/api/tips"),

@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TipsCard from '../components/TipsCard';
 // import CustomModal from '../components/CustomModal';
 import { useAppData } from '../context/DataContext';
+import CustomCard from '../components/CustomCard';
 
 const HomeScreen = () => {
   const { theme, isDark, toggleTheme } = useTheme();
@@ -34,6 +35,12 @@ const HomeScreen = () => {
             error={error}
             icon="lightbulb-on-outline" />
         </View>
+{/* 
+        <View>
+          <CustomCard
+          title='Hej prov!'>
+          </CustomCard>
+        </View> */}
 
         {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 40 }}>
           <Button title="Open Modal" onPress={openModal} />
