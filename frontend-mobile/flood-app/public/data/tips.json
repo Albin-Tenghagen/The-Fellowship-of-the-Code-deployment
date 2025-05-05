@@ -1,0 +1,13 @@
+[
+    {
+      "id": 1,
+      "title": "Keep your code DRY",
+      "category": "Best Practices"
+    },
+    {
+      "id": 2,
+      "title": "Comment your complex logic",
+      "category": "Documentation"
+    }
+  ]
+  
