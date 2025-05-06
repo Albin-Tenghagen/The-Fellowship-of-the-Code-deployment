@@ -62,19 +62,6 @@ const HomeScreen = () => {
           />
         </View>
 
-        <View style={styles.cardContainer}>
-          <TipsCard
-            title="Custom Tip Display"
-            width="70%"
-            height={150}
-            tips={tipsData}
-            loading={loading}
-            error={error}
-            icon="information-outline"
-            renderContent={renderTipContent}
-          />
-        </View>
-
       </ScrollView>
 
     </View>

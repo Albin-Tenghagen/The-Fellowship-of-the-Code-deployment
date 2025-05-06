@@ -40,7 +40,14 @@ Instead of calling `fetch()` in every component, we do it once inside the contex
 - Keep components clean and focused on UI
 - Handle loading and error states in one place
 
-We fetch data from our local backend at `http://localhost:5000`, like:
+We fetch data from our local backend at `http://localhost:5001`, like:
 
 ```js
-fetch("http://localhost:5000/api/tips");
+fetch("http://localhost:5001/api/tips");
+
+
+### 2025/05/05
+
+- Updated right API fixing Swagger problem access with help of Albin.
+- Updated data_context to be able to fetch correct data and now working on XCODE
+- Started working on LOG IN form
