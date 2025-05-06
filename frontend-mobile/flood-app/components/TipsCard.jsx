@@ -2,6 +2,7 @@ import { StyleSheet, View, Image, Text } from 'react-native';
 import React from 'react';
 import { useTheme } from '../themes/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAppData } from '../context/DataContext';
 
 const TipsCard = ({
     title = 'Default Title',
@@ -16,20 +17,21 @@ const TipsCard = ({
 }) => {
 
     const { theme } = useTheme();
+    const { tipsData, loading: dataLoading, error: dataError } = useAppData();
 
     const defaultRenderContent = () => {
-        if (loading) {
+        if (dataLoading) {
             return <Text style={{ color: theme.textColor }}>Loading...</Text>;
-        } else if (error) {
-            return <Text style={{ color: 'red' }}>{error}</Text>;
-        } else if (tips && tips.length > 0) {
+        } else if (dataError) {
+            return <Text style={{ color: 'red' }}>{dataError}</Text>;
+        } else if (tipsData && tipsData.length > 0) {
             return (
                 <View style={{ marginVertical: 4, alignItems: 'center' }}>
                     <Text style={[styles.itemText, { color: theme.textColor }]}>
-                        {tips[0].title}
+                        {tipsData[0].title}
                     </Text>
                     <Text style={[styles.categoryText, { color: theme.textColor }]}>
-                        {tips[0].category}
+                        {tipsData[0].category}
                     </Text>
                 </View>
             );
@@ -98,15 +100,15 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
-      },
-      categoryText: {
+    },
+    categoryText: {
         fontSize: 12,
         textAlign: 'center',
-      },
-      image: {
+    },
+    image: {
         width: 48,
         height: 48,
         borderRadius: 4,
         marginBottom: 8,
-      },
+    },
 });
