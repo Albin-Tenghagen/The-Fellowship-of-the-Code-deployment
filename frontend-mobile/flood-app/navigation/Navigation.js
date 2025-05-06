@@ -2,39 +2,47 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Pressable } from "react-native";
-import HomeScreen from "../screens/HomeScreen";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from "../themes/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import UserScreen from "../screens/UserScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-const Navigation = () => {
-  const { customTheme, theme, isDark, toggleTheme } = useTheme();
+const TabNavigator = () => {
+  const { customTheme } = useTheme();
+
 
   return (
-    <NavigationContainer theme={customTheme}>
-      <Tab.Navigator
-        screenOptions={{
-          headerTitle: "HydroGuard",
-          headerTitleAlign: "center",
-          headerStyle: {
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerRight: () => (
-            <Pressable onPress={toggleTheme} style={{ marginRight: 15 }}>
-              <MaterialCommunityIcons
-                name={isDark ? "white-balance-sunny" : "weather-night"}
-                color={theme.accent}
-                size={24}
-              />
-            </Pressable>
-          ),
-        }}
-      >
-        <Tab.Screen
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: customTheme.colors.tabBar,
+        },
+        headerTintColor: customTheme.colors.textSecondary,
+        headerTitleStyle: {
+          fontFamily: customTheme.fonts.medium.fontFamily,
+          fontSize: 18
+        },
+        tabBarStyle: {
+          backgroundColor: customTheme.colors.tabBar,
+          height: 55
+        },
+        tabBarActiveTintColor: customTheme.colors.accent,
+        tabBarInactiveTintColor: customTheme.colors.textSecondary,
+        tabBarLabelStyle: {
+          fontSize: 12,
+        }
+
+      }}
+     >
+      <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{
@@ -43,7 +51,7 @@ const Navigation = () => {
             ),
           }}
         />
-        <Tab.Screen
+          <Tab.Screen
           name="Login"
           component={LoginScreen}
           options={{
@@ -61,7 +69,33 @@ const Navigation = () => {
             ),
           }}
         />
-      </Tab.Navigator>
+     </Tab.Navigator>    
+  );
+}
+
+const Navigation = () => {
+  const { customTheme } = useTheme();
+  const {token, isLoading} = useAuth();
+
+  if (isLoading) {
+    return null;
+  }
+  return (
+    <NavigationContainer theme={customTheme}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!token ? (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        ) : (
+         
+          <>
+            <Stack.Screen name="Main" component={TabNavigator} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </>
+
+        )}
+
+        </Stack.Navigator>
+  
     </NavigationContainer>
   );
 };
