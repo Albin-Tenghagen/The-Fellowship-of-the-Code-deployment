@@ -1,16 +1,45 @@
-import { useState } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Button } from 'react-native';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View, SafeAreaView, Platform, ScrollView } from 'react-native';
 import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StatusBar } from 'expo-status-bar';
+import { useUser } from '../context/UserContext';
+import { saveToStorage, getFromStorage, deleteFromStorage } from '../services/webCompatibleSecureStore';
+import { useAuth } from '../context/AuthContext';
 import TipsCard from '../components/TipsCard';
 // import CustomModal from '../components/CustomModal';
 import { useAppData } from '../context/DataContext';
 import CustomCard from '../components/CustomCard';
 
 const HomeScreen = () => {
-  const { theme } = useTheme();
+  const { theme, isDark, toggleTheme } = useTheme();
   const { tipsData, loading, error } = useAppData();
+  const { userName, clearUser } = useUser();
+  const styles = createStyles(theme);
+  const { logout } = useAuth();
+
+  const handleButtonPress = () => {
+    console.log("Nu har du klickat på knappen");
+  }
+
+  const handleSaveToken = async () => {
+    const fakeToken = Math.random().toString(36).slice(2);
+    await saveToStorage("userToken", fakeToken);
+    console.log("Token sparad!");
+  };
+
+  const handleGetToken = async () => {
+    const token = await getFromStorage("userToken");
+    console.log("Token hämtad:", token);
+
+  };
+
+  const handleDeleteToken = async () => {
+    await deleteFromStorage("userToken");
+    console.log("Token är raderad");
+  };
+
 
   const renderTipContent = (tips, loading, error, theme) => {
     if (loading) {
@@ -40,14 +69,73 @@ const HomeScreen = () => {
   // const closeModal = () => setModalVisible(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-
-        <HeroImage />
-
-        <View>
-          <Text>Testar lite till</Text>
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar
+      barStyle={isDark ? "Light-content" : "dark-content"}
+      backgroundColor={theme.headerBackground}
+      />
+        <View 
+        style={styles.header}
+        accessible={true}
+        accessibilityRole='header'
+        accessibilityLabel='Appens rubrik och knapp för att byta färgtema'>
+          <Text
+            style={styles.title}
+            accessibilityRole='header'
+            accessibilityLabel='HydroGuard, appens namnn'
+            >HydroGuard</Text>
+            <Pressable onPress={toggleTheme}
+              accessible={true}
+              accessibilityRole='button'
+              accessibilityLabel={
+                isDark ? "Byt till ljust tema" : "Byt till mörkt tema"
+              }
+              >
+                <MaterialCommunityIcons
+                name={isDark ? "white-balance-sunny" : "weather-night"}
+                color={theme.accent}
+                size={24}
+                accessibilityElementsHidden={true}
+                />
+              </Pressable>
+            </View>
+            <ScrollView
+              style={styles.container}
+              accessibilityRole={true}
+              accessibilityLabel='Scrollbart innehåll med introduktion till appens aktiviteter'
+              >
+            <HeroImage />
+            <View>
+              <Text
+                accessibilityLabel='Testar att skriva saker men har inget innehåll än'>
+                Testar lite till
+              </Text>
+            </View>
+            <View>
+              <Text>
+                {userName ? `Välkommen ${userName}!` : `Välkommen - ingen användare!`}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  logout();
+                  clearUser();
+                }}
+                >
+                  <Text>Logga ut</Text>
+                </Pressable>
+            </View>
+            <View>
+              <Pressable onPress={handleSaveToken}>
+                <Text>Spara token</Text>
+              </Pressable>
+              <Pressable onPress={handleGetToken}>
+               <Text>Hämta token</Text>
+              </Pressable>
+              <Pressable onPress={handleDeleteToken}>
+               <Text>Ta bort token</Text>
+              </Pressable>
+            </View>
+            
 
         <View style={styles.cardContainer}>
           <TipsCard
@@ -76,17 +164,28 @@ const HomeScreen = () => {
         </View>
 
       </ScrollView>
+    </SafeAreaView>
 
-    </View>
+   
   );
 };
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
+const createStyles = (theme) =>
+StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.backgound,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+
   container: {
     flex: 1,
+    backgroundColor: theme.backgound,
+    paddingBottom: 150
   },
+
   scrollContainer: {
     paddingBottom: 40,
   },
