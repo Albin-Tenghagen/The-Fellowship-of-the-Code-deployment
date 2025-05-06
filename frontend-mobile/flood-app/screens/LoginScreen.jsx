@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmit = () => {
     if (name.trim().length < 2) {
-      ServiceWorkerRegistration("Namnet måste vara minst 2 tecken");
+      setError("Namnet måste vara minst 2 tecken");
       return;
     }
     saveUserName(name.trim());
