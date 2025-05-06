@@ -1,4 +1,4 @@
-import React, { createContext,cuseContext, useContext, useEffect, useState} from 'react'
+import React, { createContext, useContext, useEffect, useState} from 'react'
 import { saveToStorage, getFromStorage, deleteFromStorage } from "../services/webCompatibleSecureStore"
 
 const AuthContext = createContext();
