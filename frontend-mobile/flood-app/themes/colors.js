@@ -11,6 +11,10 @@ export const lightTheme = {
 
     textPrimary: '#312E2A',
     textSecondary: '#264247',
+
+    borderColor: '#869CB5',
+    inputBackground: 'rgba(255,255,255,0.8)',
+    placeholderText: 'rgba(0,0,0,0.5)'
 };
 
 export const darkTheme = {
@@ -26,5 +30,9 @@ export const darkTheme = {
 
     textPrimary: '#FFF7EC',
     textSecondary: '#fad9d1',
+
+    borderColor: '#869CB5',
+    inputBackground: 'rgba(255,255,255,0.8)',
+    placeholderText: 'rgba(0,0,0,0.5)'
 
 }

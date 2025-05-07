@@ -1,7 +1,7 @@
 import { StyleSheet, View, Image, Text, TextInput, Button, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useTheme } from '../themes/ThemeContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import MainButton from './MainButton';
 
 const TipsBoxCard = ({
@@ -57,9 +57,11 @@ const TipsBoxCard = ({
             <TextInput
                 placeholder="Describe the flood situation..."
                 style={[styles.placeholder, styles.text]}
-                placeholderTextColor={theme.primary}
+                placeholderTextColor={theme.placeholderText || theme.primary + '80'}
                 value={message}
                 onChangeText={setMessage}
+                multiline={true}
+                textAlignVertical="top"
             />
 
             <MainButton
@@ -100,14 +102,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     placeholder: {
-        width: '80%',
-        height: 150,
+        height: 100,
         marginTop: 8,
         borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-        padding: 8,
+        borderColor: "#869CB5",
+        borderRadius: 8,
+        padding: 12,
         width: '90%',
-        marginBottom: 8,
+        marginBottom: 12,
+        backgroundColor: '#BBCCE0',
     },
 });

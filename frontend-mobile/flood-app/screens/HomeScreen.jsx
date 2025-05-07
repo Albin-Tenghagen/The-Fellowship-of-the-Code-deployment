@@ -5,6 +5,7 @@ import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
 import TipsBoxCard from '../components/TipsBoxCard';
+import Feather from '@expo/vector-icons/Feather';
 
 
 const HomeScreen = () => {
@@ -70,10 +71,11 @@ const HomeScreen = () => {
           title="Current Water Level"
           width="90%"
           height={150}
-          icon="send"
+          icon="message-arrow-right-outline"
           />
-        </View>
 
+        </View>
+ 
       </ScrollView>
     </View>
   );
