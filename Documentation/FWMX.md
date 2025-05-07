@@ -50,4 +50,11 @@ fetch("http://localhost:5001/api/tips");
 
 - Updated right API fixing Swagger problem access with help of Albin.
 - Updated data_context to be able to fetch correct data and now working on XCODE
-- Started working on LOG IN form
+- Started working on LOG IN for
+
+#### Next to focus on?
+
+- Send tips
+- User pages
+- Maps (command : npx expo install react-native-maps) + https://docs.expo.dev/versions/latest/sdk/maps/#onmarkerclick 
+- Button Sheet to log out?
