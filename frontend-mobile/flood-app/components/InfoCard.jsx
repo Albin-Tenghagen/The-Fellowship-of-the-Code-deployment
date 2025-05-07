@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, Text } from 'react-native';
 import React from 'react';
 import { useTheme } from '../themes/ThemeContext';
 import { useAppData } from "../context/DataContext";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 const InfoCard = ({
     title = 'Default Title',
@@ -72,11 +72,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         textAlign: 'center',
+        marginTop: 4,
+        paddingLeft: 8,
+        paddingRight: 8,
     },
     title: {
         fontSize: 18,
         fontWeight: '700',
         textAlign: 'center',
         marginBottom: 4,
+        paddingLeft: 8,
+        paddingRight: 8,
     },
 });

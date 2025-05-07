@@ -4,7 +4,6 @@ import { useTheme } from "../themes/ThemeContext";
 import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
-
 const HomeScreen = () => {
   const { theme } = useTheme();
   const { monitoringData, loading, error } = useAppData();
@@ -41,11 +40,12 @@ const HomeScreen = () => {
         <HeroImage />
 
         <View style={styles.cardContainer}>
-          <InfoCard 
+          <InfoCard
             title="Information till allmänheten"
             text="Vid akut översvämningsrisk – ring 112. För övrig information, använd vår app."
             width="90%"
             height={150}
+            icon="information-variant"
           />
         </View>
 
