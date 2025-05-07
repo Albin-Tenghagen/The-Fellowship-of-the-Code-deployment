@@ -4,6 +4,9 @@ import { useTheme } from "../themes/ThemeContext";
 import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
+import TipsBoxCard from '../components/TipsBoxCard';
+
+
 const HomeScreen = () => {
   const { theme } = useTheme();
   const { monitoringData, loading, error } = useAppData();
@@ -57,10 +60,19 @@ const HomeScreen = () => {
             data={monitoringData}
             loading={loading}
             error={error}
-            icon="water"
             renderContent={renderMonitoringContent}
           />
         </View>
+
+        <View style={styles.cardContainer}>
+          <TipsBoxCard 
+          title="Current Water Level"
+          width="90%"
+          height={150}
+          icon="tips"
+          />
+        </View>
+
       </ScrollView>
     </View>
   );
