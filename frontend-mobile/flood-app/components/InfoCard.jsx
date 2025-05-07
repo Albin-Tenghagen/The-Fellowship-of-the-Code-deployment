@@ -42,8 +42,10 @@ const InfoCard = ({
                 />
             )}
 
-            <Text style={[styles.text, { color: theme.textColor }]}>
+            <Text style={[styles.title, { color: theme.textColor }]}>
                 {title}
+            </Text>
+            <Text style={[styles.text, { color: theme.textColor }]}>
                 {text}
             </Text>
         </View>
@@ -70,5 +72,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         textAlign: 'center',
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: '700',
+        textAlign: 'center',
+        marginBottom: 4,
     },
 });
