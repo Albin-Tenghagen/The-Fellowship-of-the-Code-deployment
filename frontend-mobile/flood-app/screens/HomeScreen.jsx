@@ -1,69 +1,57 @@
-import { useState } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
 import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import TipsCard from '../components/TipsCard';
-// import CustomModal from '../components/CustomModal';
 import { useAppData } from '../context/DataContext';
-import CustomCard from '../components/CustomCard';
+import WaterLevelCard from '../components/WaterLevelCard';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
-  const { tipsData, loading, error } = useAppData();
-
-  const renderTipContent = (tips, loading, error, theme) => {
+  const { monitoringData, loading, error } = useAppData();
+  
+  const renderMonitoringContent = () => {
     if (loading) {
-      return <Text style={{ color: theme.textColor }}>Fetching tips...</Text>;
+      return <Text style={{ color: theme.textColor }}>Fetching monitoring data...</Text>;
     }
 
     if (error) {
       return <Text style={{ color: 'red' }}>Error: {error}</Text>;
     }
 
-    if (tips && tips.length > 0) {
-      // Show a random tip instead of always the first one // JUST FOR TESTING !!!!! 
-      const randomIndex = Math.floor(Math.random() * tips.length);
-      const tip = tips[randomIndex];
-
+    if (monitoringData && monitoringData.length > 0) {
+      const latest = monitoringData[0];
       return (
-        <Text style={[styles.text, { color: theme.textColor }]}>
-          {tip.title || tip.body || "Tip content not available"}
-        </Text>
+        <>
+          <Text style={[styles.text, { color: theme.textColor }]}>
+            Water Level: {latest.data?.level ?? "N/A"}
+          </Text>
+          <Text style={[styles.text, { color: theme.textColor }]}>
+            Status: {latest.data?.status ?? "N/A"}
+          </Text>
+        </>
       );
     }
 
-    return <Text style={[styles.text, { color: theme.textColor }]}>No tips available</Text>;
+    return <Text style={[styles.text, { color: theme.textColor }]}>No monitoring data available</Text>;
   };
-
-  // const openModal = () => setModalVisible(true);
-  // const closeModal = () => setModalVisible(false);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-
         <HeroImage />
 
-        <View>
-          <Text>Testar lite till</Text>
-        </View>
-
         <View style={styles.cardContainer}>
-          <TipsCard
-            title="Custom Tip Display"
-            width="70%"
+          <WaterLevelCard
+            title="Current Water Level"
+            width="90%"
             height={150}
-            tips={tipsData}
+            data={monitoringData}
             loading={loading}
             error={error}
-            icon="information-outline"
-            renderContent={renderTipContent}
+            icon="water"
+            renderContent={renderMonitoringContent}
           />
         </View>
-
       </ScrollView>
-
     </View>
   );
 };
@@ -97,5 +85,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     marginTop: 5,
-},
+  },
 })
