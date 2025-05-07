@@ -3,11 +3,12 @@ import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
 import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
+import InfoCard from '../components/InfoCard';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
   const { monitoringData, loading, error } = useAppData();
-  
+
   const renderMonitoringContent = () => {
     if (loading) {
       return <Text style={{ color: theme.textColor }}>Fetching monitoring data...</Text>;
@@ -30,14 +31,23 @@ const HomeScreen = () => {
         </>
       );
     }
-
     return <Text style={[styles.text, { color: theme.textColor }]}>No monitoring data available</Text>;
   };
+
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <HeroImage />
+
+        <View style={styles.cardContainer}>
+          <InfoCard 
+            title="Information till allmänheten"
+            text="Vid akut översvämningsrisk – ring 112. För övrig information, använd vår app."
+            width="90%"
+            height={150}
+          />
+        </View>
 
         <View style={styles.cardContainer}>
           <WaterLevelCard
