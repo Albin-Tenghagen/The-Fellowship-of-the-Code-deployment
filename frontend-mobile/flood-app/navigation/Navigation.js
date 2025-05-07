@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from "../themes/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import HomeScreen from "../screens/HomeScreen";
-import LoginScreen from "../screens/LoginScreen";
+import LoginFormScreen from "../screens/LoginFormScreen";
 import UserScreen from "../screens/UserScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
@@ -53,7 +53,7 @@ const TabNavigator = () => {
         />
           <Tab.Screen
           name="Login"
-          component={LoginScreen}
+          component={LoginFormScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="login" color={color} size={size} />
