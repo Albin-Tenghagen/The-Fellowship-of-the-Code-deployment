@@ -60,6 +60,7 @@ const HomeScreen = () => {
             data={monitoringData}
             loading={loading}
             error={error}
+            icon="water"
             renderContent={renderMonitoringContent}
           />
         </View>
@@ -69,7 +70,7 @@ const HomeScreen = () => {
           title="Current Water Level"
           width="90%"
           height={150}
-          icon="tips"
+          icon="send"
           />
         </View>
 

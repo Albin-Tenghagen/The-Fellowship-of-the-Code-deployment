@@ -56,26 +56,18 @@ const TipsBoxCard = ({
 
             <TextInput
                 placeholder="Describe the flood situation..."
-                placeholderTextColor={theme.placeholder || '#999'}
+                style={[styles.placeholder, styles.text]}
+                placeholderTextColor={theme.primary}
                 value={message}
                 onChangeText={setMessage}
-                style={{
-                    borderWidth: 1,
-                    borderColor: theme.border || '#ccc',
-                    borderRadius: 5,
-                    padding: 8,
-                    width: '90%',
-                    marginTop: 10,
-                    color: theme.textColor,
-                }}
             />
 
             <MainButton
-                title="Send Report"
+                title="Skicka Report"
                 onPress={handleSend}
                 color={theme.button}
+                style={[styles.button]}
             />
-
 
         </View>
     );
@@ -101,5 +93,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
         textAlign: 'center',
+    },
+    button: {
+        marginTop: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+    },
+    placeholder: {
+        width: '80%',
+        height: 150,
+        marginTop: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 4,
+        padding: 8,
+        width: '90%',
+        marginBottom: 8,
     },
 });
