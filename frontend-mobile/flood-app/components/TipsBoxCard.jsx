@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         width: '70%', 
-        height: 100,
+        height: 170,
         marginTop: 8,
         borderWidth: 1,
         borderColor: "#869CB5",
