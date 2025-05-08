@@ -15,6 +15,7 @@ export const lightTheme = {
     textPrimary: '#312E2A',
     textSecondary: '#264247',
     textTertiary:'#fad9d1',
+    textError:'#543d37',
    
 
 };
@@ -35,6 +36,7 @@ export const darkTheme = {
     textPrimary: '#FFF7EC',
     textSecondary: '#fad9d1',
     textTertiary:'#f8c6ba',
+    textError:'#e6c41c',
     
 
 }

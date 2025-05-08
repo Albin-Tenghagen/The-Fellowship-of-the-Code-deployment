@@ -203,8 +203,9 @@ StyleSheet.create({
     alignItems: "center",
   },
   errorText: {
-    color: "red",
+    color: theme.textError,
     marginBottom: 10,
+    fontSize: 20,
   },
  
 })
