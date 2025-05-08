@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, SafeAreaView, Platform, ScrollView } from 'react-native';
 import { useTheme } from "../themes/ThemeContext";
 import { StatusBar } from 'expo-status-bar';
@@ -131,7 +131,7 @@ const createStyles = (theme) =>
 StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.backgound,
+    backgroundColor: theme.background,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   background: {
@@ -141,7 +141,7 @@ StyleSheet.create({
   },
   webBackground: {
     height: "100vh",
-    idth: "100%",
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -165,7 +165,7 @@ StyleSheet.create({
     paddingVertical: 40,
   },
   form: {
-    backgroundColor: theme.bagroundOpacity,
+    backgroundColor: theme.backgroundOpacity,
     padding: 20,
     borderRadius: 8,
     width: "100%",
