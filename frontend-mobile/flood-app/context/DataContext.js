@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-
   const [tipsData, setTipsData] = useState([]);
   const [infrastructureData, setInfrastructureData] = useState([]);
   const [monitoringData, setMonitoringData] = useState([]);
@@ -18,24 +17,33 @@ export const DataProvider = ({ children }) => {
 
       const [tipsRes, infraRes, monitoringRes] = await Promise.all([
         fetch("http://localhost:5001/users/tips"),
-        fetch("http://localhost:5001/admins/authenticated/infrastructureIssues"),
+        fetch(
+          "http://localhost:5001/admins/authenticated/infrastructureIssues"
+        ),
         fetch("http://localhost:5001/admins/authenticated/monitoring"),
       ]);
 
       if (!tipsRes.ok || !infraRes.ok || !monitoringRes.ok) {
         throw new Error("One or more data sources failed to load.");
       }
+
       const [tips, infrastructure, monitoring] = await Promise.all([
         tipsRes.json(),
         infraRes.json(),
         monitoringRes.json(),
       ]);
 
-      setTipsData(tips);
-      setInfrastructureData(infrastructure);
-      setMonitoringData(monitoring);
+      setTipsData(Array.isArray(tips) ? tips : []);
+      setInfrastructureData(
+        Array.isArray(infrastructure) ? infrastructure : []
+      );
+      setMonitoringData(Array.isArray(monitoring) ? monitoring : []);
     } catch (err) {
       setError(err.message || "Something went wrong while fetching data.");
+
+      setTipsData([]);
+      setInfrastructureData([]);
+      setMonitoringData([]);
     } finally {
       setLoading(false);
     }
@@ -48,7 +56,7 @@ export const DataProvider = ({ children }) => {
   const refetchData = () => {
     fetchData();
   };
-  
+
   return (
     <DataContext.Provider
       value={{
@@ -72,5 +80,3 @@ export const useAppData = () => {
   }
   return context;
 };
-
-

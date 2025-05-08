@@ -5,38 +5,10 @@ import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
 import TipsBoxCard from '../components/TipsBoxCard';
-import Feather from '@expo/vector-icons/Feather';
-
 
 const HomeScreen = () => {
   const { theme } = useTheme();
-  const { monitoringData, loading, error } = useAppData();
-
-  const renderMonitoringContent = () => {
-    if (loading) {
-      return <Text style={{ color: theme.textColor }}>Fetching monitoring data...</Text>;
-    }
-
-    if (error) {
-      return <Text style={{ color: 'red' }}>Error: {error}</Text>;
-    }
-
-    if (monitoringData && monitoringData.length > 0) {
-      const latest = monitoringData[0];
-      return (
-        <>
-          <Text style={[styles.text, { color: theme.textColor }]}>
-            Water Level: {latest.data?.level ?? "N/A"}
-          </Text>
-          <Text style={[styles.text, { color: theme.textColor }]}>
-            Status: {latest.data?.status ?? "N/A"}
-          </Text>
-        </>
-      );
-    }
-    return <Text style={[styles.text, { color: theme.textColor }]}>No monitoring data available</Text>;
-  };
-
+  const { monitoringData, refetchData, loading, error } = useAppData();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -53,28 +25,78 @@ const HomeScreen = () => {
           />
         </View>
 
+        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
+          Current Water Monitoring
+        </Text>
+
         <View style={styles.cardContainer}>
           <WaterLevelCard
-            title="Current Water Level"
-            width="90%"
-            height={150}
-            data={monitoringData}
-            loading={loading}
-            error={error}
+            title="Water Level"
+            parameter="ultraSoundLevel"
+            width="45%"
             icon="water"
-            renderContent={renderMonitoringContent}
+          />
+          <WaterLevelCard
+            title="Pressure"
+            parameter="pressureLevel"
+            width="45%"
+            icon="gauge"
+          />
+        </View>
+
+        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
+          Weather Conditions
+        </Text>
+
+        <View style={styles.cardContainer}>
+          <WaterLevelCard
+            title="Temperature"
+            parameter="temperature"
+            width="45%"
+            icon="thermometer"
+          />
+          <WaterLevelCard
+            title="Humidity"
+            parameter="humidity"
+            width="45%"
+            icon="water-percent"
+          />
+        </View>
+
+        <View style={styles.cardContainer}>
+          <WaterLevelCard
+            title="Air Pressure"
+            parameter="airPressure"
+            width="45%"
+            icon="weather-windy"
+          />
+          <WaterLevelCard
+            title="Soil Moisture"
+            parameter="soilMoisture"
+            width="45%"
+            icon="water-percent"
           />
         </View>
 
         <View style={styles.cardContainer}>
           <TipsBoxCard 
-          title="Current Water Level"
-          width="90%"
-          height={150}
-          icon="message-arrow-right-outline"
+            title="Flood Protection Tips"
+            width="90%"
+            height={150}
+            icon="message-arrow-right-outline"
           />
-
         </View>
+        
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Error: {error}</Text>
+            <Button 
+              title="Retry" 
+              onPress={refetchData} 
+              color={theme.primary}
+            />
+          </View>
+        )}
  
       </ScrollView>
     </View>
@@ -90,25 +112,29 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 40,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 20,
+    marginTop: 16,
+    marginBottom: 8,
   },
   cardContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 8,
   },
-  text: {
-    fontSize: 14,
-    textAlignVertical: 'center',
-    fontWeight: '500',
-    textAlign: 'center',
-    marginTop: 5,
+  errorContainer: {
+    margin: 16,
+    padding: 16,
+    backgroundColor: '#ffeeee',
+    borderRadius: 8,
+    alignItems: 'center',
   },
-})
+  errorText: {
+    color: 'red',
+    marginBottom: 8,
+  },
+});
