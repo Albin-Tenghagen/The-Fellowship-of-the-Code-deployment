@@ -77,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
                 }}
                 style={styles.input}
                 placeholder='Skriv in ditt användarnamn'
-                placeholderTextColor={theme.textSecondary}
+                placeholderTextColor={theme.textTertiary}
                 accessibilityLabel='Användarnamn'
                 accessibilityHint='Fält där du skriver in ditt användarnamn'
                 />
@@ -166,7 +166,9 @@ StyleSheet.create({
   },
   form: {
     backgroundColor: theme.backgroundOpacity,
-    padding: 20,
+    padding: 40,
+    borderWidth: 1,
+    borderColor: theme.card,
     borderRadius: 8,
     width: "100%",
     maxWidth: 400,
@@ -180,7 +182,7 @@ StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: theme.accent,
+    borderColor: theme.primary,
     borderRadius: 8,
     padding: 8,
     width: "100%",
