@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useUser } from '../context/UserContext';
 import { saveToStorage, getFromStorage, deleteFromStorage } from '../services/webCompatibleSecureStore';
 import { useAuth } from '../context/AuthContext';
-import { ImageBackground, TextInput } from 'react-native-web';
+import { ImageBackground, TextInput } from 'react-native';
 
 
 const LoginScreen = ({ navigation }) => {
