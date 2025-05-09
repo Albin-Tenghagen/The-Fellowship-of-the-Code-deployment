@@ -49,5 +49,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Appen behöver tillgång till plats för att visa din position.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Appen behöver tillgång till plats även i bakgrunden.</string>
+
 </dict>
 </plist>
