@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.flood-app"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,16 +26,15 @@
       "expo-font",
       "expo-secure-store"
     ],
-      "expo": {
-        "plugins": [
-          [
-            "expo-location",
-            {
-              "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-            }
-          ]
+    "expo": {
+      "plugins": [
+        [
+          "expo-location",
+          {
+            "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          }
         ]
-      }
-  
+      ]
+    }
   }
 }
