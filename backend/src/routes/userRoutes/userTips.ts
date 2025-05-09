@@ -3,11 +3,12 @@ import express, { Request, Response, Router } from "express";
 import fs from "fs";
 import { readFile } from "fs/promises";
 import path from "path";
-
 import { userTipObject, TipBody } from "../../types/types.ts";
 import { validateUserTips } from "../../validators/tipsValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
+import db from "../../../Database/db.ts"
+const pool = db.pool
 
 const userTipsRouter: Router = express.Router();
 
@@ -16,13 +17,11 @@ interface TipRequest extends Request<{ id: string }, any, TipBody> {}
 userTipsRouter.get(
   "/",
   async (_req: TipRequest, res: Response): Promise<void> => {
-    const filePath = path.resolve("Database/tips.json");
-
+    
     try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const tips = JSON.parse(jsonData);
-      console.log(tips);
-
+      const { rows: tips } = await pool.query(`SELECT * FROM "userTips" ORDER BY id ASC`);
+      
+    
       if (!tips) {
         res.status(404).json({
           message: "The server could not find the tips, please try again later",
@@ -45,54 +44,37 @@ userTipsRouter.get(
 
 userTipsRouter.post(
   "/postTip",
-  async (req: TipRequest, res: Response): Promise<void> => {
-    const filePath = path.resolve("Database/tips.json");
+   async (req: TipRequest, res: Response): Promise<void> => {
+  const { location, description, username } = req.body;
 
-    const { location, description, user } = req.body;
-
-    try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const tips = JSON.parse(jsonData);
-
-      if ( !location || !description || !user) {
-        res.status(400).json({ Error: "All values are required" });
-        return;
-      }
-
-      const newTip = {
-        id: tips.length + 1001,
-        timestamp: timestampCreation(),
-        location,
-        description,
-        user,
-      };
-      try {
-        const validatedTip = await validateUserTips(newTip);
-        console.log("validatedTip : ", validatedTip);
-        tips.push(validatedTip);
-      } catch (error) {
-        console.error("Error: ", error);
-        res.status(400).json({
-          message: "Validation failed",
-          details: error,
-        });
-        return;
-      }
-
-      fs.writeFileSync(filePath, JSON.stringify(tips, null, 2), "utf-8");
-      res
-        .status(201)
-        .json({ message: "Tips added", tips: tips, newtip: newTip });
-      return;
-    } catch (error) {
-      console.error("Server error ");
-      res
-        .status(500)
-        .json({ message: "There was a major internet breakdown, sorry..." });
-      return;
-    }
+  if (!location || !description || !username) {
+    res.status(400).json({ Error: "All values are required" });
+    return;
   }
-);
+
+  const newTip = {
+    timestamp: timestampCreation(),
+    location,
+    description,
+    username,
+  };
+
+  try {
+    const validatedTip = await validateUserTips(newTip);
+    const query = `
+      INSERT INTO "userTips" (timestamp, location, description, username)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *`;
+    const values = [validatedTip.timestamp, validatedTip.location, validatedTip.description, validatedTip.username];
+
+    const result = await db.pool.query(query, values);
+    res.status(201).json({ message: "Tip added", newTip: result.rows[0] });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(400).json({ message: "Validation or DB insert failed", details: error });
+  }
+});
+
 
 //PUT
 userTipsRouter.put(

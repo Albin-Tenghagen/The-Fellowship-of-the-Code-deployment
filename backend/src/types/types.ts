@@ -2,18 +2,18 @@ import { Request } from "express";
 
 //* User tips
 export interface userTipObject {
-  id: number;
+  id?: number;
   timestamp: string;
   location: string;
   description: string;
 }
 
 export interface TipBody {
-  id: number;
+  id?: number;
   timestamp: string;
   location: string;
   description: string;
-  user: string;
+  username: string;
 }
 
 export interface riskBody {}
