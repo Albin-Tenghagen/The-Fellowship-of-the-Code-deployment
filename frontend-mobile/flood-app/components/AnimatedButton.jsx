@@ -1,5 +1,6 @@
 import { StyleSheet, Text, Animated, Pressable } from 'react-native'
 import React from 'react'
+import { useTheme } from '../themes/ThemeContext'
 
 const AnimatedButton = () => {
     const { theme } = useTheme(); //importera!!!
