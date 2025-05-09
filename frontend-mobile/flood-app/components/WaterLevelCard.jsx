@@ -5,46 +5,118 @@ import { useAppData } from "../context/DataContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const WaterLevelCard = ({
-    title = 'Default Title',
+    title = 'Standardtitel',
     width = '45%',
     height = null,
     icon = null,
     image = null,
     parameter = null,
+    alternateParams = [],
 }) => {
-    
+
     const { theme } = useTheme();
     const { monitoringData, loading, error } = useAppData();
-    const [paramValue, setParamValue] = useState('N/A');
-    const [timestamp, setTimestamp] = useState('No date');
-    
-    useEffect(() => {
-        if (Array.isArray(monitoringData) && monitoringData.length > 0 && parameter) {
-            const latestData = monitoringData[0];
+    const [paramValue, setParamValue] = useState('Ej tillgänglig');
+    const [timestamp, setTimestamp] = useState('Ingen tid');
 
-            if (latestData[parameter] !== undefined) {
-                setParamValue(latestData[parameter]);
-            } else if (latestData.data && latestData.data[parameter] !== undefined) {
-                setParamValue(latestData.data[parameter]);
-            } else {
-                setParamValue('N/A');
-            }
-            
-    
-            if (latestData.timestamp) {
-                setTimestamp(latestData.timestamp);
-            } else {
-                setTimestamp('No date');
-            }
-        } else {
-            setParamValue('N/A');
-            setTimestamp('No date');
+    const findValueInData = (data, primaryParam, alternateParams = []) => {
+        if (!data) return null;
+
+        if (data[primaryParam] !== undefined) {
+            return data[primaryParam];
         }
-    }, [monitoringData, parameter]);
+
+        for (const altParam of alternateParams) {
+            if (data[altParam] !== undefined) {
+                return data[altParam];
+            }
+        }
+
+        const nestedObjects = ['data', 'readings', 'sensors', 'measurements'];
+        for (const nestedKey of nestedObjects) {
+            if (data[nestedKey]) {
+                if (data[nestedKey][primaryParam] !== undefined) {
+                    return data[nestedKey][primaryParam];
+                }
+
+                for (const altParam of alternateParams) {
+                    if (data[nestedKey][altParam] !== undefined) {
+                        return data[nestedKey][altParam];
+                    }
+                }
+            }
+        }
+
+        return null;
+    };
+
+    const formatTimestamp = (rawTimestamp) => {
+        if (!rawTimestamp || rawTimestamp === 'Ingen tid') return 'Ingen tid';
+
+        try {
+            if (typeof rawTimestamp === 'string' &&
+                (rawTimestamp.includes('/') || rawTimestamp.includes('-'))) {
+                return rawTimestamp;
+            }
+
+            const date = new Date(rawTimestamp);
+            if (isNaN(date.getTime())) return String(rawTimestamp);
+
+            return date.toLocaleString('sv-SE', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: false
+            });
+        } catch (error) {
+            console.error('Fel vid datumformattering:', error);
+            return String(rawTimestamp);
+        }
+    };
+
+    const formatParameterValue = (value) => {
+        if (value === null || value === undefined || value === 'Ej tillgänglig') {
+            return 'Ej tillgänglig';
+        }
+
+        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+        if (isNaN(numValue)) {
+            return value.toString();
+        }
+
+        switch (parameter) {
+            case 'temperature':
+                return numValue.toFixed(0);
+            case 'humidity':
+            case 'soilMoisture':
+                return Math.round(numValue);
+            case 'ultraSoundLevel':
+                return numValue.toFixed(1);
+            case 'airPressure':
+            case 'pressureLevel':
+                return Math.round(numValue);
+            default:
+                return Math.abs(numValue) < 10 ? numValue.toFixed(1) : Math.round(numValue);
+        }
+    };
+
+    const getParameterTitle = (param) => {
+        const titleMap = {
+            airPressure: 'Lufttryck',
+            soilMoisture: 'Jordfuktighet',
+            temperature: 'Temperatur',
+            humidity: 'Luftfuktighet',
+            pressureLevel: 'Tryck',
+            ultraSoundLevel: 'Vattennivå'
+        };
+
+        return param ? (titleMap[param] || param) : '';
+    };
 
     const getParameterIcon = () => {
         if (!parameter) return icon;
-        
+
         const iconMap = {
             airPressure: 'weather-windy',
             soilMoisture: 'water-percent',
@@ -53,7 +125,7 @@ const WaterLevelCard = ({
             pressureLevel: 'gauge',
             ultraSoundLevel: 'wave',
         };
-        
+
         return iconMap[parameter] || icon;
     };
 
@@ -66,9 +138,55 @@ const WaterLevelCard = ({
             pressureLevel: 'kPa',
             ultraSoundLevel: 'm',
         };
-        
+
         return parameter ? unitMap[parameter] || '' : '';
     };
+
+    const hasValidData = () => {
+        return (
+            monitoringData !== null &&
+            monitoringData !== undefined &&
+            Array.isArray(monitoringData) &&
+            monitoringData.length > 0
+        );
+    };
+
+    useEffect(() => {
+        if (!hasValidData()) {
+            setParamValue('Ej tillgänglig');
+            setTimestamp('Ingen tid');
+            return;
+        }
+
+        try {
+            const latestData = monitoringData[0];
+            const foundValue = findValueInData(latestData, parameter, alternateParams);
+
+            if (foundValue !== null) {
+                const formattedValue = formatParameterValue(foundValue);
+                setParamValue(formattedValue);
+            } else {
+                setParamValue('Ej tillgänglig');
+            }
+
+            const timestampValue = findValueInData(
+                latestData,
+                'timestamp',
+                ['time', 'date', 'recordedAt', 'created', 'createdAt']
+            );
+
+            if (timestampValue) {
+                const formattedTime = formatTimestamp(timestampValue);
+                setTimestamp(formattedTime);
+            } else {
+                setTimestamp('Ingen tid');
+            }
+        } catch (err) {
+            console.error('Fel vid bearbetning av övervakningsdata:', err);
+            setParamValue('Fel');
+            setTimestamp('Ingen tid');
+        }
+    }, [monitoringData, parameter, alternateParams]);
 
     return (
         <View
@@ -87,7 +205,7 @@ const WaterLevelCard = ({
                     style={{ marginBottom: 8 }}
                 />
             )}
-            
+
             {image && (
                 <Image
                     source={image}
@@ -95,17 +213,19 @@ const WaterLevelCard = ({
                     resizeMode="cover"
                 />
             )}
-            
+
             <Text style={[styles.text, { color: theme.textColor }]}>
                 {title}
             </Text>
-            
+
             {loading ? (
-                <Text style={{ color: theme.textColor }}>Loading...</Text>
+                <Text style={{ color: theme.textColor }}>Laddar...</Text>
             ) : error ? (
-                <Text style={{ color: 'red' }}>Error: {error}</Text>
-            ) : !Array.isArray(monitoringData) || monitoringData.length === 0 ? (
-                <Text style={{ color: theme.textColor }}>No data available</Text>
+                <Text style={{ color: 'red' }}>Fel: {error}</Text>
+            ) : !hasValidData() ? (
+                <View>
+                    <Text style={{ color: theme.textColor }}>Ingen data tillgänglig</Text>
+                </View>
             ) : (
                 <View style={styles.dataContainer}>
                     <Text style={[styles.valueText, { color: theme.textColor }]}>

@@ -26,18 +26,18 @@ const HomeScreen = () => {
         </View>
 
         <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
-          Current Water Monitoring
+          Nuvarande vattenövervakning
         </Text>
 
         <View style={styles.cardContainer}>
           <WaterLevelCard
-            title="Water Level"
+            title="Vattennivå"
             parameter="ultraSoundLevel"
             width="45%"
             icon="water"
           />
           <WaterLevelCard
-            title="Pressure"
+            title="Trycknivå"
             parameter="pressureLevel"
             width="45%"
             icon="gauge"
@@ -45,18 +45,18 @@ const HomeScreen = () => {
         </View>
 
         <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
-          Weather Conditions
+          Väderförhållanden
         </Text>
 
         <View style={styles.cardContainer}>
           <WaterLevelCard
-            title="Temperature"
+            title="Temperatur"
             parameter="temperature"
             width="45%"
             icon="thermometer"
           />
           <WaterLevelCard
-            title="Humidity"
+            title="Luftfuktighet"
             parameter="humidity"
             width="45%"
             icon="water-percent"
@@ -65,13 +65,13 @@ const HomeScreen = () => {
 
         <View style={styles.cardContainer}>
           <WaterLevelCard
-            title="Air Pressure"
+            title="Lufttryck"
             parameter="airPressure"
             width="45%"
             icon="weather-windy"
           />
           <WaterLevelCard
-            title="Soil Moisture"
+            title="Jordfuktighet"
             parameter="soilMoisture"
             width="45%"
             icon="water-percent"
@@ -79,25 +79,26 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.cardContainer}>
-          <TipsBoxCard 
-            title="Flood Protection Tips"
+          <TipsBoxCard
+            title="Säkerhetstips"
+            text="Vid översvämning, håll dig borta från vattnet och följ myndigheternas råd."
             width="90%"
             height={150}
             icon="message-arrow-right-outline"
           />
         </View>
-        
+
         {error && (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>Error: {error}</Text>
-            <Button 
-              title="Retry" 
-              onPress={refetchData} 
+            <Button
+              title="Ladda om"
+              onPress={refetchData}
               color={theme.primary}
             />
           </View>
         )}
- 
+
       </ScrollView>
     </View>
   );
