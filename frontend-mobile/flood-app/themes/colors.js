@@ -45,10 +45,7 @@ export const darkTheme = {
 
     borderColor: '#869CB5',
     inputBackground: 'rgba(255,255,255,0.8)',
-    placeholderText: 'rgba(0,0,0,0.5)'
+    placeholderText: 'rgba(0,0,0,0.5)',
 
-    borderColor: '#869CB5',
-    inputBackground: 'rgba(255,255,255,0.8)',
-    placeholderText: 'rgba(0,0,0,0.5)'
 
 }
