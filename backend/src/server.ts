@@ -1,6 +1,7 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+import cors from "cors";
 
 import YAML from "yamljs";
 import path from "path";
@@ -8,8 +9,10 @@ import swaggerUi from "swagger-ui-express";
 //module
 import userRouter from "./routes/userRoutes/user.ts";
 import adminRouter from "./routes/adminRoutes/adminAuth.ts";
+import db from "../Database/db.ts";
+const { pool, testConnection } = db;
 
-dotenv.config();
+testConnection();
 
 const app = express();
 
