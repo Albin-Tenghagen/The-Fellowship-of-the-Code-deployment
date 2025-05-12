@@ -1,12 +1,13 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Pressable } from "react-native";
+import { Pressable, Settings } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
 import LoginScreen from "../screens/LoginScreen";
 import UserScreen from "../screens/UserScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +59,15 @@ const Navigation = () => {
           options={{
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="user" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Setting"
+          component={SettingsScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="setting" color={color} size={size} />
             ),
           }}
         />
