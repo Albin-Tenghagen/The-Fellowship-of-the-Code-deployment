@@ -91,12 +91,17 @@ userTipsRouter.put(
         res.status(404).json({ message: "Tip not found..." });
         return;
       }
-
-      const updatedTip = { ...rows[0], location, description };
+ 
+      const updatedTip = {
+        timestamp: rows[0].timestamp,
+        username: rows[0].username,
+        location,
+        description
+      }
       const validatedTip = await validateUserTips(updatedTip);
 
       const updateQuery = `
-        UPDATE userTips
+        UPDATE "userTips"
         SET location = $1, description = $2
         WHERE id = $3
         RETURNING * `;
