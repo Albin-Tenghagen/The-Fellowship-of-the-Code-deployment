@@ -62,6 +62,7 @@ const Navigation = () => {
             ),
           }}
         />
+<<<<<<< HEAD
         <Tab.Screen
           name="Setting"
           component={SettingsScreen}
@@ -71,6 +72,9 @@ const Navigation = () => {
             ),
           }}
         />
+=======
+        {/* You can add SettingsScreen here if needed */}
+>>>>>>> backend
       </Tab.Navigator>
     </NavigationContainer>
   );

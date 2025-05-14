@@ -14,4 +14,3 @@ export default MapViewContainer
 const styles = StyleSheet.create({})
 
 
-// Shows the map

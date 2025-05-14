@@ -11,42 +11,69 @@ export default function MapScreen() {
         {
             id: 1,
             coordinate: {
-                latitude: 58.91667,
-                longitude: 13.50000,
+                latitude: 58.5333,
+                longitude: 15.6167,
             },
-            title: 'Lake Vänern',
-            description: 'Largest lake in Sweden and the EU',
+            title: 'Sjön Roxen',
+            description: 'En stor sjö norr om Linköping, populär för fiske och båtliv.',
         },
         {
             id: 2,
             coordinate: {
-                latitude: 58.33333,
-                longitude: 14.50000,
+                latitude: 58.2667,
+                longitude: 15.6833,
             },
-            title: 'Lake Vättern',
-            description: 'Second largest lake in Sweden with crystal clear water',
+            title: 'Sjön Rängen',
+            description: 'Känd för sitt klara vatten och natursköna omgivningar.',
         },
         {
             id: 3,
             coordinate: {
-                latitude: 59.50000,
-                longitude: 17.20000,
+                latitude: 58.2333,
+                longitude: 15.6167,
             },
-            title: 'Lake Mälaren',
-            description: 'Third largest lake in Sweden, near Stockholm',
+            title: 'Sjön Järnlunden',
+            description: 'Läge sydost om Linköping, erbjuder fiske och naturupplevelser.',
+        },
+        {
+            id: 4,
+            coordinate: {
+                latitude: 58.4109,
+                longitude: 15.6216,
+            },
+            title: 'Stångån / Kinda kanal',
+            description: 'Flödar genom Linköping och ingår i Kinda kanal, populär för båtturer.',
+        },
+        {
+            id: 5,
+            coordinate: {
+                latitude: 58.4000,
+                longitude: 15.7000,
+            },
+            title: 'Svartån',
+            description: 'Rinner ut i Roxen och är känd för sin vackra natur.',
+        },
+        {
+            id: 6,
+            coordinate: {
+                latitude: 58.5500,
+                longitude: 15.3000,
+            },
+            title: 'Motala ström',
+            description: 'Förbinder Vättern med Östersjön, passerar genom Roxen.',
         },
     ]);
 
+
     useEffect(() => {
         (async () => {
-            // Request location permissions
+
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
 
-            // Get current location
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
         })();
@@ -68,7 +95,7 @@ export default function MapScreen() {
         }
     };
 
-    // If location permission was denied, show an error
+
     if (errorMsg) {
         return (
             <View style={styles.container}>
@@ -83,10 +110,10 @@ export default function MapScreen() {
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={{
-                    latitude: 60.1282,       // Center of Sweden
-                    longitude: 18.6435,
-                    latitudeDelta: 7.5,      // Show more area
-                    longitudeDelta: 7.5,
+                    latitude: 58.4109,      
+                    longitude: 15.6216,
+                    latitudeDelta: 0.6,     
+                    longitudeDelta: 0.6,
                 }}
                 showsUserLocation={true}
                 showsMyLocationButton={true}

@@ -14,4 +14,7 @@ if (Platform.OS === "android") {
 }
 
 export default baseUrl;
+<<<<<<< HEAD
  
+=======
+>>>>>>> backend
