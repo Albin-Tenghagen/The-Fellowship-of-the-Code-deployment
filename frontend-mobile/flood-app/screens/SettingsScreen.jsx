@@ -1,12 +1,9 @@
-<<<<<<< HEAD
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { fetchSafety } from '../services/api';
-
 const SettingsScreen = () => {
   const [safety, setSafety] = useState([]);
   const [safetyError, setSafetyError] = useState(null);
-
   useEffect(() => {
     const getSafety = async () => {
       try {
@@ -16,17 +13,15 @@ const SettingsScreen = () => {
         setSafetyError(error.message);
       }
     };
-
     getSafety();
   }, []);
-
   return (
+    <ScrollView>
     <View style={styles.container}>
       {safety.map((item) => (
         <View key={item.id} style={styles.item}>
           <Text style={styles.location}>{item.location}</Text>
           <Text style={styles.description}>{item.description}</Text>
-
           {item.proactiveActions && (
             <View style={styles.actions}>
               <Text style={styles.actionsHeader}>Förebyggande åtgärder:</Text>
@@ -43,61 +38,16 @@ const SettingsScreen = () => {
           )}
         </View>
       ))}
-
       {safetyError && (
         <View style={styles.errorBox}>
-          <Text style={styles.errorText}>⚠️ Kunde inte hämta tips: {safetyError}</Text>
-=======
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { fetchTips } from '../services/api';
-
-const SettingsScreen = () => {
-  const [tips, setTips] = useState([]);
-  const [tipsError, setTipsError] = useState(null);
-
-  useEffect(() => {
-    const getTips = async () => {
-      try {
-        const tipsData = await fetchTips();
-        setTips(tipsData);
-      } catch (error) {
-        setTipsError(error.message);
-      }
-    };
-
-    getTips();
-  }, []);
-
-
-  return (
-    <View>
-      {/* <Text>SettingsScreen</Text> */}
-      <View>
-        {tips.map((tip) => (
-          <View key={tip.id} style={{ marginBottom: 10 }}>
-            <Text>
-              {tip.user}
-            </Text>
-            <Text>
-              {tip.description}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      {tipsError && (
-        <View>
-          <Text>Vi kunde inte hämta tips för tillfället: {tipsError}</Text>
->>>>>>> backend
+          <Text style={styles.errorText}>:warning: Kunde inte hämta tips: {safetyError}</Text>
         </View>
       )}
     </View>
+    </ScrollView>
   );
 };
-
 export default SettingsScreen;
-
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -105,7 +55,7 @@ const styles = StyleSheet.create({
   item: {
     marginBottom: 20,
     padding: 12,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F2F2F2',
     borderRadius: 8,
   },
   location: {
@@ -125,7 +75,7 @@ const styles = StyleSheet.create({
   },
   errorBox: {
     padding: 10,
-    backgroundColor: '#ffe5e5',
+    backgroundColor: '#FFE5E5',
     borderRadius: 8,
   },
   errorText: {

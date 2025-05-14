@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Pressable, Settings } from "react-native";
+import { Pressable } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
@@ -62,7 +62,6 @@ const Navigation = () => {
             ),
           }}
         />
-<<<<<<< HEAD
         <Tab.Screen
           name="Setting"
           component={SettingsScreen}
@@ -72,9 +71,6 @@ const Navigation = () => {
             ),
           }}
         />
-=======
-        {/* You can add SettingsScreen here if needed */}
->>>>>>> backend
       </Tab.Navigator>
     </NavigationContainer>
   );
