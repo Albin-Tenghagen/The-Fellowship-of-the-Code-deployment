@@ -1,5 +1,5 @@
 import { StyleSheet, Text, Animated, Pressable } from 'react-native'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTheme } from '../themes/ThemeContext'
 
 const AnimatedButton = () => {
@@ -30,10 +30,10 @@ const AnimatedButton = () => {
         <Pressable
             onPress={ handlePressIn }
             onPressOut={ handlePressOut }
-            style={StyleSheet.button}
+            style={styles.button}
             accessibilityRole='button'
             accessibilityLabel='Knapp med animering'>
-            <Text style={StyleSheet.buttonText}> Tryck här!</Text>
+            <Text style={styles.buttonText}> Tryck här!</Text>
         </Pressable>
     </Animated.View>
   )

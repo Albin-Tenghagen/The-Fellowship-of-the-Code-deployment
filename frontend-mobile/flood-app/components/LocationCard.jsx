@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import AnimatedButton from "../components/AnimatedButton"
 
 
 const LocationCard = () => {
@@ -20,6 +21,7 @@ const LocationCard = () => {
             <Text style={styles.label}>Påbörja ärende</Text>
         </View>
         <Text>Är CheckBox vald: {isSelected ? 'yes' : 'no' } </Text>
+        <AnimatedButton/>
     
     </View>
   );
