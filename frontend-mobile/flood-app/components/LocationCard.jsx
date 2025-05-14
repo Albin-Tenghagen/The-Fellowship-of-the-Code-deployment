@@ -10,10 +10,13 @@ const LocationCard = () => {
     <View style={styles.container}>
         <View style={styles.checkboxContainer}>
             <BouncyCheckbox
-            value={isSelected}
-            onValueChange={setSelection}
-            style={styles.checkbox}
-            />
+            isChecked={isSelected}
+            onPress={() => setSelection(!isSelected)}
+            fillColor="green"
+            unfillColor="#FFFFFF"
+            iconStyle={{ borderColor: 'green' }}
+            innerIconStyle={{ borderWidth: 2 }}
+        />
             <Text style={styles.label}>Påbörja ärende</Text>
         </View>
         <Text>Är CheckBox vald: {isSelected ? 'yes' : 'no' } </Text>

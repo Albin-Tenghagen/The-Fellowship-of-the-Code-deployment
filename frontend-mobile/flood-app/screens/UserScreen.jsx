@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import WorkerStatus from '../components/WorkerStatus'
-import MapScreen from '../components/MapScreen'
+// import MapScreen from '../components/MapScreen'
 import * as Location from 'expo-location'
 import LocationCard from '../components/LocationCard'
 
@@ -12,9 +12,9 @@ const UserScreen = () => {
         <LocationCard/>
         <WorkerStatus />
       </View>
-      <View style={styles.mapContainer}>
+      {/* <View style={styles.mapContainer}>
         <MapScreen />
-      </View>
+      </View> */}
     </View>
   )
 }
