@@ -11,7 +11,7 @@ import { fetchTips } from '../services/api';
 const HomeScreen = () => {
   const { theme } = useTheme();
   const { monitoringData, refetchData, loading, error } = useAppData();
-  
+
   // Add tips state
   const [tips, setTips] = useState([]);
   const [tipsError, setTipsError] = useState(null);
@@ -111,50 +111,6 @@ const HomeScreen = () => {
             icon="message-arrow-right-outline"
           />
         </View>
-
-        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
-          Tips från användare
-        </Text>
-
-        {tipsLoading && (
-          <View style={styles.loadingContainer}>
-            <Text style={{ color: theme.textColor }}>Laddar tips...</Text>
-          </View>
-        )}
-
-        {!tipsLoading && tips.length > 0 && (
-          <View style={styles.tipsContainer}>
-            {tips.map((tip) => (
-              <View key={tip.id} style={[styles.tipCard, { backgroundColor: theme.card }]}>
-                <Text style={[styles.tipUser, { color: theme.primary }]}>
-                  {tip.user}
-                </Text>
-                <Text style={[styles.tipDescription, { color: theme.textColor }]}>
-                  {tip.description}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {tipsError && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>
-              Vi kunde inte hämta tips för tillfället: {tipsError}
-            </Text>
-          </View>
-        )}
-
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>Error: {error}</Text>
-            <Button
-              title="Ladda om"
-              onPress={refetchData}
-              color={theme.primary}
-            />
-          </View>
-        )}
 
       </ScrollView>
     </View>
