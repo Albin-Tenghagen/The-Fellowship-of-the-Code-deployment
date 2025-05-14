@@ -62,15 +62,7 @@ const Navigation = () => {
             ),
           }}
         />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <AntDesign name="setting" color={color} size={size} />
-            ),
-          }}
-        />
+        {/* You can add SettingsScreen here if needed */}
       </Tab.Navigator>
     </NavigationContainer>
   );

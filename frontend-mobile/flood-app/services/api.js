@@ -13,3 +13,17 @@ export const fetchTips = async () => {
         throw error;
     }
 }
+
+export const fetchMonitoringData = async () => {
+    try {
+        const response = await fetch(`${baseUrl}/monitoring`);
+        if (!response.ok) {
+            throw new Error("Något gick fel vid hämtning av övervakningsdata");
+        }
+        const data = await response.json();
+        return data; // returnar hela övervakningsdata
+    } catch (error) {
+        console.error("Fel vid hämtning av övervakningsdata: ", error.message);
+        throw error;
+    }
+}

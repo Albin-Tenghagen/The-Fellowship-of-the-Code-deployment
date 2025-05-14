@@ -10,7 +10,7 @@ if (Platform.OS === "android") {
     baseUrl = "http://localhost:5001";
 } else {
     // Byt ut till datorns IP-adress
-    baseUrl = "http://192.xxxxxxx:5001";
+    baseUrl = "http://192.168.0.232";
 }
 
 export default baseUrl;

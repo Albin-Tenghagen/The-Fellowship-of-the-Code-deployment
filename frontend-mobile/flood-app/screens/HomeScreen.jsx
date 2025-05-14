@@ -1,14 +1,38 @@
 import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
+import { useState, useEffect } from 'react';
 import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
 import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
 import TipsBoxCard from '../components/TipsBoxCard';
+import { fetchTips } from '../services/api';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
   const { monitoringData, refetchData, loading, error } = useAppData();
+  
+  // Add tips state
+  const [tips, setTips] = useState([]);
+  const [tipsError, setTipsError] = useState(null);
+  const [tipsLoading, setTipsLoading] = useState(false);
+
+  useEffect(() => {
+    const getTips = async () => {
+      setTipsLoading(true);
+      try {
+        const tipsData = await fetchTips();
+        setTips(tipsData);
+        setTipsError(null);
+      } catch (error) {
+        setTipsError(error.message);
+      } finally {
+        setTipsLoading(false);
+      }
+    };
+
+    getTips();
+  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -88,6 +112,39 @@ const HomeScreen = () => {
           />
         </View>
 
+        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
+          Tips från användare
+        </Text>
+
+        {tipsLoading && (
+          <View style={styles.loadingContainer}>
+            <Text style={{ color: theme.textColor }}>Laddar tips...</Text>
+          </View>
+        )}
+
+        {!tipsLoading && tips.length > 0 && (
+          <View style={styles.tipsContainer}>
+            {tips.map((tip) => (
+              <View key={tip.id} style={[styles.tipCard, { backgroundColor: theme.card }]}>
+                <Text style={[styles.tipUser, { color: theme.primary }]}>
+                  {tip.user}
+                </Text>
+                <Text style={[styles.tipDescription, { color: theme.textColor }]}>
+                  {tip.description}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {tipsError && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>
+              Vi kunde inte hämta tips för tillfället: {tipsError}
+            </Text>
+          </View>
+        )}
+
         {error && (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>Error: {error}</Text>
@@ -126,6 +183,35 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
+  },
+  tipsContainer: {
+    paddingHorizontal: 20,
+  },
+  tipCard: {
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+  },
+  tipUser: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  tipDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
   },
   errorContainer: {
     margin: 16,
