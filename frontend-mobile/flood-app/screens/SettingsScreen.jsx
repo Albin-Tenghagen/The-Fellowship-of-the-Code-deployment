@@ -1,6 +1,8 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { fetchSafety } from '../services/api';
+import LocationCard from '../components/LocationCard';
+
 const SettingsScreen = () => {
   const [safety, setSafety] = useState([]);
   const [safetyError, setSafetyError] = useState(null);
@@ -18,6 +20,7 @@ const SettingsScreen = () => {
   return (
     <ScrollView>
     <View style={styles.container}>
+      <LocationCard/>
       {safety.map((item) => (
         <View key={item.id} style={styles.item}>
           <Text style={styles.location}>{item.location}</Text>

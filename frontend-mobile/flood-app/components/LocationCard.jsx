@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import CheckBox from '@react-native-community/checkbox';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 
 const LocationCard = () => {
@@ -9,7 +9,7 @@ const LocationCard = () => {
   return (
     <View style={styles.container}>
         <View style={styles.checkboxContainer}>
-            <CheckBox
+            <BouncyCheckbox
             value={isSelected}
             onValueChange={setSelection}
             style={styles.checkbox}
