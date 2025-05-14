@@ -1,14 +1,43 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
+import CheckBox from '@react-native-community/checkbox';
+
 
 const LocationCard = () => {
+    const [isSelected, setSelection] = useState(false);
+
   return (
-    <View>
-      <Text>LocationCard</Text>
+    <View style={styles.container}>
+        <View style={styles.checkboxContainer}>
+            <CheckBox
+            value={isSelected}
+            onValueChange={setSelection}
+            style={styles.checkbox}
+            />
+            <Text style={styles.label}>Påbörja ärende</Text>
+        </View>
+        <Text>Är CheckBox vald: {isSelected ? 'yes' : 'no' } </Text>
+    
     </View>
-  )
-}
+  );
+};
 
 export default LocationCard
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
+  label: {
+    margin: 8,
+  },
+});
