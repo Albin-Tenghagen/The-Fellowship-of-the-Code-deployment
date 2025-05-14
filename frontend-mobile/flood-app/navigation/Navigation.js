@@ -7,6 +7,7 @@ import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
 import LoginScreen from "../screens/LoginScreen";
 import UserScreen from "../screens/UserScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +59,15 @@ const Navigation = () => {
           options={{
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="user" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="setting" color={color} size={size} />
             ),
           }}
         />
