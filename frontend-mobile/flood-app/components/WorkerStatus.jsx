@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
-import { AntDesign, MaterialIcons, Entypo } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
@@ -79,7 +79,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          return 0; 
+          return 0;
         }
         return prev - 1;
       });
@@ -90,9 +90,9 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
   useEffect(() => {
     if (timeLeft === null || estimatedTime === 0) return;
-    
+
     const progress = 1 - (timeLeft / estimatedTime);
-    
+
     Animated.timing(progressAnimation, {
       toValue: progress,
       duration: 300,
@@ -102,7 +102,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
   const adjustTime = (minutes) => {
     const additionalSeconds = minutes * 60;
-    
+
     if (status === STATUS.IN_PROGRESS) {
       setTimeLeft(prev => Math.max(0, prev + additionalSeconds));
       setEstimatedTime(prev => Math.max(300, prev + additionalSeconds));
@@ -113,7 +113,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
   const formatTime = (seconds) => {
     if (seconds === null) return '';
-    
+
     if (seconds >= 3600) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -128,30 +128,31 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
   const getElapsedTime = () => {
     if (!startTime) return null;
-    
+
     const now = new Date();
     const elapsed = Math.floor((now - startTime) / 1000);
-    
+
     const hours = Math.floor(elapsed / 3600);
     const minutes = Math.floor((elapsed % 3600) / 60);
-    
+
     return `${hours > 0 ? `${hours}h ` : ''}${minutes}m`;
   };
 
-  const getStatusColor = () => {
-    switch (status) {
-      case STATUS.NOT_STARTED:
-        return '#6c757d';
-      case STATUS.ON_SITE:
-        return '#4D88B8';
-      case STATUS.IN_PROGRESS:
-        return '#FFD54F';
-      case STATUS.COMPLETED:
-        return '#28a745';
-      default:
-        return '#6c757d';
-    }
-  };
+ const getStatusColor = () => {
+  switch (status) {
+    case STATUS.NOT_STARTED:
+      return '#757575'; 
+    case STATUS.ON_SITE:
+      return '#5B7995'; 
+    case STATUS.IN_PROGRESS:
+      return '#907A3E'; 
+    case STATUS.COMPLETED:
+      return '#657A63'; 
+    default:
+      return '#757575';
+  }
+};
+;
 
   const getStatusIcon = () => {
     switch (status) {
@@ -173,16 +174,16 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
       <Text style={styles.title}>Arbetsstatus</Text>
       <Text style={styles.subtitle}>{locationName}</Text>
 
-      <Animated.View 
+      <Animated.View
         style={[
-          styles.statusCard, 
-          { 
+          styles.statusCard,
+          {
             transform: [{ scale: cardScale }],
             borderColor: getStatusColor()
           }
         ]}
       >
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.cardTouchable}
           onPress={handleStatusChange}
           activeOpacity={0.9}
@@ -201,25 +202,27 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
         <View style={styles.progressContainer}>
           <View style={styles.timelineContainer}>
             <View style={styles.timeline}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.timelineProgress,
-                  { width: progressAnimation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0%', '100%']
-                  })}
+                  {
+                    width: progressAnimation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0%', '100%']
+                    })
+                  }
                 ]}
               />
             </View>
           </View>
-          
+
           <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-          
+
           <View style={styles.timeControls}>
             <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-30)}>
               <Text style={styles.timeButtonText}>-30m</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(30)}>
               <Text style={styles.timeButtonText}>+30m</Text>
             </TouchableOpacity>
@@ -228,7 +231,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
             <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-60)}>
               <Text style={styles.timeButtonText}>-60m</Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(60)}>
               <Text style={styles.timeButtonText}>+60m</Text>
             </TouchableOpacity>
@@ -238,14 +241,14 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
       {status === STATUS.COMPLETED && (
         <View style={styles.completedContainer}>
-          <Text style={styles.doneText}>🎉 Arbetet är klart!</Text>
+          <Text style={styles.doneText}>Arbetet är klart!</Text>
         </View>
       )}
-      
+
       {startTime && status !== STATUS.NOT_STARTED && (
         <View style={styles.timeStats}>
           <Text style={styles.timeStatsLabel}>
-            Startad: {startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            Startad: {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </Text>
           {status !== STATUS.ON_SITE && getElapsedTime() && (
             <Text style={styles.timeStatsLabel}>
