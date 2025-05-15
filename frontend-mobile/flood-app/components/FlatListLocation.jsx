@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context'
 import CheckBox from './CheckBox';
 import AnimatedButton from './AnimatedButton';
+import { useTheme } from '../themes/ThemeContext';
 
 const DATA = [
   {
@@ -25,7 +26,9 @@ const Item = ({title}) => (
   </View>
 );
 const FlatListLocation = () => {
+  const { theme } = useTheme();
   const [selectedItems, setSelectedItems] = useState({});
+  const styles = createStyles(theme);
 
   const toggleSelection = (id) => {
     setSelectedItems(prev => ({
@@ -64,10 +67,20 @@ const FlatListLocation = () => {
 
 export default FlatListLocation
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => 
+  StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.card,
     marginTop: StatusBar.currentHeight || 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '45%',
+    borderRadius: 8,
+    margin: 8,
+    padding: 30,
+    paddingBottom: 30,
+    paddingTop: 30,
   },
   item: {
     backgroundColor: '#f9c2ff',
@@ -78,4 +91,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+
+ 
 });
