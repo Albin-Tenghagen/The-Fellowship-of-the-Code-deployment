@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { AntDesign, MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { useTheme } from '../themes/ThemeContext';
 
 const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
+  const { theme } = useTheme();
 
   const STATUS = {
     NOT_STARTED: 'Ej påbörjad',
@@ -29,7 +30,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
     Animated.sequence([
       Animated.timing(cardScale, {
-        toValue: 0.95,
+        toValue: 0.98,
         duration: 100,
         useNativeDriver: true
       }),
@@ -138,48 +139,53 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
     return `${hours > 0 ? `${hours}h ` : ''}${minutes}m`;
   };
 
- const getStatusColor = () => {
-  switch (status) {
-    case STATUS.NOT_STARTED:
-      return '#757575'; 
-    case STATUS.ON_SITE:
-      return '#5B7995'; 
-    case STATUS.IN_PROGRESS:
-      return '#907A3E'; 
-    case STATUS.COMPLETED:
-      return '#657A63'; 
-    default:
-      return '#757575';
-  }
-};
-;
-
-  const getStatusIcon = () => {
+  const getStatusColor = () => {
     switch (status) {
       case STATUS.NOT_STARTED:
-        return <AntDesign name="clockcircle" size={30} color="black" />;
+        return '#6B7280'; 
       case STATUS.ON_SITE:
-        return <MaterialIcons name="place" size={30} color="black" />;
+        return '#3B82F6'; 
       case STATUS.IN_PROGRESS:
-        return <Entypo name="progress-two" size={30} color="black" />;
+        return '#F59E0B'; 
       case STATUS.COMPLETED:
-        return <MaterialIcons name="done" size={30} color="black" />;
+        return '#10B981'; 
       default:
-        return <MaterialCommunityIcons name="timer-sand-full" size={30} color="black" />;
+        return '#6B7280';
+    }
+  };
+
+  const getStatusIcon = () => {
+    const iconColor = getStatusColor();
+    switch (status) {
+      case STATUS.NOT_STARTED:
+        return <AntDesign name="clockcircle" size={28} color={iconColor} />;
+      case STATUS.ON_SITE:
+        return <MaterialIcons name="place" size={28} color={iconColor} />;
+      case STATUS.IN_PROGRESS:
+        return <Entypo name="progress-two" size={28} color={iconColor} />;
+      case STATUS.COMPLETED:
+        return <MaterialIcons name="done" size={28} color={iconColor} />;
+      default:
+        return <MaterialCommunityIcons name="timer-sand-full" size={28} color={iconColor} />;
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Arbetsstatus</Text>
-      <Text style={styles.subtitle}>{locationName}</Text>
+    <View style={[styles.container, { backgroundColor: theme.card }]}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.textColor }]}>Arbetsstatus</Text>
+        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{locationName}</Text>
+      </View>
 
+      {/* Status Card */}
       <Animated.View
         style={[
           styles.statusCard,
           {
             transform: [{ scale: cardScale }],
-            borderColor: getStatusColor()
+            backgroundColor: theme.card,
+            borderColor: theme.border
           }
         ]}
       >
@@ -189,23 +195,31 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
           activeOpacity={0.9}
         >
           <Animated.View style={[styles.cardContent, { opacity: statusFade }]}>
-            <Text style={styles.statusIcon}>{getStatusIcon()}</Text>
+            <View style={[styles.iconContainer, { backgroundColor: getStatusColor() + '15' }]}>
+              {getStatusIcon()}
+            </View>
             <Text style={[styles.statusTitle, { color: getStatusColor() }]}>
               {status}
             </Text>
-            <Text style={styles.tapInstruction}>Tryck för att ändra status</Text>
+            <Text style={[styles.tapInstruction, { color: theme.textSecondary }]}>
+              Tryck för att ändra status
+            </Text>
           </Animated.View>
         </TouchableOpacity>
       </Animated.View>
 
+      {/* Progress Section */}
       {status === STATUS.IN_PROGRESS && (
-        <View style={styles.progressContainer}>
-          <View style={styles.timelineContainer}>
-            <View style={styles.timeline}>
+        <View style={[styles.progressSection, { backgroundColor: theme.card }]}>
+          <Text style={[styles.sectionTitle, { color: theme.textColor }]}>Pågående arbete</Text>
+          
+          <View style={styles.progressContainer}>
+            <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
               <Animated.View
                 style={[
                   styles.timelineProgress,
                   {
+                    backgroundColor: getStatusColor(),
                     width: progressAnimation.interpolate({
                       inputRange: [0, 1],
                       outputRange: ['0%', '100%']
@@ -216,53 +230,83 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
             </View>
           </View>
 
-          <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
+          <Text style={[styles.timerText, { color: theme.textColor }]}>{formatTime(timeLeft)}</Text>
 
-          <View style={styles.timeControls}>
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-30)}>
-              <Text style={styles.timeButtonText}>-30m</Text>
-            </TouchableOpacity>
+          <View style={styles.controlsContainer}>
+            <View style={styles.timeControls}>
+              <TouchableOpacity 
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+                onPress={() => adjustTime(-30)}
+              >
+                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-30m</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(30)}>
-              <Text style={styles.timeButtonText}>+30m</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.timeControls}>
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-60)}>
-              <Text style={styles.timeButtonText}>-60m</Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+                onPress={() => adjustTime(30)}
+              >
+                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+30m</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.timeControls}>
+              <TouchableOpacity 
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+                onPress={() => adjustTime(-60)}
+              >
+                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-60m</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(60)}>
-              <Text style={styles.timeButtonText}>+60m</Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+                onPress={() => adjustTime(60)}
+              >
+                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+60m</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
 
+      {/* Completion Section */}
       {status === STATUS.COMPLETED && (
-        <View style={styles.completedContainer}>
-          <Text style={styles.doneText}>Arbetet är klart!</Text>
+        <View style={[styles.completionSection, { backgroundColor: theme.card }]}>
+          <View style={[styles.completionIcon, { backgroundColor: getStatusColor() + '15' }]}>
+            <MaterialIcons name="check-circle" size={32} color={getStatusColor()} />
+          </View>
+          <Text style={[styles.doneText, { color: getStatusColor() }]}>Arbetet är klart!</Text>
         </View>
       )}
 
+      {/* Time Stats */}
       {startTime && status !== STATUS.NOT_STARTED && (
-        <View style={styles.timeStats}>
-          <Text style={styles.timeStatsLabel}>
-            Startad: {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </Text>
-          {status !== STATUS.ON_SITE && getElapsedTime() && (
-            <Text style={styles.timeStatsLabel}>
-              Tid aktiv: {getElapsedTime()}
+        <View style={[styles.timeStats, { backgroundColor: theme.backgroundSecondary }]}>
+          <View style={styles.statItem}>
+            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Startad</Text>
+            <Text style={[styles.statValue, { color: theme.textColor }]}>
+              {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </Text>
+          </View>
+          {status !== STATUS.ON_SITE && getElapsedTime() && (
+            <View style={styles.statItem}>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Tid aktiv</Text>
+              <Text style={[styles.statValue, { color: theme.textColor }]}>
+                {getElapsedTime()}
+              </Text>
+            </View>
           )}
         </View>
       )}
 
+      {/* Instructions */}
       {status === STATUS.NOT_STARTED && (
-        <View style={styles.instructionContainer}>
-          <Text style={styles.instructionText}>
-            Tryck på kortet för att börja med "På plats" när du anländer till arbetsplatsen.
-          </Text>
+        <View style={[styles.instructionContainer, { backgroundColor: theme.backgroundTertiary }]}>
+          <View style={styles.instructionContent}>
+            <MaterialIcons name="info-outline" size={20} color={theme.primary} />
+            <Text style={[styles.instructionText, { color: theme.textColor }]}>
+              Tryck på kortet för att börja med "På plats" när du anländer till arbetsplatsen.
+            </Text>
+          </View>
         </View>
       )}
     </View>
@@ -271,84 +315,93 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
+    borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: 'hidden',
+  },
+  header: {
+    padding: 20,
+    paddingBottom: 16,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
     marginBottom: 4,
-    color: '#4D88B8',
-    textAlign: 'center',
+    letterSpacing: 0.3,
   },
   subtitle: {
     fontSize: 14,
-    color: '#6c757d',
-    marginBottom: 24,
-    textAlign: 'center',
+    fontWeight: '500',
   },
   statusCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    marginHorizontal: 20,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 4,
-    borderWidth: 3,
-    minHeight: 160,
-  },
-  cardTouchable: {
-    flex: 1,
-    borderRadius: 13,
-  },
-  cardContent: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  statusIcon: {
-    fontSize: 48,
-    marginBottom: 12,
-  },
-  statusTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  tapInstruction: {
-    fontSize: 14,
-    color: '#6c757d',
-    fontStyle: 'italic',
-  },
-  progressContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
+    borderWidth: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  timelineContainer: {
-    width: '100%',
+  cardTouchable: {
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  cardContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 32,
+    paddingHorizontal: 20,
+  },
+  iconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
+  statusTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
+    letterSpacing: 0.2,
+  },
+  tapInstruction: {
+    fontSize: 13,
+    fontWeight: '500',
+    opacity: 0.8,
+  },
+  progressSection: {
+    margin: 20,
+    marginTop: 0,
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  progressContainer: {
+    marginBottom: 20,
+  },
   timeline: {
-    height: 12,
-    backgroundColor: '#e9ecef',
-    borderRadius: 6,
+    height: 8,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   timelineProgress: {
@@ -356,77 +409,100 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: '100%',
-    backgroundColor: '#FFD54F',
-    borderRadius: 6,
+    borderRadius: 4,
   },
   timerText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4D88B8',
-    marginBottom: 16,
+    fontWeight: '700',
+    marginBottom: 20,
     textAlign: 'center',
+    letterSpacing: 0.3,
+  },
+  controlsContainer: {
+    gap: 12,
   },
   timeControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16,
+    gap: 12,
   },
   timeButton: {
-    backgroundColor: '#f8f9fa',
+    flex: 1,
     paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    paddingHorizontal: 16,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e9ecef',
+    alignItems: 'center',
+    maxWidth: 120,
   },
   timeButtonText: {
-    color: '#495057',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 15,
   },
-  completedContainer: {
-    backgroundColor: '#FFFFFF',
+  completionSection: {
+    margin: 20,
+    marginTop: 0,
+    padding: 24,
     borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  completionIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   doneText: {
-    fontSize: 20,
-    color: '#28a745',
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.2,
   },
   timeStats: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
+    flexDirection: 'row',
+    margin: 20,
+    marginTop: 0,
     padding: 16,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: '#4D88B8',
+    borderRadius: 12,
+    justifyContent: 'space-around',
   },
-  timeStatsLabel: {
-    fontSize: 14,
-    color: '#495057',
-    marginBottom: 4,
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statLabel: {
+    fontSize: 12,
     fontWeight: '500',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: '700',
   },
   instructionContainer: {
-    backgroundColor: '#e7f5ff',
-    borderRadius: 12,
+    margin: 20,
+    marginTop: 0,
     padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: '#4D88B8',
+    borderRadius: 12,
+  },
+  instructionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   instructionText: {
     fontSize: 14,
-    color: '#495057',
     lineHeight: 20,
-    textAlign: 'center',
+    marginLeft: 12,
+    flex: 1,
+    fontWeight: '500',
   },
 });
 
