@@ -3,13 +3,11 @@ import React from 'react'
 import WorkerStatus from '../components/WorkerStatus'
 import MapScreen from '../components/MapScreen'
 import * as Location from 'expo-location'
-import LocationCard from '../components/LocationCard'
 
 const UserScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.statusContainer}>
-        <LocationCard/>
         <WorkerStatus />
       </View>
       <View style={styles.mapContainer}>
