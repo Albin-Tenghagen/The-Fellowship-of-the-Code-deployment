@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { AntDesign, MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../themes/ThemeContext';
+import { fetchSafety } from '../services/api'; // Added missing import
 
-const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
+const WorkerStatus = ({ locationName = null }) => {
   const { theme } = useTheme();
 
   const STATUS = {
@@ -18,6 +19,9 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
   const [status, setStatus] = useState(STATUS.NOT_STARTED);
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
+  const [safety, setSafety] = useState([]);
+  const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
+  const [fetchedLocationName, setFetchedLocationName] = useState('Nånstans i Sverige');
   const [estimatedTime, setEstimatedTime] = useState(60 * 60); // Default 1h
   const progressAnimation = useRef(new Animated.Value(0)).current;
   const statusFade = useRef(new Animated.Value(1)).current;
@@ -142,13 +146,13 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
   const getStatusColor = () => {
     switch (status) {
       case STATUS.NOT_STARTED:
-        return '#4e535d'; 
+        return '#4e535d';
       case STATUS.ON_SITE:
-        return '#0e2c5c'; 
+        return '#0e2c5c';
       case STATUS.IN_PROGRESS:
-        return '#c27c03'; 
+        return '#c27c03';
       case STATUS.COMPLETED:
-        return '#007b52'; 
+        return '#007b52';
       default:
         return '#4e535d';
     }
@@ -170,12 +174,42 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
     }
   };
 
+  useEffect(() => {
+    const getSafety = async () => {
+      try {
+        const safetyData = await fetchSafety();
+        setSafety(safetyData);
+        if (safetyData.length > 0) {
+          setFetchedLocationName(safetyData[0].location);
+        }
+      } catch (error) {
+        console.log('Could not fetch safety data:', error);
+      }
+    };
+
+    if (!locationName) {
+      getSafety();
+    }
+  }, [locationName]);
+
+  const cycleLocation = () => {
+    if (safety.length > 0) {
+      const nextIndex = (currentLocationIndex + 1) % safety.length;
+      setCurrentLocationIndex(nextIndex);
+      setFetchedLocationName(safety[nextIndex].location);
+    }
+  };
+
+  const displayLocationName = locationName || fetchedLocationName;
+
   return (
     <View style={[styles.container, { backgroundColor: theme.card }]}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.inputBackground }]}>Arbetsstatus</Text>
-        <Text style={[styles.subtitle, { color: theme.textTertiary }]}>{locationName}</Text>
+        <Text style={[styles.subtitle, { color: theme.textTertiary }]}>
+          {displayLocationName}
+        </Text>
       </View>
 
       {/* Status Card */}
@@ -212,7 +246,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
       {status === STATUS.IN_PROGRESS && (
         <View style={[styles.progressSection, { backgroundColor: theme.background }]}>
           <Text style={[styles.sectionTitle, { color: theme.textColor }]}>Pågående arbete</Text>
-          
+
           <View style={styles.progressContainer}>
             <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
               <Animated.View
@@ -234,31 +268,31 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
           <View style={styles.controlsContainer}>
             <View style={styles.timeControls}>
-              <TouchableOpacity 
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+              <TouchableOpacity
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
                 onPress={() => adjustTime(-30)}
               >
                 <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-30m</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+              <TouchableOpacity
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
                 onPress={() => adjustTime(30)}
               >
                 <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+30m</Text>
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.timeControls}>
-              <TouchableOpacity 
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+              <TouchableOpacity
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
                 onPress={() => adjustTime(-60)}
               >
                 <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-60m</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]} 
+              <TouchableOpacity
+                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
                 onPress={() => adjustTime(60)}
               >
                 <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+60m</Text>
@@ -493,6 +527,12 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     flex: 1,
     fontWeight: '500',
+  },
+  locationHint: {
+    fontSize: 12,
+    textAlign: 'center',
+    opacity: 0.7,
+    marginTop: 2,
   },
 });
 
