@@ -33,7 +33,7 @@ export interface userSafetyBody {
   proactiveActions: boolean;
 }
 
-// export interface userSafetyBody {
+// export interface user_observation {
 //   id: number;
 //   timestamp: string;
 //   location: string;
@@ -90,10 +90,6 @@ export interface MonitoringEntry {
 }
 
 export type StationRequest = Request<{}, {}, {}>;
-
-//*_____________________________________________________________
-
-//* admin historical monitoring
 
 //*_____________________________________________________________
 
