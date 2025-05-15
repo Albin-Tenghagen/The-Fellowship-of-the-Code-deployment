@@ -175,7 +175,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.textColor }]}>Arbetsstatus</Text>
-        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{locationName}</Text>
+        <Text style={[styles.subtitle, { color: theme.textTertiary }]}>{locationName}</Text>
       </View>
 
       {/* Status Card */}
@@ -184,8 +184,8 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
           styles.statusCard,
           {
             transform: [{ scale: cardScale }],
-            backgroundColor: theme.card,
-            borderColor: theme.border
+            backgroundColor: theme.background,
+            borderColor: theme.primary,
           }
         ]}
       >
@@ -282,14 +282,14 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
       {startTime && status !== STATUS.NOT_STARTED && (
         <View style={[styles.timeStats, { backgroundColor: theme.backgroundSecondary }]}>
           <View style={styles.statItem}>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Startad</Text>
+            <Text style={[styles.statLabel, { color: theme.textTertiary }]}>Startad</Text>
             <Text style={[styles.statValue, { color: theme.textColor }]}>
               {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </Text>
           </View>
           {status !== STATUS.ON_SITE && getElapsedTime() && (
             <View style={styles.statItem}>
-              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Tid aktiv</Text>
+              <Text style={[styles.statLabel, { color: theme.textTertiary }]}>Tid aktiv</Text>
               <Text style={[styles.statValue, { color: theme.textColor }]}>
                 {getElapsedTime()}
               </Text>
@@ -315,9 +315,10 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 16,
+    // borderBottomEndRadius: 5,
+    // borderBottomStartRadius: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 4,
@@ -329,13 +330,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 26,
     fontWeight: '700',
     marginBottom: 4,
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
   },
   statusCard: {
