@@ -210,7 +210,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
       {/* Progress Section */}
       {status === STATUS.IN_PROGRESS && (
-        <View style={[styles.progressSection, { backgroundColor: theme.card }]}>
+        <View style={[styles.progressSection, { backgroundColor: theme.headerBackground }]}>
           <Text style={[styles.sectionTitle, { color: theme.textColor }]}>Pågående arbete</Text>
           
           <View style={styles.progressContainer}>
@@ -265,16 +265,6 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-      )}
-
-      {/* Completion Section */}
-      {status === STATUS.COMPLETED && (
-        <View style={[styles.completionSection, { backgroundColor: theme.card }]}>
-          <View style={[styles.completionIcon, { backgroundColor: getStatusColor() + '15' }]}>
-            <MaterialIcons name="check-circle" size={32} color={getStatusColor()} />
-          </View>
-          <Text style={[styles.doneText, { color: getStatusColor() }]}>Arbetet är klart!</Text>
         </View>
       )}
 
@@ -394,11 +384,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 16,
     textAlign: 'center',
   },
   progressContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   timeline: {
     height: 8,
@@ -443,7 +432,7 @@ const styles = StyleSheet.create({
   completionSection: {
     margin: 20,
     marginTop: 0,
-    padding: 24,
+    padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     shadowColor: '#000',
