@@ -216,12 +216,21 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
           <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
           
           <View style={styles.timeControls}>
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-5)}>
-              <Text style={styles.timeButtonText}>-5m</Text>
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-30)}>
+              <Text style={styles.timeButtonText}>-30m</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(5)}>
-              <Text style={styles.timeButtonText}>+5m</Text>
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(30)}>
+              <Text style={styles.timeButtonText}>+30m</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.timeControls}>
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-60)}>
+              <Text style={styles.timeButtonText}>-60m</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(60)}>
+              <Text style={styles.timeButtonText}>+60m</Text>
             </TouchableOpacity>
           </View>
         </View>
