@@ -37,7 +37,6 @@ const swaggerOptions = {
   apis: ["./dist/routes/adminRoutes/*.js", "./dist/routes/userRoutes/*.js"],
 };
 const swaggerDocs = YAML.load(path.resolve("./src/swagger/swagger.yaml"));
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //-----------------------------
