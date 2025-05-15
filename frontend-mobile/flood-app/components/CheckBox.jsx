@@ -1,28 +1,23 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import AnimatedButton from "./AnimatedButton"
 
 
-const CheckBox = () => {
-    const [isSelected, setSelection] = useState(false);
+const CheckBox = ({ title, isChecked, onPress}) => {
 
   return (
     <View style={styles.container}>
         <View style={styles.checkboxContainer}>
             <BouncyCheckbox
-            isChecked={isSelected}
-            onPress={() => setSelection(!isSelected)}
-            fillColor="green"
+            isChecked={isChecked}
+            onPress={onPress}
+            fillColor="black"
             unfillColor="#FFFFFF"
-            iconStyle={{ borderColor: 'green' }}
+            iconStyle={{ borderColor: 'black' }}
             innerIconStyle={{ borderWidth: 2 }}
         />
-            <Text style={styles.label}>Påbörja ärende</Text>
+            <Text style={styles.label}>{title}</Text>
         </View>
-        <Text>Är CheckBox vald: {isSelected ? 'yes' : 'no' } </Text>
-        <AnimatedButton/>
-    
     </View>
   );
 };
