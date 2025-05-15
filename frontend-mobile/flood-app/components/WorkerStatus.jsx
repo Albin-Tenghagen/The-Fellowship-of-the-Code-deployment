@@ -1,34 +1,51 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Alert } from 'react-native';
-import MainButton from './MainButton';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { AntDesign, MaterialIcons, Entypo } from '@expo/vector-icons';
 
-const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
-  // Status states
+
+const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
+
   const STATUS = {
-    NOT_STARTED: 'Ej påbörjad',  // detta behövas visas!
+    NOT_STARTED: 'Ej påbörjad',
     ON_SITE: 'På plats',
     IN_PROGRESS: 'Arbete pågår',
     COMPLETED: 'Klart'
   };
 
-  // State management
-  const [status, setStatus] = useState(null);
+  const STATUS_ORDER = [STATUS.NOT_STARTED, STATUS.ON_SITE, STATUS.IN_PROGRESS, STATUS.COMPLETED];
+
+  const [status, setStatus] = useState(STATUS.NOT_STARTED);
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
-  const [estimatedTime, setEstimatedTime] = useState(60 * 60); // Default 1h - kanske ändra till 30 min?
+  const [estimatedTime, setEstimatedTime] = useState(60 * 60); // Default 1h
   const progressAnimation = useRef(new Animated.Value(0)).current;
-  const statusFade = useRef(new Animated.Value(0)).current;
+  const statusFade = useRef(new Animated.Value(1)).current;
+  const cardScale = useRef(new Animated.Value(1)).current;
 
-  // Handle status changes with animations
-  const handleStatusChange = (newStatus) => {
-    // Fade out
+  const handleStatusChange = () => {
+    const currentIndex = STATUS_ORDER.indexOf(status);
+    const nextIndex = (currentIndex + 1) % STATUS_ORDER.length;
+    const newStatus = STATUS_ORDER[nextIndex];
+
+    Animated.sequence([
+      Animated.timing(cardScale, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true
+      }),
+      Animated.timing(cardScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true
+      })
+    ]).start();
+
     Animated.timing(statusFade, {
       toValue: 0,
       duration: 150,
       useNativeDriver: true
     }).start(() => {
       setStatus(newStatus);
-      // Fade in
       Animated.timing(statusFade, {
         toValue: 1,
         duration: 300,
@@ -37,31 +54,24 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
     });
   };
 
-  // Effect for managing time based on status
   useEffect(() => {
     if (status === STATUS.IN_PROGRESS) {
-      // Set start time if not already set
       if (!startTime) {
         setStartTime(new Date());
       }
       setTimeLeft(estimatedTime);
     } else if (status === STATUS.ON_SITE) {
       setTimeLeft(null);
-      // Keep start time null until work begins
       setStartTime(null);
     } else if (status === STATUS.COMPLETED) {
-      // Stop timer but keep the display
       if (timeLeft > 0) {
-        Alert.alert('Arbete avslutat', 'Bra jobbat! Status uppdaterad till Klart'); // Notify user med push notification istället?
       }
     } else {
-      // Reset for NOT_STARTED
       setTimeLeft(null);
       setStartTime(null);
     }
   }, [status, estimatedTime]);
 
-  // Timer effect
   useEffect(() => {
     if (status !== STATUS.IN_PROGRESS || timeLeft === null) return;
 
@@ -69,7 +79,6 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          Alert.alert('Tiden är ute', 'Den beräknade tiden har gått ut'); // Notify user med push notification istället?
           return 0; 
         }
         return prev - 1;
@@ -79,7 +88,6 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
     return () => clearInterval(timer);
   }, [timeLeft, status]);
 
-  // Progress bar animation
   useEffect(() => {
     if (timeLeft === null || estimatedTime === 0) return;
     
@@ -92,19 +100,17 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
     }).start();
   }, [timeLeft, estimatedTime]);
 
-  // Time adjustment
   const adjustTime = (minutes) => {
     const additionalSeconds = minutes * 60;
     
     if (status === STATUS.IN_PROGRESS) {
       setTimeLeft(prev => Math.max(0, prev + additionalSeconds));
-      setEstimatedTime(prev => Math.max(300, prev + additionalSeconds)); // Min 5 minutes? ändra till 10 min? eller 30 min?
+      setEstimatedTime(prev => Math.max(300, prev + additionalSeconds));
     } else {
-      setEstimatedTime(prev => Math.max(300, prev + additionalSeconds)); // Min 5 minutes
+      setEstimatedTime(prev => Math.max(300, prev + additionalSeconds));
     }
   };
 
-  // Format time for display
   const formatTime = (seconds) => {
     if (seconds === null) return '';
     
@@ -120,7 +126,6 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
     }
   };
 
-  // Calculate total elapsed time
   const getElapsedTime = () => {
     if (!startTime) return null;
     
@@ -133,12 +138,34 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
     return `${hours > 0 ? `${hours}h ` : ''}${minutes}m`;
   };
 
-  // Get button styling based on current status
-  const getButtonStyle = (buttonStatus) => {
-    return [
-      styles.statusButton,
-      status === buttonStatus ? styles.activeButton : null
-    ];
+  const getStatusColor = () => {
+    switch (status) {
+      case STATUS.NOT_STARTED:
+        return '#6c757d';
+      case STATUS.ON_SITE:
+        return '#4D88B8';
+      case STATUS.IN_PROGRESS:
+        return '#FFD54F';
+      case STATUS.COMPLETED:
+        return '#28a745';
+      default:
+        return '#6c757d';
+    }
+  };
+
+  const getStatusIcon = () => {
+    switch (status) {
+      case STATUS.NOT_STARTED:
+        return <AntDesign name="clockcircle" size={30} color="black" />;
+      case STATUS.ON_SITE:
+        return <MaterialIcons name="place" size={30} color="black" />;
+      case STATUS.IN_PROGRESS:
+        return <Entypo name="progress-two" size={30} color="black" />;
+      case STATUS.COMPLETED:
+        return <MaterialIcons name="done" size={30} color="black" />;
+      default:
+        return <MaterialCommunityIcons name="timer-sand-full" size={30} color="black" />;
+    }
   };
 
   return (
@@ -146,97 +173,83 @@ const WorkerStatus = ({ locationName = 'Storgatan 52, Malmö' }) => {
       <Text style={styles.title}>Arbetsstatus</Text>
       <Text style={styles.subtitle}>{locationName}</Text>
 
-      <View style={styles.statusContainer}>
+      <Animated.View 
+        style={[
+          styles.statusCard, 
+          { 
+            transform: [{ scale: cardScale }],
+            borderColor: getStatusColor()
+          }
+        ]}
+      >
         <TouchableOpacity 
-          style={getButtonStyle(STATUS.ON_SITE)}
-          onPress={() => handleStatusChange(STATUS.ON_SITE)}
+          style={styles.cardTouchable}
+          onPress={handleStatusChange}
+          activeOpacity={0.9}
         >
-          <Text style={[styles.buttonText, status === STATUS.ON_SITE ? styles.activeButtonText : null]}>
-            {STATUS.ON_SITE}
-          </Text>
+          <Animated.View style={[styles.cardContent, { opacity: statusFade }]}>
+            <Text style={styles.statusIcon}>{getStatusIcon()}</Text>
+            <Text style={[styles.statusTitle, { color: getStatusColor() }]}>
+              {status}
+            </Text>
+            <Text style={styles.tapInstruction}>Tryck för att ändra status</Text>
+          </Animated.View>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={getButtonStyle(STATUS.IN_PROGRESS)}
-          onPress={() => handleStatusChange(STATUS.IN_PROGRESS)}
-        >
-          <Text style={[styles.buttonText, status === STATUS.IN_PROGRESS ? styles.activeButtonText : null]}>
-            {STATUS.IN_PROGRESS}
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={getButtonStyle(STATUS.COMPLETED)}
-          onPress={() => handleStatusChange(STATUS.COMPLETED)}
-        >
-          <Text style={[styles.buttonText, status === STATUS.COMPLETED ? styles.activeButtonText : null]}>
-            {STATUS.COMPLETED}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <Animated.View style={[styles.statusInfoContainer, { opacity: statusFade }]}>
-        {status && (
-          <View style={styles.statusInfo}>
-            <Text style={styles.statusLabel}>Aktuell status:</Text>
-            <Text style={styles.statusText}>{status}</Text>
-            
-            {status === STATUS.IN_PROGRESS && (
-              <>
-                <View style={styles.timelineContainer}>
-                  <View style={styles.timeline}>
-                    <Animated.View 
-                      style={[
-                        styles.timelineProgress,
-                        { width: progressAnimation.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: ['0%', '100%']
-                        })}
-                      ]}
-                    />
-                  </View>
-                </View>
-                
-                <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-                
-                <View style={styles.timeControls}>
-                  <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-5)}>
-                    <Text style={styles.timeButtonText}>-5m</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(5)}>
-                    <Text style={styles.timeButtonText}>+5m</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-            
-            {status === STATUS.COMPLETED && (
-              <Text style={styles.doneText}>✅ Arbetet är klart!</Text>
-            )}
-            
-            {startTime && (
-              <View style={styles.timeStats}>
-                <Text style={styles.timeStatsLabel}>
-                  Startad: {startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                </Text>
-                {status !== STATUS.ON_SITE && (
-                  <Text style={styles.timeStatsLabel}>
-                    Tid aktiv: {getElapsedTime()}
-                  </Text>
-                )}
-              </View>
-            )}
-          </View>
-        )}
       </Animated.View>
 
-      {!status && (
+      {status === STATUS.IN_PROGRESS && (
+        <View style={styles.progressContainer}>
+          <View style={styles.timelineContainer}>
+            <View style={styles.timeline}>
+              <Animated.View 
+                style={[
+                  styles.timelineProgress,
+                  { width: progressAnimation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0%', '100%']
+                  })}
+                ]}
+              />
+            </View>
+          </View>
+          
+          <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
+          
+          <View style={styles.timeControls}>
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(-5)}>
+              <Text style={styles.timeButtonText}>-5m</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.timeButton} onPress={() => adjustTime(5)}>
+              <Text style={styles.timeButtonText}>+5m</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {status === STATUS.COMPLETED && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.doneText}>🎉 Arbetet är klart!</Text>
+        </View>
+      )}
+      
+      {startTime && status !== STATUS.NOT_STARTED && (
+        <View style={styles.timeStats}>
+          <Text style={styles.timeStatsLabel}>
+            Startad: {startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+          </Text>
+          {status !== STATUS.ON_SITE && getElapsedTime() && (
+            <Text style={styles.timeStatsLabel}>
+              Tid aktiv: {getElapsedTime()}
+            </Text>
+          )}
+        </View>
+      )}
+
+      {status === STATUS.NOT_STARTED && (
         <View style={styles.instructionContainer}>
           <Text style={styles.instructionText}>
-            Välj "På plats" när du anländer till arbetsplatsen.
-            Välj "Arbete pågår" för att starta arbetet och tidtagning.
-            Välj "Klart" när arbetet är avslutat.
+            Tryck på kortet för att börja med "På plats" när du anländer till arbetsplatsen.
           </Text>
         </View>
       )}
@@ -268,70 +281,62 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
-  statusContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    gap: 8,
-  },
-  statusButton: {
-    flex: 1,
+  statusCard: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 8,
+    borderRadius: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
+    borderWidth: 3,
+    minHeight: 160,
+  },
+  cardTouchable: {
+    flex: 1,
+    borderRadius: 13,
+  },
+  cardContent: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    padding: 24,
   },
-  activeButton: {
-    backgroundColor: '#4D88B8',
+  statusIcon: {
+    fontSize: 48,
+    marginBottom: 12,
   },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4D88B8',
+  statusTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  activeButtonText: {
-    color: '#FFFFFF',
-  },
-  statusInfoContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    marginTop: 8,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  statusInfo: {
-    alignItems: 'center',
-  },
-  statusLabel: {
+  tapInstruction: {
     fontSize: 14,
     color: '#6c757d',
-    marginBottom: 4,
+    fontStyle: 'italic',
   },
-  statusText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#495057',
+  progressContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
     marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   timelineContainer: {
     width: '100%',
-    marginVertical: 16,
+    marginBottom: 16,
   },
   timeline: {
-    height: 10,
+    height: 12,
     backgroundColor: '#e9ecef',
-    borderRadius: 5,
+    borderRadius: 6,
     overflow: 'hidden',
   },
   timelineProgress: {
@@ -339,52 +344,68 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: '100%',
-    backgroundColor: '#FFD54F', // Yellow
-    borderRadius: 5,
+    backgroundColor: '#FFD54F',
+    borderRadius: 6,
   },
   timerText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#4D88B8',
     marginBottom: 16,
+    textAlign: 'center',
   },
   timeControls: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 16,
-    marginBottom: 12,
   },
   timeButton: {
-    backgroundColor: '#e9ecef',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    backgroundColor: '#f8f9fa',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#e9ecef',
   },
   timeButtonText: {
     color: '#495057',
     fontWeight: '600',
+    fontSize: 16,
+  },
+  completedContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    alignItems: 'center',
   },
   doneText: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#28a745',
-    marginTop: 10,
     fontWeight: '600',
   },
   timeStats: {
-    marginTop: 12,
-    padding: 12,
     backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    width: '100%',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4D88B8',
   },
   timeStatsLabel: {
     fontSize: 14,
-    color: '#6c757d',
+    color: '#495057',
     marginBottom: 4,
+    fontWeight: '500',
   },
   instructionContainer: {
     backgroundColor: '#e7f5ff',
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
     borderLeftColor: '#4D88B8',
@@ -393,9 +414,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#495057',
     lineHeight: 20,
+    textAlign: 'center',
   },
 });
 
 export default WorkerStatus;
-
-// to do: add useTheme hook
