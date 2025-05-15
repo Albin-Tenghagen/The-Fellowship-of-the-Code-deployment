@@ -142,15 +142,15 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
   const getStatusColor = () => {
     switch (status) {
       case STATUS.NOT_STARTED:
-        return '#6B7280'; 
+        return '#4e535d'; 
       case STATUS.ON_SITE:
-        return '#3B82F6'; 
+        return '#0e2c5c'; 
       case STATUS.IN_PROGRESS:
-        return '#F59E0B'; 
+        return '#c27c03'; 
       case STATUS.COMPLETED:
-        return '#10B981'; 
+        return '#007b52'; 
       default:
-        return '#6B7280';
+        return '#4e535d';
     }
   };
 
@@ -174,7 +174,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
     <View style={[styles.container, { backgroundColor: theme.card }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.textColor }]}>Arbetsstatus</Text>
+        <Text style={[styles.title, { color: theme.inputBackground }]}>Arbetsstatus</Text>
         <Text style={[styles.subtitle, { color: theme.textTertiary }]}>{locationName}</Text>
       </View>
 
@@ -210,7 +210,7 @@ const WorkerStatus = ({ locationName = 'Nånstans i Sverige' }) => {
 
       {/* Progress Section */}
       {status === STATUS.IN_PROGRESS && (
-        <View style={[styles.progressSection, { backgroundColor: theme.headerBackground }]}>
+        <View style={[styles.progressSection, { backgroundColor: theme.background }]}>
           <Text style={[styles.sectionTitle, { color: theme.textColor }]}>Pågående arbete</Text>
           
           <View style={styles.progressContainer}>

@@ -10,9 +10,9 @@ const UserScreen = () => {
       <View style={styles.statusContainer}>
         <WorkerStatus />
       </View>
-      <View style={styles.mapContainer}>
+      {/* <View style={styles.mapContainer}>
         <MapScreen />
-      </View>
+      </View> */}
     </View>
   )
 }
