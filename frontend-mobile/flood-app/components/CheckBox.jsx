@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import AnimatedButton from "../components/AnimatedButton"
+import AnimatedButton from "./AnimatedButton"
 
 
-const LocationCard = () => {
+const CheckBox = () => {
     const [isSelected, setSelection] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ const LocationCard = () => {
   );
 };
 
-export default LocationCard
+export default CheckBox
 
 const styles = StyleSheet.create({
   container: {
