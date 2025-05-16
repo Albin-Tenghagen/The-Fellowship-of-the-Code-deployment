@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { useTheme } from '../themes/ThemeContext';
 
 
 const CheckBox = ({ title, isChecked, onPress}) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -12,10 +15,8 @@ const CheckBox = ({ title, isChecked, onPress}) => {
             <BouncyCheckbox
             isChecked={isChecked}
             onPress={onPress}
-            fillColor="black"
-            unfillColor="#FFFFFF"
-            iconStyle={{ borderColor: 'black' }}
-            innerIconStyle={{ borderWidth: 2 }}
+            fillColor={theme.accent}
+            innerIconStyle={{ borderWidth: 3 }}
 
         />
             <Text style={styles.label}>{title}</Text>
@@ -26,7 +27,8 @@ const CheckBox = ({ title, isChecked, onPress}) => {
 
 export default CheckBox
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => 
+  StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
@@ -42,5 +44,7 @@ const styles = StyleSheet.create({
   },
   label: {
     margin: 8,
+    color: theme.textTertiary,
+    fontSize: 25,
   },
 });

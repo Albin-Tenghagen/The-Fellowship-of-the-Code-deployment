@@ -54,11 +54,8 @@ const FlatListLocation = () => {
           keyExtractor={item => item.id}
           />
 
-          <AnimatedButton>
-            <Text>
-              Påbörja ärende
-            </Text>
-          </AnimatedButton>
+          <AnimatedButton title="Påbörja arbete" onPress={() => console.log('Sparar')} />
+           
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -75,22 +72,16 @@ const createStyles = (theme) =>
     marginTop: StatusBar.currentHeight || 0,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '45%',
+    width: '95%',
     borderRadius: 8,
     margin: 8,
     padding: 30,
     paddingBottom: 30,
-    paddingTop: 30,
+    paddingTop: 50,
   },
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
+
+  
+ 
 
  
 });
