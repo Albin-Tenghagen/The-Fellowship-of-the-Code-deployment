@@ -181,6 +181,7 @@ What has been accomplished
 
         * (TALK WITH GROUP ALSO) Started working on Vervel but might change to /docker.tar
 
+
         * Endpoints
             - Admin_maintenance route needs to be implemented
             OBS!!! ALL CONNECTIONS TO THOSE ENDPOINTS NEED TO ALTERED/REMOVED
@@ -201,6 +202,18 @@ What has been accomplished
         * All of the above
         * migrating from JSON files writing to SQL-syntax
         * ... profit?
+
+        Zana routes
+         - adminInfrastructure
+         -adminIssueUpkeep
+
+        Sami routes
+            - user.ts
+            - userRisk
+            -userSafety
+        Albin routes
+            - admin Auth
+            - Monitoring
 
     ## preperations for Zana for tomorrow
 
