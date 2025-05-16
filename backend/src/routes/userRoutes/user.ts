@@ -2,9 +2,13 @@ import express, { Request, Response } from "express";
 import { Router } from "express";
 import db from "../../../Database/db.ts";
 import { users_observation_info } from "types/types.ts";
+import userTipsRouter from "../userRoutes/userTips.ts"
+
 
 const pool = db.pool;
 const userRouter: Router = express.Router();
+
+userRouter.use("/tips", userTipsRouter)
 
 // Union of allowed sorting fields
 type SortField =
