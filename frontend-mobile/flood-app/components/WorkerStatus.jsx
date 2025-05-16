@@ -2,27 +2,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { AntDesign, MaterialIcons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../themes/ThemeContext';
-import { fetchSafety } from '../services/api'; // Added missing import
+import { fetchSafety } from '../services/api';
 
 const WorkerStatus = ({ locationName = null }) => {
   const { theme } = useTheme();
-
   const STATUS = {
     NOT_STARTED: 'Ej påbörjad',
     ON_SITE: 'På plats',
     IN_PROGRESS: 'Arbete pågår',
     COMPLETED: 'Klart'
   };
-
   const STATUS_ORDER = [STATUS.NOT_STARTED, STATUS.ON_SITE, STATUS.IN_PROGRESS, STATUS.COMPLETED];
-
   const [status, setStatus] = useState(STATUS.NOT_STARTED);
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [safety, setSafety] = useState([]);
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [fetchedLocationName, setFetchedLocationName] = useState('Nånstans i Sverige');
-  const [estimatedTime, setEstimatedTime] = useState(60 * 60); // Default 1h
+  const [estimatedTime, setEstimatedTime] = useState(60 * 60);
+  const [isPaused, setIsPaused] = useState(false);
   const progressAnimation = useRef(new Animated.Value(0)).current;
   const statusFade = useRef(new Animated.Value(1)).current;
   const cardScale = useRef(new Animated.Value(1)).current;
@@ -31,7 +29,6 @@ const WorkerStatus = ({ locationName = null }) => {
     const currentIndex = STATUS_ORDER.indexOf(status);
     const nextIndex = (currentIndex + 1) % STATUS_ORDER.length;
     const newStatus = STATUS_ORDER[nextIndex];
-
     Animated.sequence([
       Animated.timing(cardScale, {
         toValue: 0.98,
@@ -44,7 +41,6 @@ const WorkerStatus = ({ locationName = null }) => {
         useNativeDriver: true
       })
     ]).start();
-
     Animated.timing(statusFade, {
       toValue: 0,
       duration: 150,
@@ -65,20 +61,24 @@ const WorkerStatus = ({ locationName = null }) => {
         setStartTime(new Date());
       }
       setTimeLeft(estimatedTime);
+      setIsPaused(false); 
     } else if (status === STATUS.ON_SITE) {
       setTimeLeft(null);
       setStartTime(null);
+      setIsPaused(false); 
     } else if (status === STATUS.COMPLETED) {
+      setIsPaused(false); 
       if (timeLeft > 0) {
       }
     } else {
       setTimeLeft(null);
       setStartTime(null);
+      setIsPaused(false); 
     }
   }, [status, estimatedTime]);
 
   useEffect(() => {
-    if (status !== STATUS.IN_PROGRESS || timeLeft === null) return;
+    if (status !== STATUS.IN_PROGRESS || timeLeft === null || isPaused) return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -89,15 +89,12 @@ const WorkerStatus = ({ locationName = null }) => {
         return prev - 1;
       });
     }, 1000);
-
     return () => clearInterval(timer);
-  }, [timeLeft, status]);
+  }, [timeLeft, status, isPaused]);
 
   useEffect(() => {
     if (timeLeft === null || estimatedTime === 0) return;
-
     const progress = 1 - (timeLeft / estimatedTime);
-
     Animated.timing(progressAnimation, {
       toValue: progress,
       duration: 300,
@@ -107,7 +104,6 @@ const WorkerStatus = ({ locationName = null }) => {
 
   const adjustTime = (minutes) => {
     const additionalSeconds = minutes * 60;
-
     if (status === STATUS.IN_PROGRESS) {
       setTimeLeft(prev => Math.max(0, prev + additionalSeconds));
       setEstimatedTime(prev => Math.max(300, prev + additionalSeconds));
@@ -116,9 +112,12 @@ const WorkerStatus = ({ locationName = null }) => {
     }
   };
 
+  const togglePause = () => {
+    setIsPaused(!isPaused);
+  };
+
   const formatTime = (seconds) => {
     if (seconds === null) return '';
-
     if (seconds >= 3600) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -133,13 +132,10 @@ const WorkerStatus = ({ locationName = null }) => {
 
   const getElapsedTime = () => {
     if (!startTime) return null;
-
     const now = new Date();
     const elapsed = Math.floor((now - startTime) / 1000);
-
     const hours = Math.floor(elapsed / 3600);
     const minutes = Math.floor((elapsed % 3600) / 60);
-
     return `${hours > 0 ? `${hours}h ` : ''}${minutes}m`;
   };
 
@@ -186,7 +182,6 @@ const WorkerStatus = ({ locationName = null }) => {
         console.log('Could not fetch safety data:', error);
       }
     };
-
     if (!locationName) {
       getSafety();
     }
@@ -245,59 +240,86 @@ const WorkerStatus = ({ locationName = null }) => {
       {/* Progress Section */}
       {status === STATUS.IN_PROGRESS && (
         <View style={[styles.progressSection, { backgroundColor: theme.background }]}>
-          <Text style={[styles.sectionTitle, { color: theme.textColor }]}>Pågående arbete</Text>
-
-          <View style={styles.progressContainer}>
-            <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
-              <Animated.View
-                style={[
-                  styles.timelineProgress,
-                  {
-                    backgroundColor: getStatusColor(),
-                    width: progressAnimation.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0%', '100%']
-                    })
-                  }
-                ]}
-              />
+          {/* Progress bar and timer in one row */}
+          <View style={styles.progressHeader}>
+            <View style={styles.progressBarContainer}>
+              <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
+                <Animated.View
+                  style={[
+                    styles.timelineProgress,
+                    {
+                      backgroundColor: getStatusColor(),
+                      width: progressAnimation.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%']
+                      })
+                    }
+                  ]}
+                />
+              </View>
             </View>
+            <Text style={[styles.timerTextCompact, { color: theme.textColor }]}>
+              {formatTime(timeLeft)}
+            </Text>
           </View>
 
-          <Text style={[styles.timerText, { color: theme.textColor }]}>{formatTime(timeLeft)}</Text>
+          {/* Pause button row */}
+          <View style={styles.pauseContainer}>
+            <TouchableOpacity
+              style={[
+                styles.pauseButton,
+                {
+                  backgroundColor: isPaused ? '#007b52' : '#c27c03',
+                  borderColor: isPaused ? '#007b52' : '#c27c03'
+                }
+              ]}
+              onPress={togglePause}
+            >
+              <MaterialIcons
+                name={isPaused ? "play-arrow" : "pause"}
+                size={20}
+                color="white"
+              />
+              <Text style={styles.pauseButtonText}>
+                {isPaused ? 'Fortsätt' : 'Paus'}
+              </Text>
+            </TouchableOpacity>
+            {isPaused && (
+              <Text style={[styles.pausedText, { color: theme.textSecondary }]}>
+                Arbetet är pausat
+              </Text>
+            )}
+          </View>
 
-          <View style={styles.controlsContainer}>
-            <View style={styles.timeControls}>
-              <TouchableOpacity
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
-                onPress={() => adjustTime(-30)}
-              >
-                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-30m</Text>
-              </TouchableOpacity>
+          {/* Compact time controls */}
+          <View style={styles.timeControlsCompact}>
+            <TouchableOpacity
+              style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
+              onPress={() => adjustTime(-30)}
+            >
+              <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>-30m</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
-                onPress={() => adjustTime(30)}
-              >
-                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+30m</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
+              onPress={() => adjustTime(-60)}
+            >
+              <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>-1h</Text>
+            </TouchableOpacity>
 
-            <View style={styles.timeControls}>
-              <TouchableOpacity
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
-                onPress={() => adjustTime(-60)}
-              >
-                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>-60m</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
+              onPress={() => adjustTime(30)}
+            >
+              <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>+30m</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.timeButton, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
-                onPress={() => adjustTime(60)}
-              >
-                <Text style={[styles.timeButtonText, { color: theme.textColor }]}>+60m</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
+              onPress={() => adjustTime(60)}
+            >
+              <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>+1h</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -307,14 +329,14 @@ const WorkerStatus = ({ locationName = null }) => {
         <View style={[styles.timeStats, { backgroundColor: theme.backgroundSecondary }]}>
           <View style={styles.statItem}>
             <Text style={[styles.statLabel, { color: theme.textTertiary }]}>Startad</Text>
-            <Text style={[styles.statValue, { color: theme.textColor }]}>
+            <Text style={[styles.statValue, { color: theme.textTertiary }]}>
               {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </Text>
           </View>
           {status !== STATUS.ON_SITE && getElapsedTime() && (
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: theme.textTertiary }]}>Tid aktiv</Text>
-              <Text style={[styles.statValue, { color: theme.textColor }]}>
+              <Text style={[styles.statValue, { color: theme.textTertiary }]}>
                 {getElapsedTime()}
               </Text>
             </View>
@@ -339,8 +361,6 @@ const WorkerStatus = ({ locationName = null }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // borderBottomEndRadius: 5,
-    // borderBottomStartRadius: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.08,
@@ -407,7 +427,7 @@ const styles = StyleSheet.create({
   progressSection: {
     margin: 20,
     marginTop: 0,
-    padding: 20,
+    padding: 14,
     borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -415,17 +435,18 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
+  progressHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 12,
   },
-  progressContainer: {
-    marginBottom: 10,
+  progressBarContainer: {
+    flex: 1,
   },
   timeline: {
-    height: 8,
-    borderRadius: 4,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
   },
   timelineProgress: {
@@ -433,60 +454,57 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 3,
   },
-  timerText: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 0.3,
-  },
-  controlsContainer: {
-    gap: 12,
-  },
-  timeControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 12,
-  },
-  timeButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: 'center',
-    maxWidth: 120,
-  },
-  timeButtonText: {
+  timerTextCompact: {
+    fontSize: 16,
     fontWeight: '600',
-    fontSize: 15,
+    letterSpacing: 0.2,
+    minWidth: 100,
+    textAlign: 'right',
   },
-  completionSection: {
-    margin: 20,
-    marginTop: 0,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  completionIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
+  pauseContainer: {
     alignItems: 'center',
     marginBottom: 12,
   },
-  doneText: {
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: 0.2,
+  pauseButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: 8,
+    minWidth: 100,
+  },
+  pauseButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  pausedText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
+  timeControlsCompact: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  timeButtonCompact: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  timeButtonTextCompact: {
+    fontWeight: '600',
+    fontSize: 13,
   },
   timeStats: {
     flexDirection: 'row',

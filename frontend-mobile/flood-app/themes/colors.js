@@ -38,7 +38,7 @@ export const darkTheme = {
 
 
     textPrimary: '#FFF7EC',
-    textSecondary: '#fad9d1',
+    textSecondary: ' #fad9d1', // CHANGE
     textTertiary:'#f8c6ba',
     textError:'#e6c41c',
     
