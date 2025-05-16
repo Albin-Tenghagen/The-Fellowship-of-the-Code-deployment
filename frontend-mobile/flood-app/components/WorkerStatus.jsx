@@ -61,19 +61,19 @@ const WorkerStatus = ({ locationName = null }) => {
         setStartTime(new Date());
       }
       setTimeLeft(estimatedTime);
-      setIsPaused(false); // Reset pause when starting work
+      setIsPaused(false); 
     } else if (status === STATUS.ON_SITE) {
       setTimeLeft(null);
       setStartTime(null);
-      setIsPaused(false); // Reset pause when not working
+      setIsPaused(false);
     } else if (status === STATUS.COMPLETED) {
-      setIsPaused(false); // Reset pause when completed
+      setIsPaused(false); 
       if (timeLeft > 0) {
       }
     } else {
       setTimeLeft(null);
       setStartTime(null);
-      setIsPaused(false); // Reset pause for any other status
+      setIsPaused(false);
     }
   }, [status, estimatedTime]);
 
@@ -121,16 +121,14 @@ const WorkerStatus = ({ locationName = null }) => {
     setTimeLeft(null);
     setStartTime(null);
     setIsPaused(false);
-    setEstimatedTime(60 * 60); // Reset to default
+    setEstimatedTime(60 * 60); 
     
-    // Reset progress animation
     Animated.timing(progressAnimation, {
       toValue: 0,
       duration: 300,
       useNativeDriver: false
     }).start();
     
-    // Add visual feedback
     Animated.sequence([
       Animated.timing(cardScale, {
         toValue: 0.98,
@@ -228,7 +226,7 @@ const WorkerStatus = ({ locationName = null }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.card }]}>
-      {/* Header */}
+
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.inputBackground }]}>Arbetsstatus</Text>
         <Text style={[styles.subtitle, { color: theme.textTertiary }]}>
@@ -236,7 +234,6 @@ const WorkerStatus = ({ locationName = null }) => {
         </Text>
       </View>
 
-      {/* Status Card */}
       <Animated.View
         style={[
           styles.statusCard,
@@ -266,7 +263,6 @@ const WorkerStatus = ({ locationName = null }) => {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Progress Section */}
       {status === STATUS.IN_PROGRESS && (
         <View style={[styles.progressSection, { backgroundColor: theme.background }]}>
           {/* Progress bar and timer in one row */}
@@ -292,7 +288,6 @@ const WorkerStatus = ({ locationName = null }) => {
             </Text>
           </View>
 
-          {/* Control buttons row */}
           <View style={styles.controlsRow}>
             <TouchableOpacity
               style={[
@@ -341,7 +336,6 @@ const WorkerStatus = ({ locationName = null }) => {
             </Text>
           )}
 
-          {/* Compact time controls */}
           <View style={styles.timeControlsCompact}>
             <TouchableOpacity
               style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
@@ -393,8 +387,7 @@ const WorkerStatus = ({ locationName = null }) => {
           )}
         </View>
       )}
-
-      {/* Instructions */}
+      
       {status === STATUS.NOT_STARTED && (
         <View style={[styles.instructionContainer, { backgroundColor: theme.backgroundTertiary }]}>
           <View style={styles.instructionContent}>
@@ -488,7 +481,9 @@ const styles = StyleSheet.create({
   progressHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
     gap: 12,
   },
   progressBarContainer: {
@@ -498,6 +493,7 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     overflow: 'hidden',
+    
   },
   timelineProgress: {
     position: 'absolute',
