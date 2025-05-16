@@ -12,20 +12,33 @@ export interface TipRequest
   extends Request<{ id: string }, any, userTipObject> {}
 //*_____________________________________________________________
 
-//* User Safety
-export interface users_observation_info
-  extends Request<{ id: string }, any, user_observation> {}
-
+// Your base observation data type
 export interface user_observation {
   id: number;
   timestamp: string;
-  location: string; // Join through monitoring(id) table to station(id) table where location is stations.location
+  location: string;
   warning: string;
   waterlevel: number;
   riskAssesment: string;
   description: string;
   proactiveActions: boolean;
 }
+
+// Allowed sorting fields
+export type ObservationSortField = keyof Pick<
+  user_observation,
+  "id" | "timestamp" | "location" | "riskAssesment" | "waterlevel"
+>;
+
+// Typed request for query params (e.g. ?sorting=timestamp)
+export interface users_observation_info extends Request<
+  {},
+  any, // response body (you can customize this if needed)
+  { sorting?: ObservationSortField } // query string
+> {}
+
+
+
 
 //*_____________________________________________________________
 

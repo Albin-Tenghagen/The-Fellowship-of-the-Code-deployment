@@ -8,7 +8,6 @@ import { validateUserTips } from "../../validators/tipsValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
 import db from "../../../Database/db.ts";
-import { Query } from "pg";
 const pool = db.pool;
 
 const userTipsRouter: Router = express.Router();

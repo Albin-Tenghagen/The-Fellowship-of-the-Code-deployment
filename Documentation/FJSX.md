@@ -210,7 +210,8 @@ What has been accomplished
         Sami routes
             - user.ts
             - userRisk
-            -userSafety
+            - userSafety
+  
         Albin routes
             - admin Auth
             - Monitoring
