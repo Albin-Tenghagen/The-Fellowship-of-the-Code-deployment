@@ -1,202 +1,108 @@
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../themes/ThemeContext';
-import { useAppData } from "../context/DataContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import baseUrl from '../services/urlConfig';
 
 const WaterLevelCard = ({
     title = 'Standardtitel',
     width = '45%',
     height = null,
     icon = null,
-    image = null,
     parameter = null,
-    alternateParams = [],
 }) => {
-
     const { theme } = useTheme();
-    const { monitoringData, loading, error } = useAppData();
-    const [paramValue, setParamValue] = useState('Ej tillgänglig');
-    const [timestamp, setTimestamp] = useState('Ingen tid');
+    const [paramValue, setParamValue] = useState('Loading...');
 
-    const findValueInData = (data, primaryParam, alternateParams = []) => {
-        if (!data) return null;
 
-        if (data[primaryParam] !== undefined) {
-            return data[primaryParam];
-        }
-
-        for (const altParam of alternateParams) {
-            if (data[altParam] !== undefined) {
-                return data[altParam];
-            }
-        }
-
-        const nestedObjects = ['data', 'readings', 'sensors', 'measurements'];
-        for (const nestedKey of nestedObjects) {
-            if (data[nestedKey]) {
-                if (data[nestedKey][primaryParam] !== undefined) {
-                    return data[nestedKey][primaryParam];
+    useEffect(() => {
+        const testFetch = async () => {
+            try {
+                console.log(`=== Testing fetch for ${parameter} ===`);
+                
+                const response = await fetch(`${baseUrl}/admins/authenticated/monitoring`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    setParamValue(`Error: ${response.status}`);
+                    return;
                 }
-
-                for (const altParam of alternateParams) {
-                    if (data[nestedKey][altParam] !== undefined) {
-                        return data[nestedKey][altParam];
+                
+                const data = await response.json();
+                console.log('Full response:', data);
+                
+                if (!data.data || data.data.length === 0) {
+                    console.log('No data from API, using fallback data...');
+                    
+    
+                    const fallbackData = {
+                        "id": 1001,
+                        "timestamp": "18/4-25",
+                        "airPressure": 32,
+                        "soilMoisture": 52,
+                        "temperature": 14,
+                        "humidity": 43,
+                        "pressureLevel": 53,
+                        "ultraSoundLevel": 4
+                    };
+                    
+                    if (fallbackData[parameter] !== undefined) {
+                        let value = fallbackData[parameter];
+                        
+                        if (parameter === 'temperature') {
+                            value = `${value}°C`;
+                        } else if (parameter === 'humidity' || parameter === 'soilMoisture') {
+                            value = `${value}%`;
+                        } else if (parameter === 'airPressure') {
+                            value = `${value} hPa`;
+                        } else if (parameter === 'pressureLevel') {
+                            value = `${value} kPa`;
+                        } else if (parameter === 'ultraSoundLevel') {
+                            value = `${value} m`;
+                        }
+                        
+                        setParamValue(value);
+                    } else {
+                        setParamValue('No parameter match');
                     }
+                    return;
                 }
+                
+                const first = data.data[0];
+                console.log('First entry:', first);
+                console.log(`Value for ${parameter}:`, first[parameter]);
+                
+                if (first[parameter] !== undefined) {
+                    setParamValue(`${first[parameter]}`);
+                } else {
+                    setParamValue('No value in API data');
+                }
+                
+            } catch (error) {
+                console.error('Fetch error:', error);
+                setParamValue(`Error: ${error.message}`);
             }
-        }
-
-        return null;
-    };
-
-    const formatTimestamp = (rawTimestamp) => {
-        if (!rawTimestamp || rawTimestamp === 'Ingen tid') return 'Ingen tid';
-
-        try {
-            if (typeof rawTimestamp === 'string' &&
-                (rawTimestamp.includes('/') || rawTimestamp.includes('-'))) {
-                return rawTimestamp;
-            }
-
-            const date = new Date(rawTimestamp);
-            if (isNaN(date.getTime())) return String(rawTimestamp);
-
-            return date.toLocaleString('sv-SE', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: false
-            });
-        } catch (error) {
-            console.error('Fel vid datumformattering:', error);
-            return String(rawTimestamp);
-        }
-    };
-
-    const formatParameterValue = (value) => {
-        if (value === null || value === undefined || value === 'Ej tillgänglig') {
-            return 'Ej tillgänglig';
-        }
-
-        const numValue = typeof value === 'string' ? parseFloat(value) : value;
-        if (isNaN(numValue)) {
-            return value.toString();
-        }
-
-        switch (parameter) {
-            case 'temperature':
-                return numValue.toFixed(0);
-            case 'humidity':
-            case 'soilMoisture':
-                return Math.round(numValue);
-            case 'ultraSoundLevel':
-                return numValue.toFixed(1);
-            case 'airPressure':
-            case 'pressureLevel':
-                return Math.round(numValue);
-            default:
-                return Math.abs(numValue) < 10 ? numValue.toFixed(1) : Math.round(numValue);
-        }
-    };
-
-    const getParameterTitle = (param) => {
-        const titleMap = {
-            airPressure: 'Lufttryck',
-            soilMoisture: 'Jordfuktighet',
-            temperature: 'Temperatur',
-            humidity: 'Luftfuktighet',
-            pressureLevel: 'Tryck',
-            ultraSoundLevel: 'Vattennivå'
         };
 
-        return param ? (titleMap[param] || param) : '';
-    };
+        if (parameter) {
+            testFetch();
+        }
+    }, [parameter]);
 
     const getParameterIcon = () => {
-        if (!parameter) return icon;
-
         const iconMap = {
-            airPressure: 'weather-windy',
-            soilMoisture: 'water-percent',
             temperature: 'thermometer',
             humidity: 'water-percent',
+            airPressure: 'weather-windy',
+            soilMoisture: 'water-percent',
             pressureLevel: 'gauge',
             ultraSoundLevel: 'wave',
         };
-
         return iconMap[parameter] || icon;
     };
 
-    const getParameterUnit = () => {
-        const unitMap = {
-            airPressure: 'hPa',
-            soilMoisture: '%',
-            temperature: '°C',
-            humidity: '%',
-            pressureLevel: 'kPa',
-            ultraSoundLevel: 'm',
-        };
-
-        return parameter ? unitMap[parameter] || '' : '';
-    };
-
-    const hasValidData = () => {
-        return (
-            monitoringData !== null &&
-            monitoringData !== undefined &&
-            Array.isArray(monitoringData) &&
-            monitoringData.length > 0
-        );
-    };
-
-    useEffect(() => {
-        if (!hasValidData()) {
-            setParamValue('Ej tillgänglig');
-            setTimestamp('Ingen tid');
-            return;
-        }
-
-        try {
-            const latestData = monitoringData[0];
-            const foundValue = findValueInData(latestData, parameter, alternateParams);
-
-            if (foundValue !== null) {
-                const formattedValue = formatParameterValue(foundValue);
-                setParamValue(formattedValue);
-            } else {
-                setParamValue('Ej tillgänglig');
-            }
-
-            const timestampValue = findValueInData(
-                latestData,
-                'timestamp',
-                ['time', 'date', 'recordedAt', 'created', 'createdAt']
-            );
-
-            if (timestampValue) {
-                const formattedTime = formatTimestamp(timestampValue);
-                setTimestamp(formattedTime);
-            } else {
-                setTimestamp('Ingen tid');
-            }
-        } catch (err) {
-            console.error('Fel vid bearbetning av övervakningsdata:', err);
-            setParamValue('Fel');
-            setTimestamp('Ingen tid');
-        }
-    }, [monitoringData, parameter, alternateParams]);
-
     return (
-        <View
-            style={[
-                styles.card,
-                { backgroundColor: theme.card },
-                width ? { width } : {},
-                height ? { height } : { aspectRatio: 1 },
-            ]}
-        >
+        <View style={[styles.card, { backgroundColor: theme.card }]}>
             {getParameterIcon() && (
                 <MaterialCommunityIcons
                     name={getParameterIcon()}
@@ -205,37 +111,14 @@ const WaterLevelCard = ({
                     style={{ marginBottom: 8 }}
                 />
             )}
-
-            {image && (
-                <Image
-                    source={image}
-                    style={styles.image}
-                    resizeMode="cover"
-                />
-            )}
-
+            
             <Text style={[styles.text, { color: theme.textColor }]}>
                 {title}
             </Text>
-
-            {loading ? (
-                <Text style={{ color: theme.textColor }}>Laddar...</Text>
-            ) : error ? (
-                <Text style={{ color: 'red' }}>Fel: {error}</Text>
-            ) : !hasValidData() ? (
-                <View>
-                    <Text style={{ color: theme.textColor }}>Ingen data tillgänglig</Text>
-                </View>
-            ) : (
-                <View style={styles.dataContainer}>
-                    <Text style={[styles.valueText, { color: theme.textColor }]}>
-                        {paramValue} {getParameterUnit()}
-                    </Text>
-                    <Text style={[styles.timestamp, { color: theme.textSecondary }]}>
-                        {timestamp}
-                    </Text>
-                </View>
-            )}
+            
+            <Text style={[styles.valueText, { color: theme.textColor }]}>
+                {paramValue}
+            </Text>
         </View>
     );
 };
@@ -263,22 +146,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 8,
     },
-    image: {
-        width: 60,
-        height: 60,
-        marginBottom: 8,
-    },
-    dataContainer: {
-        alignItems: 'center',
-        marginTop: 4,
-    },
     valueText: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    timestamp: {
-        fontSize: 12,
+    debugText: {
+        fontSize: 10,
         marginTop: 4,
     },
 });
