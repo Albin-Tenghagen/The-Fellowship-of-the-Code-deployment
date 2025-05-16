@@ -6,14 +6,9 @@ import path from "path";
 import { StationRequest } from "types/types.ts";
 import { MonitoringEntry } from "types/types.ts";
 
-import authHistoricalMonitoringRouter from "./adminHistoricalMonitoring.ts";
 const authMonitoringRouter = express.Router();
-authMonitoringRouter.use(
-  "/historicalMonitoring",
-  authHistoricalMonitoringRouter
-);
 
-//GET to monitor currnet data
+//GET to monitor currnet data (last two weeks)
 authMonitoringRouter.get(
   "/",
   async (_req: StationRequest, res: Response): Promise<void> => {
@@ -51,6 +46,36 @@ authMonitoringRouter.get(
     } catch (error) {
       console.error("Server error", error);
       res.status(500).json({ message: "SERVER monitoring ERROR" });
+    }
+  }
+);
+
+//GET to acces historical data (all the existing)
+authMonitoringRouter.get(
+  "/historicalMonitoring",
+  async (_req: Request, res: Response): Promise<void> => {
+    const filePath = path.resolve("Database/monitoring.json");
+
+    try {
+      const jsonData = await readFile(filePath, "utf-8");
+      const monitoredData = JSON.parse(jsonData);
+
+      if (!monitoredData) {
+        res.status(404).json({
+          message:
+            "The server could not find the monitored data, please try again later",
+        });
+      }
+
+      res.status(200).json({
+        message: "This is the monitored Data",
+        monitoredData: monitoredData,
+      });
+      return;
+    } catch (error) {
+      console.error("Server error");
+      res.status(500).json({ message: "SERVER Monitoring ERROR" });
+      return;
     }
   }
 );

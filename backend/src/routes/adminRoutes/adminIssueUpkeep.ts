@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
 import fs from "fs";
-import { usersSafetyInfo, userSafetyBody } from "types/types";
+import { user_observation } from "types/types";
 import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
@@ -28,19 +28,18 @@ authIssueUpkeepRouter.post(
     const newSafetyBody = {
       location: req.body.location,
       description: req.body.description,
-      proactiveActions: req.body.proactiveActions
+      proactiveActions: req.body.proactiveActions,
     };
 
-    if(typeof req.body.proactiveActions !== "boolean") {
-      res.status(400).send({error : "ProactiveActions must be a boolean"}) 
-      return
+    if (typeof req.body.proactiveActions !== "boolean") {
+      res.status(400).send({ error: "ProactiveActions must be a boolean" });
+      return;
     }
 
     try {
       const jsonData = await readFile(filePath, "utf-8");
       const issues = JSON.parse(jsonData);
 
-    
       const publicIssue: userSafetyBody = {
         id: issues.length + 1001,
         timestamp: timestampCreation(),
