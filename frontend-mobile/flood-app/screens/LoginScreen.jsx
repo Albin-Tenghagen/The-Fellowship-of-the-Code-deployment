@@ -6,6 +6,7 @@ import { useUser } from '../context/UserContext';
 import { saveToStorage, getFromStorage, deleteFromStorage } from '../services/webCompatibleSecureStore';
 import { useAuth } from '../context/AuthContext';
 import { ImageBackground, TextInput } from 'react-native';
+import AnimatedButton from '../components/AnimatedButton';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -83,14 +84,10 @@ const LoginScreen = ({ navigation }) => {
                 />
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-                <Pressable
-                onPress={handleSubmit}
-                style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-                accessibilityRole='button'
-                accessibilityLabel='Knapp för att logga in'
-                >
-                    <Text>Logga in</Text>
-                </Pressable>
+                 <AnimatedButton title="Logga in" onPress={() => console.log('Sparar')}accessibilityRole='button'
+                accessibilityLabel='Knapp för att logga in' />
+
+                
             </View>
             <View style={styles.section}>
               <Text>
