@@ -37,9 +37,6 @@ export interface users_observation_info extends Request<
   { sorting?: ObservationSortField } // query string
 > {}
 
-
-
-
 //*_____________________________________________________________
 
 //* infrastructure

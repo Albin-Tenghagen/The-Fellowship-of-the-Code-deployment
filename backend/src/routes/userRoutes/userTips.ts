@@ -1,7 +1,5 @@
 console.log("tips router running....");
 import express, { Request, Response, Router } from "express";
-import fs from "fs";
-import { readFile } from "fs/promises";
 import path from "path";
 import { TipRequest, userTipObject } from "../../types/types.ts";
 import { validateUserTips } from "../../validators/tipsValidation.ts";
