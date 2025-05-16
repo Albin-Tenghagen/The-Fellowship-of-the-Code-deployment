@@ -211,7 +211,7 @@ What has been accomplished
             - user.ts
             - userRisk
             - userSafety
-  
+
         Albin routes
             - admin Auth
             - Monitoring
@@ -234,3 +234,6 @@ What has been accomplished
     ## What has been done
 
         1. types.ts has been overhauled
+        2. user.ts now includes user_observation
+        3. Zana got the DB locally on his machine
+        4. maybe something more
