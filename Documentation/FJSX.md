@@ -218,3 +218,5 @@ What has been accomplished
         - docker.tar and docker-compose-
 
     ## What has been done
+
+        1. types.ts has been overhauled
