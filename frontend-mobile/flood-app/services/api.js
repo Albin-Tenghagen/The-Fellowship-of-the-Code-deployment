@@ -6,7 +6,7 @@ export const fetchSafety = async () => {
     console.log(":rocket: RAW API response:", text);
     const data = JSON.parse(text);
     console.log(":white_check_mark: Parsed JSON:", data);
-    return data.products ?? []; // Returnera arrayen med data
+    return data.products ?? []; 
   } catch (error) {
     console.error(":x: Fel vid hämtning av tips:", error.message);
     throw error;

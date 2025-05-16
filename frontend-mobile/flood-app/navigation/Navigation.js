@@ -3,11 +3,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Pressable } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { useTheme } from "../themes/ThemeContext";
 import LoginScreen from "../screens/LoginScreen";
 import UserScreen from "../screens/UserScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import LocationScreen from "../screens/Location"; // Changed from MapScreen to LocationScreen
 
 const Tab = createBottomTabNavigator();
 
@@ -50,6 +51,15 @@ const Navigation = () => {
           options={{
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="login" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Location"
+          component={LocationScreen} // Updated to use LocationScreen
+          options={{
+            tabBarIcon: ({ color, size }) => (
+             <FontAwesome6 name="location-dot" color={color} size={size} />
             ),
           }}
         />
