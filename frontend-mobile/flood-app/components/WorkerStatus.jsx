@@ -24,6 +24,7 @@ const WorkerStatus = ({ locationName = null }) => {
   const progressAnimation = useRef(new Animated.Value(0)).current;
   const statusFade = useRef(new Animated.Value(1)).current;
   const cardScale = useRef(new Animated.Value(1)).current;
+  const pulseAnimation = useRef(new Animated.Value(1)).current;
 
   const handleStatusChange = () => {
     const currentIndex = STATUS_ORDER.indexOf(status);
@@ -101,6 +102,29 @@ const WorkerStatus = ({ locationName = null }) => {
       useNativeDriver: false
     }).start();
   }, [timeLeft, estimatedTime]);
+
+  // Add pulse animation for progress bar
+  useEffect(() => {
+    if (status === STATUS.IN_PROGRESS && !isPaused) {
+      const pulse = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnimation, {
+            toValue: 1.05,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnimation, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ]),
+        { iterations: -1 }
+      );
+      pulse.start();
+      return () => pulse.stop();
+    }
+  }, [status, isPaused]);
 
   const adjustTime = (minutes) => {
     const additionalSeconds = minutes * 60;
@@ -224,6 +248,61 @@ const WorkerStatus = ({ locationName = null }) => {
 
   const displayLocationName = locationName || fetchedLocationName;
 
+  const renderTimelineProgress = () => {
+    const progressColor = getStatusColor();
+    
+    return (
+      <View style={styles.progressBarContainer}>
+        <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
+          {/* Optional glow effect */}
+          {status === STATUS.IN_PROGRESS && !isPaused && (
+            <Animated.View
+              style={[
+                styles.timelineGlow,
+                {
+                  backgroundColor: `${progressColor}20`,
+                  transform: [{ scale: pulseAnimation }],
+                }
+              ]}
+            />
+          )}
+          
+          <Animated.View
+            style={[
+              styles.timelineProgress,
+              {
+                backgroundColor: progressColor,
+                width: progressAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['0%', '100%']
+                }),
+                // Add a subtle gradient effect using a secondary color
+                borderRightWidth: 2,
+                borderRightColor: `${progressColor}AA`,
+              }
+            ]}
+          />
+          
+          {/* Add percentage markers */}
+          {[0.25, 0.5, 0.75].map((percent, index) => (
+            <View
+              key={index}
+              style={{
+                position: 'absolute',
+                left: `${percent * 100}%`,
+                top: 0,
+                bottom: 0,
+                width: 1,
+                backgroundColor: theme.backgroundSecondary,
+                opacity: 0.3,
+              }}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.card }]}>
 
@@ -267,22 +346,7 @@ const WorkerStatus = ({ locationName = null }) => {
         <View style={[styles.progressSection, { backgroundColor: theme.background }]}>
           {/* Progress bar and timer in one row */}
           <View style={styles.progressHeader}>
-            <View style={styles.progressBarContainer}>
-              <View style={[styles.timeline, { backgroundColor: theme.backgroundTertiary }]}>
-                <Animated.View
-                  style={[
-                    styles.timelineProgress,
-                    {
-                      backgroundColor: getStatusColor(),
-                      width: progressAnimation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['0%', '100%']
-                      })
-                    }
-                  ]}
-                />
-              </View>
-            </View>
+            {renderTimelineProgress()}
             <Text style={[styles.timerTextCompact, { color: theme.textColor }]}>
               {formatTime(timeLeft)}
             </Text>
@@ -488,19 +552,40 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     flex: 1,
+    position: 'relative',
   },
   timeline: {
-    height: 6,
-    borderRadius: 3,
+    height: 8, // Increased from 6 to 8
+    borderRadius: 4,
     overflow: 'hidden',
-    
+    backgroundColor: '#f0f0f0', // More defined background
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   timelineProgress: {
     position: 'absolute',
     top: 0,
     left: 0,
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 4,
+    shadowColor: '#c27c03',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  timelineGlow: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 6,
+    backgroundColor: 'rgba(194, 124, 3, 0.2)',
+    opacity: 0.5,
   },
   timerTextCompact: {
     fontSize: 16,
