@@ -7,7 +7,12 @@ const pool = db.pool;
 const userRouter: Router = express.Router();
 
 // Union of allowed sorting fields
-type SortField = "location" | "timestamp" | "riskAssesment" | "waterlevel" | "id";
+type SortField =
+  | "location"
+  | "timestamp"
+  | "riskAssesment"
+  | "waterlevel"
+  | "id";
 
 userRouter.get(
   "/",
@@ -36,3 +41,4 @@ userRouter.get(
     }
   }
 );
+export default userRouter;
