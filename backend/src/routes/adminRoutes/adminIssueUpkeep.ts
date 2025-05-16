@@ -21,7 +21,7 @@ authIssueUpkeepRouter.get("/", (_req, res) => {
 //POST Creating status or warnings for the public eye to see
 authIssueUpkeepRouter.post(
   "/publicWarning",
-  async (req: users_observation_info, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     const filePath = path.resolve("Database/userSafety.json");
 
     const new_user_observation = {
@@ -72,7 +72,7 @@ authIssueUpkeepRouter.post(
 //PUT Modifying current issue
 authIssueUpkeepRouter.put(
   "/publicWarning/:id",
-  async (req: users_observation_info, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id);
     const filePath = path.resolve("Database/userSafety.json");
     const { location, description, proactiveActions } = req.body;
@@ -106,7 +106,7 @@ authIssueUpkeepRouter.put(
 //DELETE for deleting irrelevant issues
 authIssueUpkeepRouter.delete(
   "/publicWarning/:id",
-  async (req: users_observation_info, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id);
     const filePath = path.resolve("Database/userSafety.json");
 
