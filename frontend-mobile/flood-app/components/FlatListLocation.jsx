@@ -1,24 +1,11 @@
 import { StyleSheet, Text, View, FlatList, StatusBar } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context'
 import CheckBox from './CheckBox';
 import AnimatedButton from './AnimatedButton';
 import { useTheme } from '../themes/ThemeContext';
 
-const DATA = [
-  {
-    id: '1',
-    title: 'Oxelösund',
-  },
-  {
-    id: '2',
-    title: 'Nyköping',
-  },
-  {
-    id: '3',
-    title: 'Malmö',
-  },
-];
+
 
 const Item = ({title}) => (
   <View style={styles.item}>
@@ -30,6 +17,31 @@ const FlatListLocation = () => {
   const [selectedItems, setSelectedItems] = useState({});
   const styles = createStyles(theme);
 
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  const getLocations = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/users/safety');
+      const json = await response.json();
+      setLocations(json);
+
+      setLocations(json.products); 
+    } catch (error) {
+      console.error('Fel vid API-anrop:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getLocations();
+}, []);
+
+
+
+
   const toggleSelection = (id) => {
     setSelectedItems(prev => ({
       ...prev,
@@ -40,7 +52,7 @@ const FlatListLocation = () => {
   const renderItem = ({ item }) => (
     <CheckBox
     id={item.id}
-    title={item.title}
+    title={item.location}
     isChecked={!!selectedItems[item.id]}
     onPress={() => toggleSelection(item.id)}
     />
@@ -49,9 +61,9 @@ const FlatListLocation = () => {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={DATA}
+          data={locations}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           />
 
           <AnimatedButton title="Påbörja arbete" onPress={() => console.log('Sparar')} />
