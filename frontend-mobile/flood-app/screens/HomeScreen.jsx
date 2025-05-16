@@ -1,8 +1,7 @@
 import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
-import { useAppData } from '../context/DataContext';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
 import TipsBoxCard from '../components/TipsBoxCard';
@@ -10,12 +9,6 @@ import { fetchTips } from '../services/api';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
-  const { monitoringData, refetchData, loading, error } = useAppData();
-
-  // Add tips state
-  const [tips, setTips] = useState([]);
-  const [tipsError, setTipsError] = useState(null);
-  const [tipsLoading, setTipsLoading] = useState(false);
 
   useEffect(() => {
     const getTips = async () => {
@@ -37,18 +30,9 @@ const HomeScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HeroImage />
+        {/* <HeroImage /> */}
 
-        <View style={styles.cardContainer}>
-          <InfoCard
-            title="Information till allmänheten"
-            text="Vid akut översvämningsrisk – ring 112. För övrig information, använd vår app."
-            width="90%"
-            height={150}
-            icon="information-variant"
-          />
-        </View>
-
+       
         <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
           Nuvarande vattenövervakning
         </Text>
@@ -111,6 +95,17 @@ const HomeScreen = () => {
             icon="message-arrow-right-outline"
           />
         </View>
+
+         <View style={styles.cardContainer}>
+          <InfoCard
+            title="Information till allmänheten"
+            text="Vid akut översvämningsrisk – ring 112. För övrig information, använd vår app."
+            width="90%"
+            height={150}
+            icon="information-variant"
+          />
+        </View>
+
 
       </ScrollView>
     </View>
