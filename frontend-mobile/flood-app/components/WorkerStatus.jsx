@@ -19,7 +19,7 @@ const WorkerStatus = ({ locationName = null }) => {
   const [safety, setSafety] = useState([]);
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [fetchedLocationName, setFetchedLocationName] = useState('Nånstans i Sverige');
-  const [estimatedTime, setEstimatedTime] = useState(60 * 60);
+  const [estimatedTime, setEstimatedTime] = useState(60 * 60); 
   const [isPaused, setIsPaused] = useState(false);
   const progressAnimation = useRef(new Animated.Value(0)).current;
   const statusFade = useRef(new Animated.Value(1)).current;
@@ -61,25 +61,25 @@ const WorkerStatus = ({ locationName = null }) => {
         setStartTime(new Date());
       }
       setTimeLeft(estimatedTime);
-      setIsPaused(false); 
+      setIsPaused(false); // Reset pause when starting work
     } else if (status === STATUS.ON_SITE) {
       setTimeLeft(null);
       setStartTime(null);
-      setIsPaused(false); 
+      setIsPaused(false); // Reset pause when not working
     } else if (status === STATUS.COMPLETED) {
-      setIsPaused(false); 
+      setIsPaused(false); // Reset pause when completed
       if (timeLeft > 0) {
       }
     } else {
       setTimeLeft(null);
       setStartTime(null);
-      setIsPaused(false); 
+      setIsPaused(false); // Reset pause for any other status
     }
   }, [status, estimatedTime]);
 
   useEffect(() => {
     if (status !== STATUS.IN_PROGRESS || timeLeft === null || isPaused) return;
-
+    
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -114,6 +114,35 @@ const WorkerStatus = ({ locationName = null }) => {
 
   const togglePause = () => {
     setIsPaused(!isPaused);
+  };
+
+  const stopWork = () => {
+    setStatus(STATUS.ON_SITE);
+    setTimeLeft(null);
+    setStartTime(null);
+    setIsPaused(false);
+    setEstimatedTime(60 * 60); // Reset to default
+    
+    // Reset progress animation
+    Animated.timing(progressAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false
+    }).start();
+    
+    // Add visual feedback
+    Animated.sequence([
+      Animated.timing(cardScale, {
+        toValue: 0.98,
+        duration: 100,
+        useNativeDriver: true
+      }),
+      Animated.timing(cardScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true
+      })
+    ]).start();
   };
 
   const formatTime = (seconds) => {
@@ -263,33 +292,54 @@ const WorkerStatus = ({ locationName = null }) => {
             </Text>
           </View>
 
-          {/* Pause button row */}
-          <View style={styles.pauseContainer}>
+          {/* Control buttons row */}
+          <View style={styles.controlsRow}>
             <TouchableOpacity
               style={[
-                styles.pauseButton,
-                {
+                styles.pauseButton, 
+                { 
                   backgroundColor: isPaused ? '#007b52' : '#c27c03',
                   borderColor: isPaused ? '#007b52' : '#c27c03'
                 }
               ]}
               onPress={togglePause}
             >
-              <MaterialIcons
-                name={isPaused ? "play-arrow" : "pause"}
-                size={20}
-                color="white"
+              <MaterialIcons 
+                name={isPaused ? "play-arrow" : "pause"} 
+                size={20} 
+                color="white" 
               />
-              <Text style={styles.pauseButtonText}>
+              <Text style={styles.controlButtonText}>
                 {isPaused ? 'Fortsätt' : 'Paus'}
               </Text>
             </TouchableOpacity>
-            {isPaused && (
-              <Text style={[styles.pausedText, { color: theme.textSecondary }]}>
-                Arbetet är pausat
+
+            <TouchableOpacity
+              style={[
+                styles.stopButton,
+                { 
+                  backgroundColor: '#d32f2f',
+                  borderColor: '#d32f2f'
+                }
+              ]}
+              onPress={stopWork}
+            >
+              <MaterialIcons 
+                name="stop" 
+                size={20} 
+                color="white" 
+              />
+              <Text style={styles.controlButtonText}>
+                Stoppa
               </Text>
-            )}
+            </TouchableOpacity>
           </View>
+
+          {isPaused && (
+            <Text style={[styles.pausedText, { color: theme.textSecondary }]}>
+              Arbetet är pausat
+            </Text>
+          )}
 
           {/* Compact time controls */}
           <View style={styles.timeControlsCompact}>
@@ -299,21 +349,21 @@ const WorkerStatus = ({ locationName = null }) => {
             >
               <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>-30m</Text>
             </TouchableOpacity>
-
+            
             <TouchableOpacity
               style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
               onPress={() => adjustTime(-60)}
             >
               <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>-1h</Text>
             </TouchableOpacity>
-
+            
             <TouchableOpacity
               style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
               onPress={() => adjustTime(30)}
             >
               <Text style={[styles.timeButtonTextCompact, { color: theme.textColor }]}>+30m</Text>
             </TouchableOpacity>
-
+            
             <TouchableOpacity
               style={[styles.timeButtonCompact, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}
               onPress={() => adjustTime(60)}
@@ -349,7 +399,7 @@ const WorkerStatus = ({ locationName = null }) => {
         <View style={[styles.instructionContainer, { backgroundColor: theme.backgroundTertiary }]}>
           <View style={styles.instructionContent}>
             <MaterialIcons name="info-outline" size={20} color={theme.primary} />
-            <Text style={[styles.instructionText, { color: theme.textColor }]}>
+            <Text style={[styles.instructionText, { color: theme.primary }]}>
               Tryck på kortet för att börja med "På plats" när du anländer till arbetsplatsen.
             </Text>
           </View>
@@ -463,22 +513,38 @@ const styles = StyleSheet.create({
     minWidth: 100,
     textAlign: 'right',
   },
-  pauseContainer: {
+  controlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
+    gap: 12,
   },
   pauseButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     borderWidth: 1,
     gap: 8,
-    minWidth: 100,
+    flex: 1,
+    maxWidth: 120,
   },
-  pauseButtonText: {
+  stopButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: 8,
+    flex: 1,
+    maxWidth: 120,
+  },
+  controlButtonText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 14,
@@ -486,8 +552,9 @@ const styles = StyleSheet.create({
   pausedText: {
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 4,
+    marginBottom: 8,
     fontStyle: 'italic',
+    textAlign: 'center',
   },
   timeControlsCompact: {
     flexDirection: 'row',

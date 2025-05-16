@@ -8,7 +8,7 @@ import { useTheme } from "../themes/ThemeContext";
 import LoginScreen from "../screens/LoginScreen";
 import UserScreen from "../screens/UserScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import MapScreen from "../screens/Location";
+import LocationScreen from "../screens/Location"; // Changed from MapScreen to LocationScreen
 
 const Tab = createBottomTabNavigator();
 
@@ -56,7 +56,7 @@ const Navigation = () => {
         />
         <Tab.Screen
           name="Location"
-          component={MapScreen}
+          component={LocationScreen} // Updated to use LocationScreen
           options={{
             tabBarIcon: ({ color, size }) => (
              <FontAwesome6 name="location-dot" color={color} size={size} />
