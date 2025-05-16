@@ -209,7 +209,7 @@ What has been accomplished
 
         Sami routes
             - user.ts
-            - userRisk
+            - userRisk.ts
             -userSafety
         Albin routes
             - admin Auth
