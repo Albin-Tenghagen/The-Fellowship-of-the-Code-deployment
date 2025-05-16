@@ -20,6 +20,6 @@ userRouter.get("/", (_req, res) => {
   res.status(200).json({ message: "Welcome to the user Endpoint." });
   return;
 });
-//GET
+//GET for publicInfo table
 
 export default userRouter;
