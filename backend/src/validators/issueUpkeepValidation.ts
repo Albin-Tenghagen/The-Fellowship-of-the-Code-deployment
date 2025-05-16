@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { userSafetyBody } from "types/types";
+import { user_observation } from "types/types";
 
 const issueUpkeepSchema = Joi.object({
   id: Joi.number().required(),
@@ -9,6 +9,6 @@ const issueUpkeepSchema = Joi.object({
   proactiveActions: Joi.boolean().required()
 }).options({ abortEarly: false });
 
-export async function validateIssueUpkeep(issues: userSafetyBody) {
+export async function validateIssueUpkeep(issues: user_observation) {
   return await issueUpkeepSchema.validateAsync(issues);
 }
