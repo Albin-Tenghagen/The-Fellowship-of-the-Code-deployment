@@ -1,108 +1,135 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Image, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../themes/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import baseUrl from '../services/urlConfig';
+import { fetchMonitoring } from '../services/api';
 
 const WaterLevelCard = ({
     title = 'Standardtitel',
     width = '45%',
     height = null,
     icon = null,
+    image = null,
     parameter = null,
+    alternateParams = [],
 }) => {
     const { theme } = useTheme();
-    const [paramValue, setParamValue] = useState('Loading...');
+    const [paramValue, setParamValue] = useState('Ej tillgänglig');
+    const [timestamp, setTimestamp] = useState('Ingen tid');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    const formatParameterValue = (value) => {
+        if (value === null || value === undefined || value === 'Ej tillgänglig') {
+            return 'Ej tillgänglig';
+        }
+
+        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+        if (isNaN(numValue)) {
+            return value.toString();
+        }
+
+        switch (parameter) {
+            case 'temperature':
+                return numValue.toFixed(0);
+            case 'humidity':
+            case 'soilMoisture':
+                return Math.round(numValue);
+            case 'ultraSoundLevel':
+                return numValue.toFixed(1);
+            case 'airPressure':
+            case 'pressureLevel':
+                return Math.round(numValue);
+            default:
+                return Math.abs(numValue) < 10 ? numValue.toFixed(1) : Math.round(numValue);
+        }
+    };
+
+    const getParameterIcon = () => {
+        if (!parameter) return icon;
+
+        const iconMap = {
+            airPressure: 'weather-windy',
+            soilMoisture: 'water-percent',
+            temperature: 'thermometer',
+            humidity: 'water-percent',
+            pressureLevel: 'gauge',
+            ultraSoundLevel: 'wave',
+        };
+
+        return iconMap[parameter] || icon;
+    };
+
+    const getParameterUnit = () => {
+        const unitMap = {
+            airPressure: 'hPa',
+            soilMoisture: '%',
+            temperature: '°C',
+            humidity: '%',
+            pressureLevel: 'kPa',
+            ultraSoundLevel: 'm',
+        };
+
+        return parameter ? unitMap[parameter] || '' : '';
+    };
 
     useEffect(() => {
-        const testFetch = async () => {
+        const getData = async () => {
             try {
-                console.log(`=== Testing fetch for ${parameter} ===`);
+                setLoading(true);
+                setError(null);
                 
-                const response = await fetch(`${baseUrl}/admins/authenticated/monitoring`);
-                console.log('Response status:', response.status);
+                console.log(`Fetching data for ${parameter}...`);
+                const monitoringData = await fetchMonitoring();
+                console.log(`Got monitoring data:`, monitoringData);
                 
-                if (!response.ok) {
-                    setParamValue(`Error: ${response.status}`);
-                    return;
-                }
-                
-                const data = await response.json();
-                console.log('Full response:', data);
-                
-                if (!data.data || data.data.length === 0) {
-                    console.log('No data from API, using fallback data...');
+                if (monitoringData && Array.isArray(monitoringData) && monitoringData.length > 0) {
+                    const latestData = monitoringData[0];
+                    console.log(`Latest data entry:`, latestData);
                     
-    
-                    const fallbackData = {
-                        "id": 1001,
-                        "timestamp": "18/4-25",
-                        "airPressure": 32,
-                        "soilMoisture": 52,
-                        "temperature": 14,
-                        "humidity": 43,
-                        "pressureLevel": 53,
-                        "ultraSoundLevel": 4
-                    };
-                    
-                    if (fallbackData[parameter] !== undefined) {
-                        let value = fallbackData[parameter];
-                        
-                        if (parameter === 'temperature') {
-                            value = `${value}°C`;
-                        } else if (parameter === 'humidity' || parameter === 'soilMoisture') {
-                            value = `${value}%`;
-                        } else if (parameter === 'airPressure') {
-                            value = `${value} hPa`;
-                        } else if (parameter === 'pressureLevel') {
-                            value = `${value} kPa`;
-                        } else if (parameter === 'ultraSoundLevel') {
-                            value = `${value} m`;
-                        }
-                        
-                        setParamValue(value);
+                    if (latestData[parameter] !== undefined) {
+                        const formattedValue = formatParameterValue(latestData[parameter]);
+                        setParamValue(formattedValue);
+                        console.log(`Set ${parameter} value to: ${formattedValue}`);
                     } else {
-                        setParamValue('No parameter match');
+                        setParamValue('Ej tillgänglig');
+                        console.log(`No ${parameter} value found in data`);
                     }
-                    return;
-                }
-                
-                const first = data.data[0];
-                console.log('First entry:', first);
-                console.log(`Value for ${parameter}:`, first[parameter]);
-                
-                if (first[parameter] !== undefined) {
-                    setParamValue(`${first[parameter]}`);
+                    
+                    if (latestData.timestamp) {
+                        setTimestamp(latestData.timestamp);
+                    } else {
+                        setTimestamp('Ingen tid');
+                    }
                 } else {
-                    setParamValue('No value in API data');
+                    console.log('No data from API');
+                    setParamValue('Ej tillgänglig');
+                    setTimestamp('Ingen tid');
                 }
-                
-            } catch (error) {
-                console.error('Fetch error:', error);
-                setParamValue(`Error: ${error.message}`);
+            } catch (err) {
+                console.error(`Error fetching data for ${parameter}:`, err);
+                setError(err.message);
+                setParamValue('Fel');
+                setTimestamp('Ingen tid');
+            } finally {
+                setLoading(false);
             }
         };
 
         if (parameter) {
-            testFetch();
+            getData();
         }
     }, [parameter]);
 
-    const getParameterIcon = () => {
-        const iconMap = {
-            temperature: 'thermometer',
-            humidity: 'water-percent',
-            airPressure: 'weather-windy',
-            soilMoisture: 'water-percent',
-            pressureLevel: 'gauge',
-            ultraSoundLevel: 'wave',
-        };
-        return iconMap[parameter] || icon;
-    };
-
     return (
-        <View style={[styles.card, { backgroundColor: theme.card }]}>
+        <View
+            style={[
+                styles.card,
+                { backgroundColor: theme.card },
+                width ? { width } : {},
+                height ? { height } : { aspectRatio: 1 },
+            ]}
+        >
             {getParameterIcon() && (
                 <MaterialCommunityIcons
                     name={getParameterIcon()}
@@ -111,14 +138,40 @@ const WaterLevelCard = ({
                     style={{ marginBottom: 8 }}
                 />
             )}
-            
+
+            {image && (
+                <Image
+                    source={image}
+                    style={styles.image}
+                    resizeMode="cover"
+                />
+            )}
+
             <Text style={[styles.text, { color: theme.textColor }]}>
                 {title}
             </Text>
-            
-            <Text style={[styles.valueText, { color: theme.textColor }]}>
-                {paramValue}
-            </Text>
+
+            {loading ? (
+                <Text style={{ color: theme.textColor }}>Laddar...</Text>
+            ) : error ? (
+                <View style={styles.dataContainer}>
+                    <Text style={[styles.valueText, { color: theme.textColor }]}>
+                        {paramValue} {getParameterUnit()}
+                    </Text>
+                    <Text style={[styles.timestamp, { color: theme.textSecondary }]}>
+                        {timestamp}
+                    </Text>
+                </View>
+            ) : (
+                <View style={styles.dataContainer}>
+                    <Text style={[styles.valueText, { color: theme.textColor }]}>
+                        {paramValue} {getParameterUnit()}
+                    </Text>
+                    <Text style={[styles.timestamp, { color: theme.textSecondary }]}>
+                        {timestamp}
+                    </Text>
+                </View>
+            )}
         </View>
     );
 };
@@ -146,13 +199,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 8,
     },
+    image: {
+        width: 60,
+        height: 60,
+        marginBottom: 8,
+    },
+    dataContainer: {
+        alignItems: 'center',
+        marginTop: 4,
+    },
     valueText: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    debugText: {
-        fontSize: 10,
+    timestamp: {
+        fontSize: 12,
         marginTop: 4,
     },
 });

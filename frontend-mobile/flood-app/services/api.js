@@ -1,4 +1,5 @@
 import baseUrl from "./urlConfig";
+
 export const fetchSafety = async () => {
   try {
     const response = await fetch(`${baseUrl}/users/safety`);
@@ -13,10 +14,9 @@ export const fetchSafety = async () => {
   }
 };
 
-
 export const fetchMonitoring = async () => {
   try {
-    const response = await fetch(`${baseUrl}/admins/authenticated/monitoring`);
+    const response = await fetch(`${baseUrl}/admins/authenticated/monitoring/historicalMonitoring`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -27,8 +27,8 @@ export const fetchMonitoring = async () => {
     
     const data = JSON.parse(text);
     console.log(":white_check_mark: Parsed monitoring JSON:", data);
-    
-    return data.data || [];
+
+    return data.monitoredData || [];
   } catch (error) {
     console.error(":x: Error fetching monitoring data:", error.message);
     throw error;
