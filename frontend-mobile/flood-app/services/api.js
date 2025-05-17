@@ -55,3 +55,52 @@ export const fetchInfrastructureIssues = async () => {
     throw error;
   }
 };
+
+export const postTip = async (tipData) => {
+  try {
+    console.log(":rocket: Posting tip data:", tipData);
+    
+    const response = await fetch(`${baseUrl}/users/tips/postTip`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tipData),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const text = await response.text();
+    console.log(":rocket: RAW API response for posting tip:", text);
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+      console.log(":white_check_mark: Parsed JSON response:", data);
+    } catch (e) {
+      console.log(":warning: Response is not JSON, returning raw text");
+      return { success: true, message: text };
+    }
+    
+    return data;
+  } catch (error) {
+    console.error(':x: Error posting tip:', error);
+    throw error;
+  }
+};
+
+export const fetchTips = async () => {
+  try {
+    const response = await fetch(`${baseUrl}/users/tips`);
+    const text = await response.text();
+    console.log(":rocket: RAW API response:", text);
+    const data = JSON.parse(text);
+    console.log(":white_check_mark: Parsed JSON:", data);
+    return data.products ?? []; 
+  } catch (error) {
+    console.error(":x: Fel vid hämtning av tips:", error.message);
+    throw error;
+  }
+};
