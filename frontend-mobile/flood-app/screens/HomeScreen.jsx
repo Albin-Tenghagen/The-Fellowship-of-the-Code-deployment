@@ -1,38 +1,21 @@
-import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
-import { useEffect } from 'react';
-import HeroImage from '../components/HeroImage';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+// import React from 'react';
+// import HeroImage from '../components/HeroImage';
 import { useTheme } from "../themes/ThemeContext";
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
 import TipsBoxCard from '../components/TipsBoxCard';
-import { fetchTips } from '../services/api';
+import InfrastructureIssuesCard from '../components/InfrastructureIssuesCard';
 
 const HomeScreen = () => {
   const { theme } = useTheme();
-
-  useEffect(() => {
-    const getTips = async () => {
-      setTipsLoading(true);
-      try {
-        const tipsData = await fetchTips();
-        setTips(tipsData);
-        setTipsError(null);
-      } catch (error) {
-        setTipsError(error.message);
-      } finally {
-        setTipsLoading(false);
-      }
-    };
-
-    getTips();
-  }, []);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* <HeroImage /> */}
 
-       
+
         <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
           Nuvarande vattenövervakning
         </Text>
@@ -86,6 +69,16 @@ const HomeScreen = () => {
           />
         </View>
 
+        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
+          Infrastrukturproblem
+        </Text>
+        
+        <InfrastructureIssuesCard
+          title="Aktuella problem"
+          width="90%"
+          maxItems={3}
+        />
+
         <View style={styles.cardContainer}>
           <TipsBoxCard
             title="Säkerhetstips"
@@ -96,16 +89,15 @@ const HomeScreen = () => {
           />
         </View>
 
-         <View style={styles.cardContainer}>
+        <View style={styles.infoCardContainer}>
           <InfoCard
             title="Information till allmänheten"
             text="Vid akut översvämningsrisk – ring 112. För övrig information, använd vår app."
             width="90%"
-            height={150}
+            height={50}
             icon="information-variant"
           />
         </View>
-
 
       </ScrollView>
     </View>
@@ -115,9 +107,6 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollContainer: {
     paddingBottom: 40,
   },
@@ -128,51 +117,18 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
+  infoCardContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+  },
   cardContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
-  },
-  tipsContainer: {
-    paddingHorizontal: 20,
-  },
-  tipCard: {
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-  },
-  tipUser: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  tipDescription: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  loadingContainer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  errorContainer: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: '#ffeeee',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 8,
   },
 });

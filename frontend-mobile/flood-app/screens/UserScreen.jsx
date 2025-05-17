@@ -3,6 +3,7 @@ import React from 'react'
 import WorkerStatus from '../components/WorkerStatus'
 import MapScreen from '../components/MapScreen'
 import * as Location from 'expo-location'
+import InfrastructureIssuesCard from '../components/InfrastructureIssuesCard'
 
 const UserScreen = () => {
   return (
@@ -10,10 +11,17 @@ const UserScreen = () => {
       <View style={styles.statusContainer}>
         <WorkerStatus />
       </View>
+      <InfrastructureIssuesCard
+          title="Aktuella problem"
+          width="90%"
+          maxItems={1}
+        />
       {/* <View style={styles.mapContainer}>
         <MapScreen />
       </View> */}
     </View>
+
+    
   )
 }
 
