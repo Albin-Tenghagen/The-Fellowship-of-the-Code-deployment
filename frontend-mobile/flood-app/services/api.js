@@ -34,3 +34,24 @@ export const fetchMonitoring = async () => {
     throw error;
   }
 };
+
+export const fetchInfrastructureIssues = async () => {
+  try {
+    const response = await fetch(`${baseUrl}/admins/authenticated/infrastructureIssues`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const text = await response.text();
+    console.log(":rocket: RAW infrastructure response:", text);
+    
+    const data = JSON.parse(text);
+    console.log(":white_check_mark: Parsed infrastructure JSON:", data);
+
+    return data.infrastructureData || [];
+  } catch (error) {
+    console.error(":x: Error fetching infrastructure issues:", error.message);
+    throw error;
+  }
+};
