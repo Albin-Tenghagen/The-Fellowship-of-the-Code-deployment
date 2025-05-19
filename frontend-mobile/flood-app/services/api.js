@@ -56,9 +56,13 @@ export const fetchInfrastructureIssues = async () => {
   }
 };
 
+// Function to post a new tip
 export const postTip = async (tipData) => {
   try {
     console.log(":rocket: Posting tip data:", tipData);
+    
+    // Log the request URL for debugging
+    console.log(`:rocket: POST request to ${baseUrl}/users/tips/postTip`);
     
     const response = await fetch(`${baseUrl}/users/tips/postTip`, {
       method: 'POST',
@@ -68,29 +72,42 @@ export const postTip = async (tipData) => {
       body: JSON.stringify(tipData),
     });
     
+    console.log(":rocket: Response status:", response.status);
+    
+    // Handle all response statuses
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`:x: Server responded with ${response.status}: ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
     
+    // Handle empty responses
     const text = await response.text();
     console.log(":rocket: RAW API response for posting tip:", text);
     
+    if (!text) {
+      console.log(":warning: Server returned empty response");
+      return { success: true, message: "Tip submitted successfully" };
+    }
+    
+    // Try to parse as JSON
     let data;
     try {
       data = JSON.parse(text);
       console.log(":white_check_mark: Parsed JSON response:", data);
+      return data;
     } catch (e) {
+      // If the response is not JSON, return the raw text
       console.log(":warning: Response is not JSON, returning raw text");
       return { success: true, message: text };
     }
-    
-    return data;
   } catch (error) {
     console.error(':x: Error posting tip:', error);
     throw error;
   }
 };
 
+// Function to fetch all tips (existing function)
 export const fetchTips = async () => {
   try {
     const response = await fetch(`${baseUrl}/users/tips`);

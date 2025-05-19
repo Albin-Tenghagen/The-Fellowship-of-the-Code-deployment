@@ -1,20 +1,23 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-// import React from 'react';
-// import HeroImage from '../components/HeroImage';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useTheme } from "../themes/ThemeContext";
+import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import WaterLevelCard from '../components/WaterLevelCard';
 import InfoCard from '../components/InfoCard';
-import TipsBoxCard from '../components/TipsBoxCard';
 import InfrastructureIssuesCard from '../components/InfrastructureIssuesCard';
 
 const HomeScreen = () => {
-  const { theme } = useTheme();
+  const { theme } = useTheme(); 
+  const navigation = useNavigation();
+  
+  const navigateToTipsScreen = () => {
+    navigation.navigate('Tips');
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* <HeroImage /> */}
-
 
         <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
           Nuvarande vattenövervakning
@@ -79,15 +82,36 @@ const HomeScreen = () => {
           maxItems={3}
         />
 
-        <View style={styles.cardContainer}>
-          <TipsBoxCard
-            title="Säkerhetstips"
-            text="Vid översvämning, håll dig borta från vattnet och följ myndigheternas råd."
-            width="90%"
-            height={150}
-            icon="message-arrow-right-outline"
-          />
-        </View>
+        <Text style={[styles.sectionTitle, { color: theme.textColor }]}>
+          Säkerhetstips
+        </Text>
+
+        <TouchableOpacity 
+          style={[styles.navigationCard, { backgroundColor: theme.card }]}
+          onPress={navigateToTipsScreen}
+        >
+          <View style={styles.navigationCardContent}>
+            <MaterialCommunityIcons
+              name="lightbulb-outline"
+              size={32}
+              color={theme.primary}
+              style={styles.navigationIcon}
+            />
+            <View style={styles.navigationTextContainer}>
+              <Text style={[styles.navigationTitle, { color: theme.textColor }]}>
+                Skicka tips ifall du ser en risk för översvämning
+              </Text>
+              <Text style={[styles.navigationSubtitle, { color: theme.textSecondary }]}>
+                Se alla tips eller dela med dig av dina egna
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color={theme.primary}
+            />
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.infoCardContainer}>
           <InfoCard
@@ -130,5 +154,36 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
+  },
+  navigationCard: {
+    width: '90%',
+    borderRadius: 8,
+    padding: 16,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    alignSelf: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  navigationCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  navigationIcon: {
+    marginRight: 16,
+  },
+  navigationTextContainer: {
+    flex: 1,
+  },
+  navigationTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  navigationSubtitle: {
+    fontSize: 14,
   },
 });
