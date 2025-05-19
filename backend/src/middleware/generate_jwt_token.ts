@@ -3,11 +3,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import db from "../../Database/db.ts"; // Import the database module (pg Pool) to query your Postgres DB
-
+import bcrypt from "bcrypt";
 // Extend Express Request type to include a `token` field on `req.body`
 interface TokenRequest extends Request {
   body: {
     name: string; // Username passed in from client
+    email: string;
+    reqpassword: string;
     token?: string; // JWT that we will attach for downstream handlers
   };
 }
@@ -30,14 +32,13 @@ export async function generateToken(
   next: NextFunction
 ): Promise<void> {
   // Extract the `name` parameter from the JSON payload
-  const { name } = req.body;
+  const { name, email, reqpassword } = req.body;
 
   try {
     // Query the `admins` table: check if name exists, retrieve role
-    const result = await db.pool.query(
-      "SELECT role FROM admins WHERE name = $1",
-      [name]
-    );
+    const result = await db.pool.query("SELECT * FROM admins WHERE name = $1", [
+      name,
+    ]);
 
     // If no rows returned, user is not found or not an admin
     if (result.rowCount === 0) {
@@ -47,7 +48,16 @@ export async function generateToken(
     }
 
     // Destructure the `role` column from the first returned row
-    const { role } = result.rows[0];
+    const { role, password, email } = result.rows[0];
+
+    const match = await bcrypt.compare(reqpassword, password);
+
+    if (!match) {
+      res
+        .status(401)
+        .json({ message: "The user cant be found in the database" });
+      return;
+    }
 
     // Read the JWT secret key from environment variables
     // This secret is used to cryptographically sign tokens
