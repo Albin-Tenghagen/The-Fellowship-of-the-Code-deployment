@@ -31,11 +31,12 @@ export type ObservationSortField = keyof Pick<
 >;
 
 // Typed request for query params (e.g. ?sorting=timestamp)
-export interface users_observation_info extends Request<
-  {},
-  any, // response body (you can customize this if needed)
-  { sorting?: ObservationSortField } // query string
-> {}
+export interface users_observation_info
+  extends Request<
+    {},
+    any, // response body (you can customize this if needed)
+    { sorting?: ObservationSortField } // query string
+  > {}
 
 //*_____________________________________________________________
 
@@ -57,7 +58,7 @@ export type infrastructureRequest = Request<
 //* admin monitoring
 
 export interface MonitoringEntry {
-  id: string;
+  id?: string;
   timestamp: string;
   station_id: number; //Var sensorTornet är placerat
   soil_moisture_percent: number;
