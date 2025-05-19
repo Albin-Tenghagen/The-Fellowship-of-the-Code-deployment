@@ -6,11 +6,7 @@ const issueUpkeepSchema = Joi.object({
   timestamp: Joi.string().required(),
   location: Joi.string().min(1).max(50).required(),
   description: Joi.string().min(8).max(150).required(),
-  proactiveActions: Joi.object({
-    basementProtection: Joi.boolean(),
-    trenchDigging: Joi.boolean(),
-    electricHazards: Joi.boolean(),
-  }),
+  proactiveActions: Joi.boolean().required()
 }).options({ abortEarly: false });
 
 export async function validateIssueUpkeep(issues: userSafetyBody) {
