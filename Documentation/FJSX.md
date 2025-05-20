@@ -18,7 +18,7 @@
 
     |-----/user/notification
 
-As a community member
+    As a community member
 
     I want to submit tips about flood conditions so that I can help keep my community informed.
 
@@ -29,87 +29,87 @@ As a community member
     I want to access safety information during flood events so that I can protect myself and my family.
     I want to find designated security meeting points so that I know where to go during emergencies.
 
-    I want to register for flood notifications so that I receive timely updates about changing conditions.
+        I want to register for flood notifications so that I receive timely updates about changing conditions.
 
-//------------------------------------------------------------------------
-/(admin/municipal worker)
+    //------------------------------------------------------------------------
+    /(admin/municipal worker)
 
-    |-----/admin
+        |-----/admin
 
-    |-----------/admin/Auth/
+        |-----------/admin/Auth/
 
-    |------------|---/admin/Authenticated/Monitoring
+        |------------|---/admin/Authenticated/Monitoring
 
-    |-----------------|
+        |-----------------|
 
-    |-----------------|---/admin/Authenticated/Monitoring/historicalMonitoring
+        |-----------------|---/admin/Authenticated/Monitoring/historicalMonitoring
 
-    |------------|
+        |------------|
 
-    |------------|----/admin/Authenticated/Infrastructure issues
+        |------------|----/admin/Authenticated/Infrastructure issues
 
-    |------------|
+        |------------|
 
-    |------------|----/admin/Authenticated/create and update issue
+        |------------|----/admin/Authenticated/create and update issue
 
-    | Authenticated User Stories
+        | Authenticated User Stories
 
-As a municipal employee
+    As a municipal employee
 
-    I want to log in to access advanced features so that I can perform my job responsibilities.
+        I want to log in to access advanced features so that I can perform my job responsibilities.
 
-    I want to monitor water levels so that I can track changes over time.
-    I want to track soil moisture levels so that I can predict potential flooding.
-    I want to monitor air humidity so that I can understand environmental conditions.
-    I want to monitor water temperature so that I can assess environmental impacts.
-    I want to view resolved issues so that I can learn from past events.
+        I want to monitor water levels so that I can track changes over time.
+        I want to track soil moisture levels so that I can predict potential flooding.
+        I want to monitor air humidity so that I can understand environmental conditions.
+        I want to monitor water temperature so that I can assess environmental impacts.
+        I want to view resolved issues so that I can learn from past events.
 
-    I want to check water pressure readings so that I can identify potential infrastructure issues.
+        I want to check water pressure readings so that I can identify potential infrastructure issues.
 
-    I want to create and update issue reports so that I can communicate problems to the team.
-    I want to update flood warning statuses so that the public receives accurate information.
+        I want to create and update issue reports so that I can communicate problems to the team.
+        I want to update flood warning statuses so that the public receives accurate information.
 
-//------------------------------------------------------------------------
-Database structure
-We don’t yet know how it will be built, so we are focusing on the API today until we can more confidently plan the database and its structure.
-/Database
+    //------------------------------------------------------------------------
+    Database structure
+    We don’t yet know how it will be built, so we are focusing on the API today until we can more confidently plan the database and its structure.
+    /Database
 
 2.  11/4-25
 
-Agenda for the day
-!!NOTE!! DOCUMENTATION IS AN IMPORTANT AND ONGOING TASK !!NOTE!!
+    Agenda for the day
+    !!NOTE!! DOCUMENTATION IS AN IMPORTANT AND ONGOING TASK !!NOTE!!
 
-    Talk about TS VS JS
+        Talk about TS VS JS
 
-    TS is great for typing data
+        TS is great for typing data
 
-    TS it is!!
+        TS it is!!
 
-    Introduce more middleware (Winston, Morgan, etc.)?
+        Introduce more middleware (Winston, Morgan, etc.)?
 
-    Simple CRUD Operations (GET, POST, PUT, DELETE)
+        Simple CRUD Operations (GET, POST, PUT, DELETE)
 
-    Manipulate mocked JSON data
+        Manipulate mocked JSON data
 
-The day starts with
+    The day starts with
 
-    Simple CRUD for user/tips with JS, then converting all files to TypeScript and figuring it out
+        Simple CRUD for user/tips with JS, then converting all files to TypeScript and figuring it out
 
-    JSON data to be manipulated during CRUD
+        JSON data to be manipulated during CRUD
 
-    NOTE!! DOCUMENTATION
+        NOTE!! DOCUMENTATION
 
-    Functional middleware
+        Functional middleware
 
-What has been accomplished
+    What has been accomplished
 
-    CRUD operations for the userTips endpoint are finished using mock data to simulate a database
+        CRUD operations for the userTips endpoint are finished using mock data to simulate a database
 
-    We have used JSON data to simulate data being passed
+        We have used JSON data to simulate data being passed
 
-    TypeScript has been initiated in the project with a tsconfig.json file
+        TypeScript has been initiated in the project with a tsconfig.json file
 
-    Middleware has been added !!NOTE ONLY AS ROUTING MIDDLEWARE
+        Middleware has been added !!NOTE ONLY AS ROUTING MIDDLEWARE
 
 3.  17/4-25
     What has been accomplished
