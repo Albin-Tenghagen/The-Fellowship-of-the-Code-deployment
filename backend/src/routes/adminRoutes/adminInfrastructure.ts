@@ -115,17 +115,17 @@ authInfrastructureRouter.put(
       const validatedProblem = await validateInfrastructureIssue(
         updatedProblem
       );
-
       const updatedQuery = `
-      UPDATE infrastructure
-      SET location = $1, problem = $2
-      WHERE id = $3
-      RETURNING *`;
+        UPDATE infrastructure
+        SET location = $1, problem = $2, timestamp = $3
+        WHERE id = $4
+        RETURNING *`;
 
       const updateValues = [
         validatedProblem.location,
         validatedProblem.problem,
-        validatedProblem.timestamp,
+        validatedProblem.timestamp, // this must be a valid Date or string formatted for PostgreSQL
+        id,
       ];
 
       const updateResult = await db.pool.query(updatedQuery, updateValues);
