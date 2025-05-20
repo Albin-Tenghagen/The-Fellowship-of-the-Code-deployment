@@ -1,8 +1,5 @@
 console.log("Infrastructure router running....");
 import express, { Request, Response, Router } from "express";
-import fs from "fs";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
 import { infrastructureRequest, infrastructureBody } from "types/types";
 import { validateInfrastructureIssue } from "../../validators/infrastructureValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";

@@ -13,7 +13,7 @@ import { readFile } from "fs/promises";
 // Import nested modules
 import authMonitoringtRouter from "./adminMonitoring.ts";
 import authInfrastructureRouter from "./adminInfrastructure.ts";
-
+import maintenanceRouter from "./adminMaintenance.ts";
 import authIssueUpkeepRouter from "./adminIssueUpkeep.ts";
 import { adminLogin, loginData } from "types/types.ts";
 import path from "path";
@@ -27,6 +27,7 @@ adminRouter.use(
   authInfrastructureRouter
 );
 adminRouter.use("/authenticated/issueUpkeep", authIssueUpkeepRouter);
+adminRouter.use("/authenticated", maintenanceRouter);
 
 adminRouter.get("/", (_req, res) => {
   res.status(200).json({

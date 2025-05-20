@@ -1,6 +1,5 @@
 console.log("Issue upkeep router running....");
 import express, { Request, Response } from "express";
-import path from "path";
 import { user_observation, users_observation_info } from "types/types";
 import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
@@ -19,8 +18,6 @@ authIssueUpkeepRouter.get("/", (_req, res) => {
 authIssueUpkeepRouter.post(
   "/publicWarning",
   async (req: Request, res: Response): Promise<void> => {
-    const filePath = path.resolve("Database/userSafety.json");
-
     const new_user_observation: user_observation = {
       location: req.body.location,
       description: req.body.description,
