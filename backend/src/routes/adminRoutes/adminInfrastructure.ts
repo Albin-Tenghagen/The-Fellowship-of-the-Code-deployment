@@ -94,28 +94,49 @@ authInfrastructureRouter.put(
   "/putInfrastructure/:id",
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const id = Number(req.params.id);
-    const filePath = path.resolve("Database/infrastructure.json");
     const { problem, location } = req.body;
 
     try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const problems: infrastructureBody[] = JSON.parse(jsonData);
+      const { rows } = await db.pool.query(
+        `SELECT * FROM infrastructure WHERE id = $1`,
+        [id]
+      );
 
-      const index = problems.findIndex((problem) => problem.id === id);
-      if (index == -1) {
-        res.status(404).json({ message: "problem not found" });
-        return;
+      if (rows.length === 0) {
+        res.status(404).json({ message: "Problem not found..." });
       }
 
-      problems[index].location = location;
-      problems[index].problem = problem;
+      const updatedProblem = {
+        location: location,
+        problem: problem,
+        timestamp: rows[0].timestamp,
+      };
 
-      await writeFile(filePath, JSON.stringify(problems, null), "utf-8");
+      const validatedProblem = await validateInfrastructureIssue(
+        updatedProblem
+      );
 
-      res.status(200).json({ message: "Problem updated successfully" });
+      const updatedQuery = `
+      UPDATE infrastructure
+      SET location = $1, problem = $2
+      WHERE id = $3
+      RETURNING *`;
+
+      const updateValues = [
+        validatedProblem.location,
+        validatedProblem.problem,
+        validatedProblem.timestamp,
+      ];
+
+      const updateResult = await db.pool.query(updatedQuery, updateValues);
+
+      res.status(200).json({
+        message: "Problem updated successfully",
+        updatedProblem: updateResult.rows[0],
+      });
     } catch (error) {
-      console.error("server error", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Validation or update failed", error);
+      res.status(500).json({ message: "Validation or update failed" });
     }
   }
 );
@@ -126,32 +147,25 @@ authInfrastructureRouter.delete(
   "/deleteInfrastructure/:id",
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const id = Number(req.params.id);
-    const filePath = path.resolve("/Database/infrastructure.json");
 
-    try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const problems: infrastructureBody[] = JSON.parse(jsonData);
-
-      const index = problems.findIndex((problem) => problem.id == id);
-      if (index === -1) {
-        res.status(404).json({ message: "Problem not found..." });
-        return;
-      }
-      if (!problems) {
-        res.status(404).json({
-          message:
-            "The server could not find the problems, please try again later",
-        });
-        return;
-      }
-
-      const lessProblems = problems.splice(index, 1);
-      console.log(lessProblems);
-      await writeFile(filePath, JSON.stringify(problems, null, 2), "utf-8");
+    if (!id) {
       res
-        .status(200)
-        .json({ message: "Problem deleted!", lessProblems: lessProblems });
+        .status(40)
+        .json({ message: "Id needs to be filled in to delete an item" });
       return;
+    }
+    try {
+      const query = `DELETE FROM infrastructure WHERE id = 1$`;
+      const result = await pool.query(query, [id]);
+      if (result.rowCount === 0) {
+        res.status(404).json({ message: "Infrastructure Issue not found." });
+        return;
+      } else {
+        res
+          .status(200)
+          .json({ message: "Infrastructure Issue deleted successfully." });
+        return;
+      }
     } catch (error) {
       console.error("Server error", error);
       res.status(500).json({ message: "Internal server error" });

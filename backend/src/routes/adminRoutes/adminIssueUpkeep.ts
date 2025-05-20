@@ -159,7 +159,12 @@ authIssueUpkeepRouter.delete(
   "/publicWarning/:id",
   async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id);
-
+    if (!id) {
+      res
+        .status(40)
+        .json({ message: "Id needs to be filled in to delete an item" });
+      return;
+    }
     try {
       const query = `DELETE FROM user_observation WHERE id = $1`;
       const result = await pool.query(query, [id]);
