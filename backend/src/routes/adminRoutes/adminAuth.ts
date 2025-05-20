@@ -2,6 +2,9 @@ console.log("adminAuth router running....");
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import db from "../../../Database/db.ts";
+const pool = db.pool;
 import generateToken from "../../middleware/generate_jwt_token.ts";
 import authenticateToken from "../../middleware/jwtAuth.ts";
 dotenv.config();
@@ -32,6 +35,60 @@ adminRouter.get("/", (_req, res) => {
   });
 });
 
+adminRouter.post(
+  "/register",
+  async (req: Request, res: Response): Promise<void> => {
+    const { name, email, password, role } = req.body;
+    const saltRounds = 10;
+
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      res
+        .status(400)
+        .json({ error: "Name is required and must be a non-empty string." });
+      return;
+    }
+    if (!email || typeof email !== "string" || !/^\S+@\S+\.\S+$/.test(email)) {
+      res.status(400).json({ error: "A valid email address is required." });
+      return;
+    }
+    if (!password || typeof password !== "string" || password.length < 6) {
+      res.status(400).json({
+        error: "Password is required and must be at least 6 characters long.",
+      });
+      return;
+    }
+    if (!role || typeof role !== "string" || role.trim().length === 0) {
+      res
+        .status(400)
+        .json({ error: "Role is required and must be a non-empty string." });
+      return;
+    }
+
+    try {
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      await pool.query(
+        `INSERT INTO admins (name, email, password, role) VALUES ($1, $2, $3, $4)`,
+        [name.trim(), email.trim(), hashedPassword, role.trim()]
+      );
+
+      res.status(201).json({ message: "Användare registrerad." });
+    } catch (error: any) {
+      console.error("Error registering admin:", error);
+      if (error.code === "23505") {
+        res
+          .status(409)
+          .json({ error: "Användare med samma e-postadress finns redan." });
+        return;
+      } else {
+        res
+          .status(500)
+          .json({ error: "Ett fel uppstod vid registrering av användare." });
+        return;
+      }
+    }
+  }
+);
 //POST for login with email and password?
 //TODO Kryptera denna post för att få en funktionell inloggningsfunktion
 adminRouter.post(
@@ -60,7 +117,6 @@ adminRouter.post(
         specificLogin.email === email &&
         specificLogin.password === password
       ) {
-
         next();
       } else {
         res.status(401).json({ message: "Invalid credentials" });
@@ -77,16 +133,6 @@ adminRouter.post(
       message: "Login successful, you should receive a session token",
       token: res.locals.token,
     });
-  }
-);
-
-adminRouter.get(
-  "/secret",
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-    } catch (error) {
-      res.status(403).json({ error: "JWT-token är ogiltig" });
-    }
   }
 );
 
