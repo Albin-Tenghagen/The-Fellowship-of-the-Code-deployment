@@ -39,7 +39,7 @@ maintenanceRouter.post(
 
     try {
       const worker_id = 1;
-      //   const worker_id = req.user?.userName; // or `req.user?.id` if you include that in the JWT
+      //   const worker_id = req.body?.userName;
       const timestamp = timestampCreation();
 
       // Get the station_id from somewhere (maybe req.body.station_id if relevant)

@@ -12,8 +12,7 @@ interface TokenRequest extends Request {
   };
 }
 
-/**
- * Middleware: generateToken
+/* Middleware: generateToken
  * ------------------------
  * 1. Reads a `name` from the JSON request body
  * 2. Queries the `admins` table to verify that the user exists and fetch their role
@@ -67,12 +66,11 @@ export async function generateToken(
 
     // Attach the newly minted token onto req.body for downstream handlers
     // (e.g. your login controller can then send it as JSON to the client)
-    req.body.token = token;
+    res.locals.token = token;
     next();
   } catch (err) {
-    // Log the error for debugging (DB connection issue, etc.)
     console.error("Error querying admins table:", err);
-    // Send a generic 500 response
+
     res.status(500).json({ error: "Failed to generate token" });
   }
 }

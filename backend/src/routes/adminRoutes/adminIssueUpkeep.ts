@@ -1,6 +1,6 @@
 console.log("Issue upkeep router running....");
 import express, { Request, Response } from "express";
-import { user_observation, users_observation_info } from "types/types";
+import { user_observation } from "types/types";
 import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 

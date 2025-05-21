@@ -85,12 +85,10 @@ export async function authenticateToken(
       role: payload.role,
     };
 
-    // 7) All good—proceed to the next middleware/route handler
     next();
   } catch (err) {
-    // Catch errors such as token expired or signature mismatch
     console.error("Token verification error:", err);
-    // 401 Unauthorized for invalid/expired tokens
+
     res.status(401).json({ error: "Invalid or expired token" });
   }
 }

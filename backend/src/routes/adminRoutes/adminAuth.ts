@@ -9,14 +9,12 @@ import generateToken from "../../middleware/generate_jwt_token.ts";
 import authenticateToken from "../../middleware/jwtAuth.ts";
 dotenv.config();
 
-import { readFile } from "fs/promises";
 // Import nested modules
 import authMonitoringtRouter from "./adminMonitoring.ts";
 import authInfrastructureRouter from "./adminInfrastructure.ts";
 import maintenanceRouter from "./adminMaintenance.ts";
 import authIssueUpkeepRouter from "./adminIssueUpkeep.ts";
 import { adminLogin, loginData } from "types/types.ts";
-import path from "path";
 
 const adminRouter = express.Router(); // Define adminRouter first!
 
@@ -38,10 +36,12 @@ adminRouter.get("/", (_req, res) => {
 
 adminRouter.post(
   "/register",
-  async (req: Request, res: Response): Promise<void> => {
-    const { name, email, password, role } = req.body;
-    const saltRounds = 10;
-
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { name, email, password, access_key } = req.body;
+    if (access_key.trim() != process.env.REGISTER_KEY) {
+      res.status(400).json({ message: "Register key is invalid" });
+      return;
+    }
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       res
         .status(400)
@@ -58,44 +58,53 @@ adminRouter.post(
       });
       return;
     }
-    if (!role || typeof role !== "string" || role.trim().length === 0) {
-      res
-        .status(400)
-        .json({ error: "Role is required and must be a non-empty string." });
-      return;
-    }
 
     try {
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      await pool.query(
-        `INSERT INTO admins (name, email, password, role) VALUES ($1, $2, $3, $4)`,
-        [name.trim(), email.trim(), hashedPassword, role.trim()]
+      // Check if admin already exists
+      const emailLowerCase = email.trim().toLocaleLowerCase();
+      const check_if_email_exists = await db.pool.query(
+        "SELECT * FROM admins WHERE email = $1",
+        [emailLowerCase]
       );
 
-      res.status(201).json({ message: "Användare registrerad." });
-    } catch (error: any) {
-      console.error("Error registering admin:", error);
-      if (error.code === "23505") {
-        res
-          .status(409)
-          .json({ error: "Användare med samma e-postadress finns redan." });
-        return;
-      } else {
-        res
-          .status(500)
-          .json({ error: "Ett fel uppstod vid registrering av användare." });
+      if ((check_if_email_exists.rowCount ?? 0) > 0) {
+        res.status(409).json({ error: "Email already registered" });
         return;
       }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const role = "admin";
+
+      // Insert new admin
+      await db.pool.query(
+        "INSERT INTO admins (name, email, password, role) VALUES ($1, $2, $3, $4)",
+        [name, emailLowerCase, hashedPassword, role]
+      );
+
+      // Let generateToken middleware run next
+      next();
+    } catch (err) {
+      console.error("Registration error:", err);
+      res.status(500).json({ error: "Internal server error" });
     }
+  },
+  generateToken,
+  (req: Request, res: Response) => {
+    // Finally, send the token back
+    res.status(201).json({
+      message: "Admin registered and logged in",
+      token: res.locals.token,
+    });
   }
 );
+
 //POST for login with email and password?
 //TODO Kryptera denna post för att få en funktionell inloggningsfunktion
+
 adminRouter.post(
   "/login",
   async (req: adminLogin, res: Response, next: NextFunction): Promise<void> => {
-    const filePath = path.resolve("Database/admin.json");
     const { name, email, password } = req.body;
 
     if (![name, email, password].every(Boolean)) {
@@ -106,30 +115,44 @@ adminRouter.post(
     }
 
     try {
-      const jsonData = await readFile(filePath, "utf-8");
-      const loginInfo = JSON.parse(jsonData);
-
-      const specificLogin = loginInfo.find(
-        (login: loginData) => login.name === name
+      const result = await pool.query(
+        "SELECT * FROM admins WHERE name = $1 AND email = $2",
+        [name, email]
       );
 
-      if (
-        specificLogin &&
-        specificLogin.email === email &&
-        specificLogin.password === password
-      ) {
-        next();
-      } else {
+      const admin = result.rows[0];
+
+      if (!admin) {
         res.status(401).json({ message: "Invalid credentials" });
+        return;
       }
+
+      const passwordValid_check = await bcrypt.compare(
+        password,
+        admin.password
+      );
+
+      if (!passwordValid_check) {
+        res.status(401).json({ message: "Invalid credentials" });
+        return;
+      }
+
+      // Attach the admin user info to request or response for the token generator
+      res.locals.user = {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
+      };
+
+      next(); // Continue to generateToken
     } catch (error) {
-      console.error("Server error", error);
-      res.status(500).json({ message: "SERVER SERVER ERROR" });
+      console.error("Login DB error:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
   generateToken,
   (req: adminLogin, res: Response) => {
-    // Final response using token created in middleware
     res.status(200).json({
       message: "Login successful, you should receive a session token",
       token: res.locals.token,
