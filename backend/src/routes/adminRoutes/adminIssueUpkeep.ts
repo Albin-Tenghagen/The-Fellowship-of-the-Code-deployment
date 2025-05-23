@@ -4,6 +4,7 @@ import { user_observation } from "types/types";
 import { validateIssueUpkeep } from "../../validators/issueUpkeepValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
+import authenticateToken from "../../middleware/jwtAuth.ts";
 import db from "../../../Database/db.ts";
 const pool = db.pool;
 
@@ -17,6 +18,7 @@ authIssueUpkeepRouter.get("/", (_req, res) => {
 //POST Creating status or warnings for the public eye to see
 authIssueUpkeepRouter.post(
   "/publicWarning",
+  authenticateToken,
   async (req: Request, res: Response): Promise<void> => {
     const new_user_observation: user_observation = {
       location: req.body.location,
@@ -82,6 +84,7 @@ authIssueUpkeepRouter.post(
 //PUT Modifying current issue
 authIssueUpkeepRouter.put(
   "/publicWarning/:id",
+  authenticateToken,
   async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id);
 
@@ -154,6 +157,7 @@ authIssueUpkeepRouter.put(
 //DELETE for deleting irrelevant issues
 authIssueUpkeepRouter.delete(
   "/publicWarning/:id",
+  authenticateToken,
   async (req: Request, res: Response): Promise<void> => {
     const id = Number(req.params.id);
     if (!id) {

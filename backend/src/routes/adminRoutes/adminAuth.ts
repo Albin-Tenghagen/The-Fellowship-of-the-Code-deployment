@@ -37,8 +37,10 @@ adminRouter.get("/", (_req, res) => {
 adminRouter.post(
   "/register",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { name, email, password, access_key } = req.body;
-    if (access_key.trim() != process.env.REGISTER_KEY) {
+    const { email, password, access_key } = req.body;
+    let name = req.body.name;
+    name = name.toLocaleLowerCase();
+    if (access_key != process.env.REGISTER_KEY) {
       res.status(400).json({ message: "Register key is invalid" });
       return;
     }
@@ -48,8 +50,15 @@ adminRouter.post(
         .json({ error: "Name is required and must be a non-empty string." });
       return;
     }
-    if (!email || typeof email !== "string" || !/^\S+@\S+\.\S+$/.test(email)) {
-      res.status(400).json({ error: "A valid email address is required." });
+
+    const emailLowerCase = email.trim().toLowerCase();
+    const existing = await db.pool.query(
+      "SELECT * FROM admins WHERE email = $1",
+      [emailLowerCase]
+    );
+
+    if ((existing.rowCount ?? 0) > 0) {
+      res.status(409).json({ error: "Email already registered" });
       return;
     }
     if (!password || typeof password !== "string" || password.length < 6) {
@@ -87,6 +96,7 @@ adminRouter.post(
     } catch (err) {
       console.error("Registration error:", err);
       res.status(500).json({ error: "Internal server error" });
+      return;
     }
   },
   generateToken,
@@ -96,6 +106,7 @@ adminRouter.post(
       message: "Admin registered and logged in",
       token: res.locals.token,
     });
+    return;
   }
 );
 
@@ -106,8 +117,10 @@ adminRouter.post(
   "/login",
   async (req: adminLogin, res: Response, next: NextFunction): Promise<void> => {
     const { name, email, password } = req.body;
+    let lowercasename = name.toLocaleLowerCase();
+    let lowercaseemail = email.toLocaleLowerCase();
 
-    if (![name, email, password].every(Boolean)) {
+    if (![lowercasename, lowercaseemail, password].every(Boolean)) {
       res.status(400).json({
         message: "All fields (name, email, password) are required.",
       });
@@ -117,7 +130,7 @@ adminRouter.post(
     try {
       const result = await pool.query(
         "SELECT * FROM admins WHERE name = $1 AND email = $2",
-        [name, email]
+        [lowercasename, lowercaseemail]
       );
 
       const admin = result.rows[0];
@@ -149,6 +162,7 @@ adminRouter.post(
     } catch (error) {
       console.error("Login DB error:", error);
       res.status(500).json({ message: "Internal server error" });
+      return;
     }
   },
   generateToken,

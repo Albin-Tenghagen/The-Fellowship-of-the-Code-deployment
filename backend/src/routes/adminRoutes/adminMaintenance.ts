@@ -5,11 +5,14 @@ import db from "../../../Database/db.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 import { JWTRequest } from "../../types/types.ts";
 
+import authenticateToken from "../../middleware/jwtAuth.ts";
+
 const maintenanceRouter = express.Router();
 
 // GET: Get all maintenance records
 maintenanceRouter.get(
   "/maintenance",
+  authenticateToken,
   async (req: JWTRequest, res: Response) => {
     try {
       const jsonData = await db.pool.query(
@@ -28,6 +31,7 @@ maintenanceRouter.get(
 // POST: Create a new maintenance entry
 maintenanceRouter.post(
   "/maintenance",
+  authenticateToken,
   async (req: JWTRequest, res: Response) => {
     const { location, work_issue, work_duration, work_status, station_id } =
       req.body;
@@ -79,6 +83,7 @@ maintenanceRouter.post(
 // PUT: Update a maintenance entry
 maintenanceRouter.put(
   "/maintenance/:id",
+  authenticateToken,
   async (req: JWTRequest, res: Response) => {
     const maintenanceId = parseInt(req.params.id);
     const { location, station_id, work_issue, work_duration, work_status } =
@@ -132,6 +137,7 @@ maintenanceRouter.put(
 // DELETE: Remove a maintenance entry
 maintenanceRouter.delete(
   "/maintenance/:id",
+  authenticateToken,
   async (req: JWTRequest, res: Response) => {
     const maintenanceId = parseInt(req.params.id);
 

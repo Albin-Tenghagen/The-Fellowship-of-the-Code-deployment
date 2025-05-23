@@ -5,6 +5,7 @@ import { StationRequest } from "types/types.ts";
 import { MonitoringEntry } from "types/types.ts";
 
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
+import authenticateToken from "../../middleware/jwtAuth.ts";
 import db from "../../../Database/db.ts";
 
 const pool = db.pool;
@@ -81,6 +82,7 @@ authMonitoringRouter.get(
 );
 authMonitoringRouter.post(
   "/postmonitoring",
+  authenticateToken,
   async (req: Request, res: Response): Promise<void> => {
     const {
       station_id,

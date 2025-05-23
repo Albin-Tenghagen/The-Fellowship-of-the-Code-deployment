@@ -4,6 +4,8 @@ import { infrastructureRequest, infrastructureBody } from "types/types";
 import { validateInfrastructureIssue } from "../../validators/infrastructureValidation.ts";
 import { timestampCreation } from "../../middleware/timestampCreation.ts";
 
+import authenticateToken from "../../middleware/jwtAuth.ts";
+
 import db from "../../../Database/db.ts";
 const pool = db.pool;
 
@@ -13,6 +15,7 @@ const authInfrastructureRouter = express.Router();
 
 authInfrastructureRouter.get(
   "/",
+
   async (_req: Request, res: Response): Promise<void> => {
     try {
       const { rows: infrastructureData } = await pool.query(
@@ -44,6 +47,7 @@ authInfrastructureRouter.get(
 
 authInfrastructureRouter.post(
   "/postInfrastructure",
+  authenticateToken,
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const { problem, location } = req.body;
 
@@ -89,6 +93,7 @@ authInfrastructureRouter.post(
 //PUT
 authInfrastructureRouter.put(
   "/putInfrastructure/:id",
+  authenticateToken,
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const id = Number(req.params.id);
     const { problem, location } = req.body;
@@ -142,6 +147,7 @@ authInfrastructureRouter.put(
 
 authInfrastructureRouter.delete(
   "/deleteInfrastructure/:id",
+  authenticateToken,
   async (req: infrastructureRequest, res: Response): Promise<void> => {
     const id = Number(req.params.id);
 

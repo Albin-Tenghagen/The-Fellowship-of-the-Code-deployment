@@ -6,8 +6,10 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres123
-      - POSTGRES_DB=portfolioDB
+      - POSTGRES_DB=ccdb
     ports:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+    # res.setHeader("Authorization", `Bearer ${token}`);

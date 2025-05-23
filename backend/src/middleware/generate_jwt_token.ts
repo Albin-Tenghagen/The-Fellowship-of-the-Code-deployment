@@ -32,10 +32,11 @@ export async function generateToken(
   const { name } = req.body;
 
   try {
+    const lowecasename = name.toLocaleLowerCase();
     // Query the `admins` table: check if name exists, retrieve role
     const result = await db.pool.query(
       "SELECT role FROM admins WHERE name = $1",
-      [name]
+      [lowecasename]
     );
 
     // If no rows returned, user is not found or not an admin
@@ -64,6 +65,7 @@ export async function generateToken(
       expiresIn: "1h",
     });
 
+    res.setHeader("Authorization", `Bearer ${token}`);
     // Attach the newly minted token onto req.body for downstream handlers
     // (e.g. your login controller can then send it as JSON to the client)
     res.locals.token = token;
@@ -72,6 +74,7 @@ export async function generateToken(
     console.error("Error querying admins table:", err);
 
     res.status(500).json({ error: "Failed to generate token" });
+    return;
   }
 }
 
