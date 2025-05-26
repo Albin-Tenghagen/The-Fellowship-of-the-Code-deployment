@@ -1,12 +1,11 @@
 console.log("adminAuth router running....");
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import db from "../../../Database/db.ts";
 const pool = db.pool;
 import generateToken from "../../middleware/generate_jwt_token.ts";
-import authenticateToken from "../../middleware/jwtAuth.ts";
+
 dotenv.config();
 
 // Import nested modules
@@ -14,7 +13,7 @@ import authMonitoringtRouter from "./adminMonitoring.ts";
 import authInfrastructureRouter from "./adminInfrastructure.ts";
 import maintenanceRouter from "./adminMaintenance.ts";
 import authIssueUpkeepRouter from "./adminIssueUpkeep.ts";
-import { adminLogin, loginData } from "types/types.ts";
+import { adminLogin } from "types/types.ts";
 
 const adminRouter = express.Router();
 
