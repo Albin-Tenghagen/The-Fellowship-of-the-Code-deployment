@@ -44,7 +44,6 @@ authInfrastructureRouter.get(
 );
 
 //POST for alerting for issues in infrastructure as in översvämmade gator or smth also for userss to enjoy
-
 authInfrastructureRouter.post(
   "/postInfrastructure",
   authenticateToken,
@@ -126,7 +125,7 @@ authInfrastructureRouter.put(
       const updateValues = [
         validatedProblem.location,
         validatedProblem.problem,
-        validatedProblem.timestamp, // this must be a valid Date or string formatted for PostgreSQL
+        validatedProblem.timestamp,
         id,
       ];
 

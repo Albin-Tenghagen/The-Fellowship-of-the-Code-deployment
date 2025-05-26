@@ -16,9 +16,8 @@ import maintenanceRouter from "./adminMaintenance.ts";
 import authIssueUpkeepRouter from "./adminIssueUpkeep.ts";
 import { adminLogin, loginData } from "types/types.ts";
 
-const adminRouter = express.Router(); // Define adminRouter first!
+const adminRouter = express.Router();
 
-// Nested modules (without "/user" prefix since it's handled in server.ts)
 adminRouter.use("/authenticated/monitoring", authMonitoringtRouter);
 adminRouter.use(
   "/authenticated/infrastructureIssues",
@@ -34,6 +33,7 @@ adminRouter.get("/", (_req, res) => {
   });
 });
 
+//POST for registering a new admin
 adminRouter.post(
   "/register",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -69,7 +69,6 @@ adminRouter.post(
     }
 
     try {
-      // Check if admin already exists
       const emailLowerCase = email.trim().toLocaleLowerCase();
       const check_if_email_exists = await db.pool.query(
         "SELECT * FROM admins WHERE email = $1",
@@ -81,17 +80,14 @@ adminRouter.post(
         return;
       }
 
-      // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
       const role = "admin";
 
-      // Insert new admin
       await db.pool.query(
         "INSERT INTO admins (name, email, password, role) VALUES ($1, $2, $3, $4)",
         [name, emailLowerCase, hashedPassword, role]
       );
 
-      // Let generateToken middleware run next
       next();
     } catch (err) {
       console.error("Registration error:", err);
@@ -101,7 +97,6 @@ adminRouter.post(
   },
   generateToken,
   (req: Request, res: Response) => {
-    // Finally, send the token back
     res.status(201).json({
       message: "Admin registered and logged in",
       token: res.locals.token,
@@ -111,8 +106,6 @@ adminRouter.post(
 );
 
 //POST for login with email and password?
-//TODO Kryptera denna post för att få en funktionell inloggningsfunktion
-
 adminRouter.post(
   "/login",
   async (req: adminLogin, res: Response, next: NextFunction): Promise<void> => {
@@ -150,7 +143,6 @@ adminRouter.post(
         return;
       }
 
-      // Attach the admin user info to request or response for the token generator
       res.locals.user = {
         id: admin.id,
         name: admin.name,

@@ -9,7 +9,7 @@ const userRouter: Router = express.Router();
 
 userRouter.use("/tips", userTipsRouter);
 
-// Union of allowed sorting fields
+// Type of allowed sorting fields
 type SortField_type =
   | "location"
   | "timestamp"
