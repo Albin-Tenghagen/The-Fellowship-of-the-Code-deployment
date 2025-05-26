@@ -237,5 +237,3 @@ What has been accomplished
         2. user.ts now includes user_observation
         3. Zana got the DB locally on his machine
         4. maybe something more
-
-before merge
