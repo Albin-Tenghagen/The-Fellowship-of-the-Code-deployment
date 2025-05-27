@@ -15,7 +15,7 @@ userTipsRouter.get(
   async (_req: TipRequest, res: Response): Promise<void> => {
     try {
       const { rows: tips } = await pool.query(
-        `SELECT * FROM "userTips" ORDER BY id ASC`
+        `SELECT * FROM "user_tips" ORDER BY id ASC`
       );
 
       if (!tips) {
@@ -57,7 +57,7 @@ userTipsRouter.post(
     try {
       const validatedTip = await validateUserTips(newTip);
       const query = `
-      INSERT INTO "userTips" (timestamp, location, description, username)
+      INSERT INTO "user_tips" (timestamp, location, description, username)
       VALUES ($1, $2, $3, $4)
       RETURNING *`;
       const values = [
@@ -87,7 +87,7 @@ userTipsRouter.put(
 
     try {
       const { rows } = await db.pool.query(
-        `SELECT * FROM "userTips" WHERE id = $1`,
+        `SELECT * FROM "user_tips" WHERE id = $1`,
         [id]
       );
 
@@ -105,7 +105,7 @@ userTipsRouter.put(
       const validatedTip = await validateUserTips(updatedTip);
 
       const updateQuery = `
-        UPDATE "userTips"
+        UPDATE "user_tips"
         SET location = $1, description = $2
         WHERE id = $3
         RETURNING * `;
@@ -134,7 +134,7 @@ userTipsRouter.delete(
     const id = Number(req.params.id);
 
     try {
-      const { rows } = await pool.query(`SELECT * FROM "userTips"`);
+      const { rows } = await pool.query(`SELECT * FROM "user_tips"`);
       const index = rows.findIndex((tip: userTipObject) => tip.id === id);
       if (index === -1) {
         res.status(404).json({ message: "Tip not found..." });
@@ -148,7 +148,7 @@ userTipsRouter.delete(
         return;
       }
 
-      const query = `DELETE FROM "userTips" WHERE id = ($1)`;
+      const query = `DELETE FROM "user_tips" WHERE id = ($1)`;
       const values = [id];
       console.log(query);
       const result = await pool.query(query, values);
