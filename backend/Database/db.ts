@@ -17,9 +17,9 @@ console.log("Connecting to DB with:", {
 const pool = connectionString
   ? new Pool({
       connectionString,
-      ssl: {
-        rejectUnauthorized: false, // Important for many hosted DBs like Railway's
-      },
+      // ssl: {
+      //   rejectUnauthorized: false, // Important for many hosted DBs like Railway's
+      // },
     })
   : new Pool({
       user: process.env.DBUSER,
