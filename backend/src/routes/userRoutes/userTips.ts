@@ -57,14 +57,13 @@ userTipsRouter.post(
     try {
       const validatedTip = await validateUserTips(newTip);
       const query = `
-      INSERT INTO "user_tips" (timestamp, location, description, username)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO "user_tips" (timestamp, location, description)
+      VALUES ($1, $2, $3)
       RETURNING *`;
       const values = [
         validatedTip.timestamp,
         validatedTip.location,
         validatedTip.description,
-        validatedTip.username,
       ];
 
       const result = await db.pool.query(query, values);
@@ -98,7 +97,6 @@ userTipsRouter.put(
 
       const updatedTip = {
         timestamp: rows[0].timestamp,
-        username: rows[0].username,
         location,
         description,
       };
